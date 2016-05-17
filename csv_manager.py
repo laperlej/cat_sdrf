@@ -27,9 +27,9 @@ class CsvManager(object):
 		new_row = {}
 		for key1, regex in self.column_dict.iteritems():
 			content = set()
-			for key2 in norm_row.iterkeys():
+			for key2 in norm_row.keys():
 				if re.search(regex, key2):
-					info = norm_row.get(key2, "").strip()
+					info = norm_row.pop(key2, "").strip()
 					if info:
 						content.add(info)
 			new_row[key1] = self.sep.join(content)

@@ -12,7 +12,7 @@ FIELDNAMES=OrderedDict([
 	('3)organism',
 		"organism"),
 	('4)assaytype',
-		'(comment[library_selection]|comment[library_strategy])'),
+		'(comment\[library_selection\]|comment\[library_strategy\]|characteristics\[sampledescription\])'),
 	('5)antibody',
 		"(antibody|immunoprecipitate)"),
 	('6)target',
@@ -24,8 +24,8 @@ FIELDNAMES=OrderedDict([
 	('9)genotype',
 		'(genotype)'),
 	('10)description',
-		'(comment[sample_source_name]|comment[sample_description]|characteristics[individual]|comment[sample_title])'),
+		'(comment\[sample_source_name\]|comment\[sample_description\]|characteristics\[individual\]|comment\[sample_title\])'),
 	('11)other',
 		'.*'),
 	])
-#4,5 , 10
+#4,5 , 10cd ..
