@@ -23,9 +23,12 @@ class CsvManager(object):
 			preprocess(csvfile, row)
 			self.rows.append(self.translate_row(row))
 
+	def empty_row(self):
+		return {column_name:set() for column_name in self.column_names}
+
 	def translate_row(self, row):
+		new_row = self.empty_row()
 		norm_row = utils.norm_keys(row)
-		new_row = {column_name:set() for column_name in self.column_names}
 		for title in norm_row.iterkeys():
 			for column_name in self.column_names:
 				if re.search(self.regex_dict[column_name], title):
