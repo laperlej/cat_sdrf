@@ -7,6 +7,7 @@ output:
 
 import config
 from csv_manager import CsvManager
+import sys
 
 def main():
 	file_names=sys.argv[1:-1]
@@ -16,8 +17,8 @@ def main():
 
 	csv_manager = CsvManager(fieldnames)
 	for file_name in file_names:
-		CsvManager.parse_csv(open(file_name, 'r'), preprocess=config.PREPROCESS)
-	CsvManager.write_csv(open(out_name, 'w'))
+		csv_manager.read_csv(open(file_name, 'r'), preprocess=config.PREPROCESS)
+	csv_manager.write_csv(open(out_name, 'w'))
 
 if __name__ == "__main__":
 	main()

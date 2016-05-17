@@ -25,20 +25,20 @@ class CsvManager(object):
 	def translate_row(self, row):
 		norm_row = utils.norm_keys(row)
 		new_row = {}
-		for key, regexes in self.column_dict.iteritems():
+		for key1, regex in self.column_dict.iteritems():
 			content = set()
-			for regex in regexes:
-				for key in norm_row.iterkeys():
-					if re.match(regex, key):
-						info = norm_row.get(key, "").strip()
-						if info:
-							content.add(info)
-			new_row[key] = self.sep.join(content)
+			for key2 in norm_row.iterkeys():
+				if re.search(regex, key2):
+					info = norm_row.get(key2, "").strip()
+					if info:
+						content.add(info)
+			new_row[key1] = self.sep.join(content)
 		return new_row
 
-	def write_csv(self, outfile);
+	def write_csv(self, outfile):
 		writer = csv.DictWriter(outfile,
 			                    fieldnames=self.column_dict.keys(),
 			                    dialect='excel-tab')
+		writer.writeheader()
 		for row in self.rows:
 			writer.writerow(row)
