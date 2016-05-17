@@ -8,6 +8,7 @@ output:
 import csv
 import os.path
 import utils
+import re
 
 class CsvManager(object):
 	def __init__(self, column_dict, sep=" | "):
@@ -24,12 +25,14 @@ class CsvManager(object):
 	def translate_row(self, row):
 		norm_row = utils.norm_keys(row)
 		new_row = {}
-		for key, value in self.column_dict.iteritems():
+		for key, regexes in self.column_dict.iteritems():
 			content = set()
-			for title in value:
-				info = norm_row.get(title, "").strip()
-				if info:
-					content.add(info)
+			for regex in regexes:
+				for key in norm_row.iterkeys():
+					if re.match(regex, key):
+						info = norm_row.get(key, "").strip()
+						if info:
+							content.add(info)
 			new_row[key] = self.sep.join(content)
 		return new_row
 
