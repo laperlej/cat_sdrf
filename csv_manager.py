@@ -33,7 +33,7 @@ class CsvManager(object):
 					if info:
 						new_row[column_name].add(info)
 					break
-		return {new_row[key]=self.sep.join(content) for key, content in new_row.iteritems()}
+		return {key:self.sep.join(content) for key, content in new_row.iteritems()}
 
 	def write_csv(self, outfile):
 		writer = csv.DictWriter(outfile,

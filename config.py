@@ -22,7 +22,7 @@ FIELDNAMES=OrderedDict([
 	('8)strain',
 		'(strain|cellline)'),
 	('9)genotype',
-		'(genotype)'),
+		'(genotype|genedeletion|\[variation\]|genetic|\[yrr1alleletransformed\])'),
 	('10)description',
 		'(comment\[sample_source_name\]|comment\[sample_description\]|characteristics\[individual\]|comment\[sample_title\])'),
 	('11)other',
