@@ -15,7 +15,7 @@ def main():
 	
 	fieldnames = config.FIELDNAMES
 
-	csv_manager = CsvManager(fieldnames)
+	csv_manager = CsvManager(fieldnames.keys(), fieldnames)
 	for file_name in file_names:
 		csv_manager.read_csv(open(file_name, 'r'), preprocess=config.PREPROCESS)
 	csv_manager.write_csv(open(out_name, 'w'))

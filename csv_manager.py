@@ -11,8 +11,9 @@ import utils
 import re
 
 class CsvManager(object):
-	def __init__(self, column_dict, sep=" | "):
-		self.column_dict = column_dict
+	def __init__(self, column_names, regex_dict, sep=" | "):
+		self.column_names = column_names
+		self.regex_dict = regex_dict
 		self.sep = sep
 		self.rows = []
 
@@ -24,20 +25,19 @@ class CsvManager(object):
 
 	def translate_row(self, row):
 		norm_row = utils.norm_keys(row)
-		new_row = {}
-		for key1, regex in self.column_dict.iteritems():
-			content = set()
-			for key2 in norm_row.keys():
-				if re.search(regex, key2):
-					info = norm_row.pop(key2, "").strip()
+		new_row = {column_name:set() for column_name in self.column_names}
+		for title in norm_row.iterkeys():
+			for column_name in self.column_names:
+				if re.search(self.regex_dict[column_name], title):
+					info = norm_row.get(title).strip()
 					if info:
-						content.add(info)
-			new_row[key1] = self.sep.join(content)
-		return new_row
+						new_row[column_name].add(info)
+					break
+		return {new_row[key]=self.sep.join(content) for key, content in new_row.iteritems()}
 
 	def write_csv(self, outfile):
 		writer = csv.DictWriter(outfile,
-			                    fieldnames=self.column_dict.keys(),
+			                    fieldnames=self.column_names,
 			                    dialect='excel-tab')
 		writer.writeheader()
 		for row in self.rows:
