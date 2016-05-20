@@ -5,7 +5,7 @@ from collections import OrderedDict
 PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name)) #row['filename']=os.path.basename(csvfile.name)
 
 FIELDNAMES=OrderedDict([
-	('1)identifiant',
+	('1)identifier',
 		'sourcename'),
 	('2)filename',
 		'filename'),
