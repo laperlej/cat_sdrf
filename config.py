@@ -23,9 +23,13 @@ FIELDNAMES=OrderedDict([
 		'(strain|cellline)'),
 	('9)genotype',
 		'(genotype|genedeletion|\[variation\]|genetic|\[yrr1alleletransformed\])'),
-	('10)description',
+	('10)platform',
+		'(platform|instrument_model)'),
+	('11)description',
 		'(comment\[sample_source_name\]|comment\[sample_description\]|characteristics\[individual\]|comment\[sample_title\])'),
-	('11)other',
-		'.*'),
+	('12)fastq',
+		'fastq_uri'),
+	('13)other',
+		'.*')
 	])
 #4,5 , 10cd ..
