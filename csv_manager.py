@@ -32,7 +32,7 @@ class CsvManager(object):
 		norm_row = utils.norm_keys(row)
 		for title in norm_row.iterkeys():
 			for column_name in self.column_names:
-				if self.lambda_dict[column_name](title):
+				if self.lambda_dict[column_name](title, norm_row):
 					info = str(norm_row.get(title, " ")).strip()
 					if info not in ["", "None"]:
 						new_row[column_name].add(info)

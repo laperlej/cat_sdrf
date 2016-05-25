@@ -8,21 +8,21 @@ from collections import OrderedDict
 PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name)) #row['filename']=os.path.basename(csvfile.name)
 
 FIELDNAMES=OrderedDict([
-	('1)identifier', lambda title: re.search('sourcename', title)),
-	('2)filename', lambda title: re.search('filename', title)),
-	('3)organism', lambda title: re.search("organism", title)),
-	('4)assaytype', lambda title: re.search('(comment\[library_selection\]|comment\[library_strategy\]|characteristics\[sampledescription\])'),
-	('clean_assay',lambda title: re.search('$a', title)),
-	('5)antibody', lambda title: re.search("(antibody|milliporecatno)", title)),
-	('6)target', lambda title: re.search('(epitopetag|tagged|taptag|protein|h2b|immunoprecipitate|target|\[tag\])', title)),
-	('clean_target', lambda title: re.search('$a', title)),
-	('7)treatment', lambda title: re.search('(phosphate|concentration|growth|medium|media|condition|cycle|stage|developmental|stage|culturetype|transformedwith|treatment|temperature|sac_cerandgla_glamixedpercentage|compound)'),
-	('8)strain', lambda title: re.search('(strain|cellline)', title)),
-	('9)genotype', lambda title: re.search('(genotype|genedeletion|\[variation\]|genetic|\[yrr1alleletransformed\])', title)),
-	('10)platform', lambda title: re.search('(platform|instrument_model)', title)),
-	('11)description', lambda title: re.search('(comment\[sample_source_name\]|comment\[sample_description\]|characteristics\[individual\]|comment\[sample_title\])'),
-	('12)fastq', lambda title: re.search('fastq_uri', title)),
-	('13)other', lambda title: re.search('.*', title))
+	('1)identifier', lambda title, row: re.search('sourcename', title)),
+	('2)filename', lambda title, row: re.search('filename', title)),
+	('3)organism', lambda title, row: re.search("organism", title)),
+	('4)assaytype', lambda title, row: re.search('(comment\[library_selection\]|comment\[library_strategy\]|characteristics\[sampledescription\])'),
+	('clean_assay',lambda title, row: re.search('$a', title)),
+	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno)", title)),
+	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|immunoprecipitate|target|\[tag\])', title)),
+	('clean_target', lambda title, row: re.search('$a', title)),
+	('7)treatment', lambda title, row: re.search('(phosphate|concentration|growth|medium|media|condition|cycle|stage|developmental|stage|culturetype|transformedwith|treatment|temperature|sac_cerandgla_glamixedpercentage|compound)'),
+	('8)strain', lambda title, row: re.search('(strain|cellline)', title)),
+	('9)genotype', lambda title, row: re.search('(genotype|genedeletion|\[variation\]|genetic|\[yrr1alleletransformed\])', title)),
+	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
+	('11)description', lambda title, row: re.search('(comment\[sample_source_name\]|comment\[sample_description\]|characteristics\[individual\]|comment\[sample_title\])'),
+	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
+	('13)other', lambda title, row: re.search('.*', title))
 	])
 
 #dictionnaire des cibles des anticorps
