@@ -15,7 +15,7 @@ import re
 class CsvManager(object):
 	def __init__(self, column_names, regex_dict, sep=" | "):
 		self.column_names = column_names
-		self.regex_dict = regex_dict
+		self.lambda_dict = lambda_dict
 		self.sep = sep
 		self.rows = []
 
@@ -33,7 +33,7 @@ class CsvManager(object):
 		norm_row = utils.norm_keys(row)
 		for title in norm_row.iterkeys():
 			for column_name in self.column_names:
-				if re.search(self.regex_dict[column_name], title):
+				if lambda_dict[column_name](title)#re.search(self.regex_dict[column_name], title):
 					info = norm_row.get(title).strip()
 					if info:
 						new_row[column_name].add(info)
