@@ -10,7 +10,6 @@ output:
 import csv
 import os.path
 import utils
-import re
 
 class CsvManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
@@ -34,8 +33,8 @@ class CsvManager(object):
 		for title in norm_row.iterkeys():
 			for column_name in self.column_names:
 				if self.lambda_dict[column_name](title):
-					info = norm_row.get(title).strip()
-					if info:
+					info = str(norm_row.get(title, " ")).strip()
+					if info not in ["", "None"]:
 						new_row[column_name].add(info)
 					break
 		return {key:self.sep.join(content) for key, content in new_row.iteritems()}

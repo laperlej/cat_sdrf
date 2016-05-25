@@ -2,6 +2,7 @@
 
 import os.path
 import operator
+import re
 from collections import OrderedDict
 
 PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name)) #row['filename']=os.path.basename(csvfile.name)
