@@ -34,3 +34,32 @@ def filter_row(row, target_dico, input_cols, output_col):
 	row[output_col] = new_value
 	return row
 
+def assign_tag(row, tag_dico):
+	#	if "tag" in row[clean_target]:
+	if "tag" in row[clean_target]:
+
+	#		si <untagged< dans les col 4, 11 et 13
+		if "Untagged" in merge_cols(row, ["4)assaytype", "11)description","13)other"]):
+	#			ajouter Mock a clean target:
+			row["clean_target"]= "Mock"
+	#		sinon 
+		else:	
+	#			faitdequoi()	
+			row["clean_target"] = compare_tag(row,tag_dico)
+
+
+def compare_tag(row, tag_dico):
+	if "tag" in row[clean_target]:
+	#compare tag de clean_taget avec regex dans tag_dico
+		for tagged in tag_dico.keys():
+			match = re.search(tag_dico[tagged],"tag")
+	#si match
+			if match:		
+	#compare match avec gene_dico
+				for gene in gene_dico:
+					match2 = re.search(gene_dico[gene], match)		
+	#si match
+					if match2:
+	#ecrit gene dans clean_target
+						return gene
+		return ""		
