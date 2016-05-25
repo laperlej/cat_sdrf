@@ -10,6 +10,9 @@ def filter_rows(rows, target_dico, input_cols, output_col):
 		row = filter_row(row, target_dico, input_cols, output_col) 
 	return rows
 
+def merge_cols(row, input_cols):
+	return "".join(row[input_col].lower() for input_col in input_cols)
+
 def filter_row(row, target_dico, input_cols, output_col):
 	"""
 	itère sur les regex de target-dico et les compare avec l'information dans input_col jusqu'à ce qu'il y ait un match.
@@ -23,14 +26,11 @@ def filter_row(row, target_dico, input_cols, output_col):
 	"""
 	new_value = ""
 	for info in target_dico.keys():
-		searchtarget = ''
-		for input_col in input_cols:
-			searchtarget += row[input_col].lower()
+		searchtarget = merge_cols(row, input_cols)
 		if re.search(target_dico[info], searchtarget):
 			new_value = info
-			break	
+			break
 	 
 	row[output_col] = new_value
 	return row
 
-	
