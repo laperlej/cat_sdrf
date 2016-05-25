@@ -33,7 +33,7 @@ class CsvManager(object):
 		norm_row = utils.norm_keys(row)
 		for title in norm_row.iterkeys():
 			for column_name in self.column_names:
-				if lambda_dict[column_name](title)#re.search(self.regex_dict[column_name], title):
+				if lambda_dict[column_name](title):
 					info = norm_row.get(title).strip()
 					if info:
 						new_row[column_name].add(info)
