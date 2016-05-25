@@ -13,7 +13,7 @@ import utils
 import re
 
 class CsvManager(object):
-	def __init__(self, column_names, regex_dict, sep=" | "):
+	def __init__(self, column_names, lambda_dict, sep=" | "):
 		self.column_names = column_names
 		self.lambda_dict = lambda_dict
 		self.sep = sep
@@ -33,7 +33,7 @@ class CsvManager(object):
 		norm_row = utils.norm_keys(row)
 		for title in norm_row.iterkeys():
 			for column_name in self.column_names:
-				if lambda_dict[column_name](title):
+				if self.lambda_dict[column_name](title):
 					info = norm_row.get(title).strip()
 					if info:
 						new_row[column_name].add(info)
