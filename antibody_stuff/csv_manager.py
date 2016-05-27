@@ -10,6 +10,7 @@ output:
 import csv
 import os.path
 import utils
+import re
 
 class CsvManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
@@ -32,16 +33,14 @@ class CsvManager(object):
 		norm_row = utils.norm_keys(row)
 		for title in norm_row.iterkeys():
 			for column_name in self.column_names:
-				if self.lambda_dict[column_name](title, norm_row):
-					info = str(norm_row.get(title, " ")).strip()
-					if info not in ["", "None"]:
+				if self.lambda_dict[column_name](title):
+					info = norm_row.get(title).strip()
+					if info:
 						new_row[column_name].add(info)
 					break
 		return {key:self.sep.join(content) for key, content in new_row.iteritems()}
-
-	#ajouter fonction filter	
-	#def filter_row(self, row):
-	
+						
+				
 
 	def write_csv(self, outfile):
 		writer = csv.DictWriter(outfile,
