@@ -10,6 +10,7 @@ output:
 import csv
 import os.path
 import utils
+import copy
 
 class CsvManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
@@ -39,9 +40,12 @@ class CsvManager(object):
 					break
 		return {key:self.sep.join(content) for key, content in new_row.iteritems()}
 
-	#ajouter fonction filter	
-	#def filter_row(self, row):
-	
+	#crée une copie de l'objet rows; result[0] conserve les lignes qui retournent vrai à la condition, les autres lignes vont dans result[1]
+	def split(self,condition=lambda row:True):
+		result=[self, copy.deepcopy(self)]
+		result[1].rows=[row for row in self.rows if not condition(row)]
+		result[0].rows=[row for row in self.rows if condition(row)]
+		return result
 
 	def write_csv(self, outfile):
 		writer = csv.DictWriter(outfile,

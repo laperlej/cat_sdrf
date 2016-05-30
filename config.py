@@ -7,6 +7,18 @@ from collections import OrderedDict
 
 PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name)) #row['filename']=os.path.basename(csvfile.name)
 
+#itère sur chaque ligne et retourne vrai si remplit les 4 conditions.
+def split_condition(row):
+	#les types d'essai qui nous intéressent
+	assays=["chip", "mnase", "dnase","other"]
+	#Les types d'essais qui ne nous intéressent pas
+	discard_assays=["rip-seq","rna-seq", "random"]
+	return ("Saccharomyces cerevisiae" in row["3)organism"] and 
+		   [True for assay in assays if assay in row["4)assaytype"].lower()] and 
+		   "fastq" in row["12)fastq"] and
+	 	   not [False for discard_assay in discard_assays if discard_assay in row["4)assaytype"].lower()])
+
+
 FIELDNAMES=OrderedDict([
 	('1)identifier', lambda title, row: re.search('sourcename', title)),
 	('2)filename', lambda title, row: re.search('filename', title)),
@@ -62,20 +74,32 @@ TARGET_DICO=OrderedDict([
 	('tag_flag','flag'),
 	('tag_T7', 't7'),
 	('Mock_IgG','igg'),
-	('none','(none|n.?a|not.?specified|no.?antibody)')
+	('none','(none|n/a|not.?specified|no.?antibody)')
 	])
 
 #dictionnaire des tag et leur regex pour la cible taggée
 TAG_DICO=OrderedDict([
-	 ('tag_HA','((\S\w+)(::|-)\d?x?\d?ha|ha(::|-)(\w+\S))'),
-	 ('tag_flag','((\S\w+)(::|-)\d?x?\d?flag|flag(::|-)(\w+\S))'),
-	 ('tag_myc','((\S\w+)(::|-)mycx?\d?\d?|(\S\w+)(?:::|-)x?\d?\d?x?myc|myc(::|-)(\w+\S))'),
-	 ('tag_PK','((\S\w+)(::|-)\d?x?\d?pk|pk(::|-)(\w+\S)|(\S\w+)\s?pk\s?tag)'),
-	 ('tag_T7','((\S\w+)(::|-)t7|t7(::|-)(\w+\S))')])
+	 ('tag_HA','([^anti](\w+)::.*ha|(\w+)-.*ha|ha-(\w+)|ha.*::(\w+))'),
+	 ('tag_flag','((\w+)::.*flag|(\w+)-.*flag|flag.*-(\w+)|flag.*::(\w+)|(\w+)_flag)'),
+	 ('tag_myc','((\w+)::\.*myc|(\w+)-.*myc|myc.*-(\w+)|myc.*::(\w+)|(\w+)\smyc|(\w+)_myc)'),
+	 ('tag_PK','((\w+)::.*pk|pk::(\w+)|(\w+)\s?pk|(\w+)-.*pk|pk.*-(\w+)|v5-(\w+))'),
+	 ('tag_T7','((\w+)::.*t7|(\w+)-.*t7|t7.*-(\w+)|t7.*::(\w+))')])
+
+#dictionnaire utilisant le mot-clé chip pour trouver la protéine-cible de l'essai
+CHIP_DICO = OrderedDict ([
+	('protein chip','(\w+)\sprotein\schip'),
+	('BrdU IP','(\w+)\sbrdu\sip'),
+	('IP','(\w+)\s?ip'),
+	('something IP','(\w+)\s.*\sip'),#vague
+	('chip','(\w+)\schip'),
+	('_chip','(\w+)_chip'),
+	('chromatin immunoprecipitation', '(\w+)\s.*chromatin\simmunoprecipitation'),
+	('something chip','(\w+)\s.+chip') #peut être problématique car vague et parfois 2 options
+	])
 	 
 
 #dictionnaire de regex des genes de S. cerevisiae
-GENE_scerevisiae = OrderedDict ([
+GENE_scerevisiae = OrderedDict([
 	("SAGA",'(saga)'),
 	("input",'(input)'),
 	("TFC3",'(tfc3)'),
@@ -1829,7 +1853,6 @@ GENE_scerevisiae = OrderedDict ([
 	("WHI4",'(whi4)'),
 	("SHS1",'(shs1)'),
 	("GCS1",'(gcs1)'),
-	("HO",'(^ho|ho$)'),
 	("SSB1",'(ssb1)'),
 	("PTP1",'(ptp1)'),
 	("BRE4",'(bre4)'),
@@ -5398,7 +5421,6 @@ GENE_scerevisiae = OrderedDict ([
 	("MPR2",'(mpr2)'),
 	("RDT1",'(rdt1)'),
 	("IRT1",'(irt1)'),
-	("H3",'(h3)'),
 	("H3K14ac",'(h3k14ac)'),
 	("H3K36me3",'(h3k36me3)'),
 	("H3K4me3",'(h3k4me3)'),
@@ -5406,6 +5428,7 @@ GENE_scerevisiae = OrderedDict ([
 	("H3K9ac",'(h3k9ac)'),
 	("H4K16ac",'(h4k16ac)'),
 	("H4K5ac",'(h4k5ac)'),
+	("H3",'(h3)'),
 	("URN1",'(urn1)'),
 	("PIN3",'(pin3)'),
 	("NCA2",'(nca2)'),
@@ -5421,6 +5444,7 @@ GENE_scerevisiae = OrderedDict ([
 	("RHO1",'(rho1)'),
 	("MRP2",'(mrp2)'),
 	("MET16",'(met16)'),
+	("HO",'(^ho|ho$)'),
 	("NUT2",'(nut2)')
 	])
 #dictionnaire des sortes d'essai
@@ -5430,3 +5454,4 @@ ASSAY_DICO = OrderedDict([
 	("DNase-Seq",'dnase'),
 	("other",'other')
 	])
+EMPTY_DICO = OrderedDict()

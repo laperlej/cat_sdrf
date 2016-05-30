@@ -12,11 +12,13 @@ import sys
 from antibody_filter import filter_rows, assign_tag_multiple 
 
 def main():
-	file_names=sys.argv[1:]
-	#remplacer par quelque chose comme
-	#output_file= sys.argv[1]
-	#discard_file= sys.argv[2]
-	#input_files= sys.argv[3:]
+	if len(sys.argv) < 4:
+		print "Usage: python main.py output_clean output_discard file_names*"
+		exit()
+
+	output_clean= sys.argv[1]
+	output_discard= sys.argv[2]
+	file_names= sys.argv[3:]
 
 	
 	fieldnames = config.FIELDNAMES
@@ -26,18 +28,20 @@ def main():
 		csv_manager.read_csv(open(file_name, 'r'), preprocess=config.PREPROCESS)
 
 	#ajouter fonction discard_line (csv_manager, où on aurait aussi la commande pour écrire dans discard) 
-	#
+	#csv_manager.rows = discard_line(csv_manager,rows)
+
 	#section filtre pour anticorps
-	csv_manager.rows = filter_rows(csv_manager.rows, config.GENE_scerevisiae, config.TARGET_DICO, ["5)antibody", "6)target"], "clean_target")
+	csv_manager.rows = filter_rows(csv_manager.rows, config.TARGET_DICO, ["4)assaytype","5)antibody", "6)target"], "clean_target")
 	#section filtre pour le type d'essai
 	csv_manager.rows = filter_rows(csv_manager.rows, config.ASSAY_DICO, ["4)assaytype"], "clean_assay")
 	#section filtre pour les tags
-	csv_manager.rows = assign_tag_multiple(csv_manager.rows, config.TAG_DICO, config.GENE_scerevisiae)
-		
+	csv_manager.rows = assign_tag_multiple(csv_manager.rows, config.TAG_DICO, config.GENE_scerevisiae, config.CHIP_DICO)
+	#section pour dupliquer la liste en un fichier clean et les lignes indésirables dans un autre fichier
+	csv_managers=csv_manager.split(config.split_condition)	
+	
 	#section output
-	csv_manager.write_csv(sys.stdout)
-	#remplacer par 
-	#csv_manager.write_csv(output_file)
+	csv_managers[0].write_csv(open(output_clean,'w'))
+	csv_managers[1].write_csv(open(output_discard, 'w'))
 
 if __name__ == "__main__":
 	main()
