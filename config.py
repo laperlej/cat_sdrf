@@ -25,6 +25,7 @@ FIELDNAMES=OrderedDict([
 	('3)organism', lambda title, row: re.search("organism", title)),
 	('clean_assay',lambda title, row: re.search('$a', title)),
 	('clean_target', lambda title, row: re.search('$a', title)),
+	('reliability', lambda title, row: re.search('$a', title)),
 	('4)assaytype', lambda title, row: re.search('(comment\[library_selection\]|comment\[library_strategy\]|characteristics\[sampledescription\])',title)),
 	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno)", title)),
 	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|immunoprecipitate|target|\[tag\])', title)),
@@ -32,7 +33,7 @@ FIELDNAMES=OrderedDict([
 	('8)strain', lambda title, row: re.search('(strain|cellline)', title)),
 	('9)genotype', lambda title, row: re.search('(genotype|genedeletion|\[variation\]|genetic|\[yrr1alleletransformed\])', title)),
 	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
-	('11)description', lambda title, row: re.search('(comment\[sample_source_name\]|comment\[sample_description\]|characteristics\[individual\]|comment\[sample_title\])', title)),
+	('11)description', lambda title, row: re.search('(comment\[sample_source_name\]|comment\[sample_description\]|\[individual\]|comment\[sample_title\])', title)),
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
 	('13)other', lambda title, row: re.search('.*', title))
 	])
@@ -41,7 +42,9 @@ FIELDNAMES=OrderedDict([
 TARGET_DICO=OrderedDict([
 	('input','(input|whole\scell\sextract)'),
 	('Mock', 'mock'),
-	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sK4|ab8580)'),
+	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sK4|ab8895)'),
+	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sK4)'),
+	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sK4|ab8580|39159)'),
 	('H3K14ac', '(h3k14ac|07-353)'),
 	('H3K36me','(h3k36me|ab9050)'),
 	('H3K56ac','(h3k56ac|07-677)'),
@@ -55,12 +58,12 @@ TARGET_DICO=OrderedDict([
 	('H2A.Z','(htz1|h2a\.?z)'),
 	('H2A', '(h2a|ab13923)'),
 	('H2B', 'htb1'),
-	('Esa1','esa1'),
+	('ESA1','esa1'),
 	('RNAPII_tyr1P','(tyr1|61383|mabe350)'),
 	('RNAPII_ser2P','(ser2p|ab24758|ab193468|ab5095)'),
 	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|ab193467)'),
 	('RNAPII_ser7P','(ser7p|ab126537)'),
-	('RNAPII_CTD','(ctd|8wg16|MMS-126R-200|ab817)'),
+	('RNAPII_CTD','(ctd|8wg16|MMS-126R-200|ab817|MMS-126R-200)'),
 	('RNAPII_RPB3','(WP012|1Y26|ab202893|rpb3)'),
 	('PCNA','pcna'),
 	('RAD51','rad51'),
@@ -74,14 +77,16 @@ TARGET_DICO=OrderedDict([
 	('tag_flag','flag'),
 	('tag_T7', 't7'),
 	('Mock_IgG','igg'),
-	('none','(none|n/a|not.?specified|no.?antibody)')
+	("RNA/DNA hybrid",'rna/dna\shybrid'),
+	('none','(none|n/a|not.?specified|no.?antibody)'),
+	('empty', '.*')
 	])
 
 #dictionnaire des tag et leur regex pour la cible taggée
 TAG_DICO=OrderedDict([
-	 ('tag_HA','([^anti](\w+)::.*ha|(\w+)-.*ha|ha-(\w+)|ha.*::(\w+))'),
-	 ('tag_flag','((\w+)::.*flag|(\w+)-.*flag|flag.*-(\w+)|flag.*::(\w+)|(\w+)_flag)'),
-	 ('tag_myc','((\w+)::\.*myc|(\w+)-.*myc|myc.*-(\w+)|myc.*::(\w+)|(\w+)\smyc|(\w+)_myc)'),
+	 ('tag_HA','((\w+)::ha|(\w+)-ha|ha-(\w+)|ha::(\w+)|(\w+)::.*ha|(\w+)-.*ha|ha-(\w+)|ha.*::(\w+))'),
+	 ('tag_flag','((\w+)::flag|(\w+)::.*flag|(\w+)-flag|(\w+)-.*flag|flag-(\w+)|flag::(\w+)|flag.*-(\w+)|flag.*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
+	 ('tag_myc','((\w+)::myc|(\w+)-myc|myc-(\w+)|myc::(\w+)|(\w+)::.*myc|(\w+)-.*myc|myc.*-(\w+)|myc.*::(\w+)|(\w+)\smyc|(\w+)myc)'),
 	 ('tag_PK','((\w+)::.*pk|pk::(\w+)|(\w+)\s?pk|(\w+)-.*pk|pk.*-(\w+)|v5-(\w+))'),
 	 ('tag_T7','((\w+)::.*t7|(\w+)-.*t7|t7.*-(\w+)|t7.*::(\w+))')])
 
@@ -89,11 +94,12 @@ TAG_DICO=OrderedDict([
 CHIP_DICO = OrderedDict ([
 	('protein chip','(\w+)\sprotein\schip'),
 	('BrdU IP','(\w+)\sbrdu\sip'),
+	('chip','(\w+)\s\s?chip'),
+	('_chip','(\w+)_chip'),
+	('chromatin immunoprecipitation', '(\w+)\s(?:wildtype|\w+)\snative\schromatin\simmunoprecipi?t?ation'),
+	('chromatin ip against', '(chromatin\sip\sagainst\s(\w+)|chromatin\sip\sagainst\s(\w+\s\w+))'),
 	('IP','(\w+)\s?ip'),
 	('something IP','(\w+)\s.*\sip'),#vague
-	('chip','(\w+)\schip'),
-	('_chip','(\w+)_chip'),
-	('chromatin immunoprecipitation', '(\w+)\s.*chromatin\simmunoprecipitation'),
 	('something chip','(\w+)\s.+chip') #peut être problématique car vague et parfois 2 options
 	])
 	 
@@ -102,6 +108,9 @@ CHIP_DICO = OrderedDict ([
 GENE_scerevisiae = OrderedDict([
 	("SAGA",'(saga)'),
 	("input",'(input)'),
+	("POL1",'(pol1|pol\sα)'),
+	("POL2",'(pol2|pol\sɛ)'),
+	("POL3",'(pol3)'),
 	("TFC3",'(tfc3)'),
 	("VPS8",'(vps8)'),
 	("EFB1",'(efb1)'),
@@ -1752,7 +1761,6 @@ GENE_scerevisiae = OrderedDict([
 	("BUG1",'(bug1)'),
 	("GET3",'(get3)'),
 	("DUN1",'(dun1)'),
-	("POL3",'(pol3)'),
 	("QRI1",'(qri1)'),
 	("QRI7",'(qri7)'),
 	("NSE4",'(nse4)'),
@@ -2973,7 +2981,7 @@ GENE_scerevisiae = OrderedDict([
 	("MRX12",'(mrx12)'),
 	("SAG1",'(sag1)'),
 	("APL1",'(apl1)'),
-	("POL31",'(pol31)'),
+	("POL31",'(pol31|pol\sδ)'),
 	("SUI2",'(sui2)'),
 	("MHO1",'(mho1)'),
 	("TDH2",'(tdh2)'),
@@ -3989,7 +3997,6 @@ GENE_scerevisiae = OrderedDict([
 	("OCA1",'(oca1)'),
 	("MIC27",'(mic27)'),
 	("AVT4",'(avt4)'),
-	("POL1",'(pol1)'),
 	("MET4",'(met4)'),
 	("LEU4",'(leu4)'),
 	("RRT16",'(rrt16)'),
@@ -4115,7 +4122,6 @@ GENE_scerevisiae = OrderedDict([
 	("ATX1",'(atx1)'),
 	("LTO1",'(lto1)'),
 	("ORC5",'(orc5)'),
-	("POL2",'(pol2)'),
 	("YIF1",'(yif1)'),
 	("PDR17",'(pdr17)'),
 	("IST1",'(ist1)'),
@@ -4501,6 +4507,7 @@ GENE_scerevisiae = OrderedDict([
 	("ARP8",'(arp8)'),
 	("LSC1",'(lsc1)'),
 	("THI80",'(thi80)'),
+	("DELG1",'delg1'),
 	("ELG1",'(elg1)'),
 	("PNO1",'(pno1)'),
 	("MDM32",'(mdm32)'),
@@ -4673,6 +4680,7 @@ GENE_scerevisiae = OrderedDict([
 	("RPA190",'(rpa190)'),
 	("TYE7",'(tye7)'),
 	("REV1",'(rev1)'),
+	("PYK1",'(pyk1)'),
 	("PYK2",'(pyk2)'),
 	("PUT4",'(put4)'),
 	("CIN1",'(cin1)'),
@@ -5445,6 +5453,7 @@ GENE_scerevisiae = OrderedDict([
 	("MRP2",'(mrp2)'),
 	("MET16",'(met16)'),
 	("HO",'(^ho|ho$)'),
+	("PCNA",'pcna'),
 	("NUT2",'(nut2)')
 	])
 #dictionnaire des sortes d'essai
