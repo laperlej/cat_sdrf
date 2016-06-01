@@ -43,32 +43,33 @@ def assign_tag_multiple(rows, tag_dico, gene_dico, chip_dico):
 	for row in rows:
 		row["clean_target"], row["reliability"] = assign_tag(row, tag_dico, gene_dico, chip_dico)
 	return rows
-
+#section qui trie entre les input, mock, tag et types d'essai
+#appelle compare_tag pour tag; 
 def assign_tag(row, tag_dico, gene_dico, chip_dico):
 	if "MNase" in row["clean_assay"] or "DNase" in row["clean_assay"]:
 		return "N/A", "assay type"
 
 	elif "input" in merge_cols(row, ["4)assaytype", "11)description","13)other"]).lower():
-			return "input", "keyword in concat"
-	
+		return "input", "keyword in concat"
+
 	elif "mock" in merge_cols(row, ["4)assaytype", "11)description","13)other"]).lower():
-			return "Mock", "keyword in concat"
-	
+		return "Mock", "keyword in concat"
+	#à vérifier
+	elif "empty" in row['clean_target']:
+		for gen in gene_dico.keys():
+			if re.search(gene_dico[gen], row["11)description"].lower()):
+				return gen, "gene on col)11"
+			else:
+				return row["clean_target"], "target_dico"		
+
 	elif "tag" in row["clean_target"]:
 	#	si untagged dans les col 4, 11 et 13
 		if "untagged" in merge_cols(row, ["4)assaytype", "11)description","13)other"]).lower() or "no tag" in merge_cols(row, ["4)assaytype", "11)description","13)other"]).lower():
 	#		ajouter Mock à clean target:
 			return "Mock","keyword in concat"
- 	
 		else:	
 	#		si tagged, retourne fonction compare_tag	
-			return compare_tag(row,tag_dico, gene_dico, chip_dico),"na"
-
-	elif row['clean_target']=="empty":
-		for gene in gene_dico:
-			if re.search(gene_dico[gene], row["11)description"]):
-				return gene, "gene on col)11"
-			return row["clean_target"], "target_dico"		
+			return compare_tag(row,tag_dico, gene_dico, chip_dico)	
 	else:
 		return row["clean_target"], "target_dico"
 
@@ -78,7 +79,7 @@ def compare_tag(row, tag_dico, gene_dico, chip_dico):
 	match = re.search(tag_dico[tagged],merge_cols(row,["6)target","8)strain", "9)genotype", "11)description"]).lower())
 	if match:	
 		#compare match avec gene_dico
-		for gene in gene_dico:
+		for gene in gene_dico.keys():
 			match2 = re.search(gene_dico[gene], match.group(1))		
 			if match2:
 				return gene, "tag to gene_dico"
@@ -86,7 +87,7 @@ def compare_tag(row, tag_dico, gene_dico, chip_dico):
 		for regex in chip_dico.keys():
 			match3 = re.search(chip_dico[regex], merge_cols(row,["11)description"]).lower())
 			if match3:
-				for gene in gene_dico:
+				for gene in gene_dico.keys():
 					match4 = re.search(gene_dico[gene], match3.group(1))		
 					if match4:
 						return gene, "chip to gene_dico"					
