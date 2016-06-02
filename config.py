@@ -38,6 +38,20 @@ FIELDNAMES=OrderedDict([
 	('13)other', lambda title, row: re.search('.*', title))
 	])
 
+HISTONES_MARKS_DICO = OrderedDict([
+	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sK4)'),
+	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sK4)'),
+	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sK4)'),
+	('H3K14ac', '(h3k14ac)'),
+	('H3K36me','(h3k36me)'),
+	('H3K56ac','(h3k56ac)'),
+	('H3K9ac','(h3k9ac)'),
+	('H3K4','h3k4'),
+	('H4K16ac','(h4k16ac)'),
+	('H4K12ac', 'h4k12ac'),
+	('H4K44ac','h4k44ac'),
+	('H4K5ac','(h4k5ac)')
+	])
 #dictionnaire des cibles des anticorps
 TARGET_DICO=OrderedDict([
 	('input','(input|whole\scell\sextract)'),
@@ -92,15 +106,15 @@ TAG_DICO=OrderedDict([
 
 #dictionnaire utilisant le mot-clé chip pour trouver la protéine-cible de l'essai
 CHIP_DICO = OrderedDict ([
-	('protein chip','(\w+)\sprotein\schip'),
-	('BrdU IP','(\w+)\sbrdu\sip'),
-	('chip','(\w+)\s\s?chip'),
-	('_chip','(\w+)_chip'),
-	('chromatin immunoprecipitation', '(\w+)\s(?:wildtype|\w+)\snative\schromatin\simmunoprecipi?t?ation'),
-	('chromatin ip against', '(chromatin\sip\sagainst\s(\w+)|chromatin\sip\sagainst\s(\w+\s\w+))'),
-	('IP','(\w+)\s?ip'),
-	('something IP','(\w+)\s.*\sip'),#vague
-	('something chip','(\w+)\s.+chip') #peut être problématique car vague et parfois 2 options
+	('protein chip','((\w{2,})\sprotein\schip|(\w+\s\w+)\sprotein\schip)'),
+	('BrdU IP','(\w{2,})\sbrdu\sip'),
+	('chip','(\w{2,})\s\s?chip'),
+	('_chip','(\w{2,})_chip'),
+	('chromatin immunoprecipitation', '(\w{2,})\s(?:wildtype|\w+)\snative\schromatin\simmunoprecipi?t?ation'),
+	('chromatin ip against', '(chromatin\sip\sagainst\s(\w{2,})|chromatin\sip\sagainst\s(\w+\s\w+))'),
+	('IP','(\w{2,})\s?ip'),
+	('something IP','(\w{2,})\s.*\sip'),#vague
+	('something chip','(\w{2,})\s.+chip') #peut être problématique car vague et parfois 2 options
 	])
 	 
 
@@ -108,9 +122,9 @@ CHIP_DICO = OrderedDict ([
 GENE_scerevisiae = OrderedDict([
 	("SAGA",'(saga)'),
 	("input",'(input)'),
-	("POL1",'(pol1|pol\sα)'),
-	("POL2",'(pol2|pol\sɛ)'),
-	("POL3",'(pol3)'),
+	("DNAPIII",'(pol3)'),
+	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
+	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
 	("TFC3",'(tfc3)'),
 	("VPS8",'(vps8)'),
 	("EFB1",'(efb1)'),
@@ -2981,7 +2995,7 @@ GENE_scerevisiae = OrderedDict([
 	("MRX12",'(mrx12)'),
 	("SAG1",'(sag1)'),
 	("APL1",'(apl1)'),
-	("POL31",'(pol31|pol\sδ)'),
+	("DNAP31",'(pol31|pol\sδ)'),
 	("SUI2",'(sui2)'),
 	("MHO1",'(mho1)'),
 	("TDH2",'(tdh2)'),
@@ -5435,6 +5449,7 @@ GENE_scerevisiae = OrderedDict([
 	("H3K56ac",'(h3k56ac)'),
 	("H3K9ac",'(h3k9ac)'),
 	("H4K16ac",'(h4k16ac)'),
+	("H4K12ac",'(h4k12ac)'),
 	("H4K5ac",'(h4k5ac)'),
 	("H3",'(h3)'),
 	("URN1",'(urn1)'),

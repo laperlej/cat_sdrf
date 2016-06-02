@@ -27,11 +27,10 @@ def main():
 	for file_name in file_names:
 		csv_manager.read_csv(open(file_name, 'r'), preprocess=config.PREPROCESS)
 
-	#ajouter fonction discard_line (csv_manager, où on aurait aussi la commande pour écrire dans discard) 
-	#csv_manager.rows = discard_line(csv_manager,rows)
-
 	#section filtre pour anticorps
 	csv_manager.rows = filter_rows(csv_manager.rows, config.TARGET_DICO, ["4)assaytype","5)antibody", "6)target"], "clean_target")
+	#section filtre pour les marques d'histones
+	#csv_manager.rows = filter_rows(csv_manager.rows, config.HISTONES_MARKS_DICO, ["1)identifier", "4)assaytype","5)antibody", "6)target", "11)description", 13)other"], "clean_target")
 	#section filtre pour le type d'essai
 	csv_manager.rows = filter_rows(csv_manager.rows, config.ASSAY_DICO, ["4)assaytype"], "clean_assay")
 	#section filtre pour les tags

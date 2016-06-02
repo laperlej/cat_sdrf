@@ -54,13 +54,14 @@ def assign_tag(row, tag_dico, gene_dico, chip_dico):
 
 	elif "mock" in merge_cols(row, ["4)assaytype", "11)description","13)other"]).lower():
 		return "Mock", "keyword in concat"
-	#à vérifier
+	#section qui itère sur gene_dico pour trouver un match "at large"
 	elif "empty" in row['clean_target']:
 		for gen in gene_dico.keys():
 			if re.search(gene_dico[gen], row["11)description"].lower()):
-				return gen, "gene on col)11"
-			else:
-				return row["clean_target"], "target_dico"		
+				return gen, "gene at large"
+			elif re.search(gene_dico[gen], merge_cols(row, ["1)identifier", "9)genotype"]).lower()):
+				return gen, "gene at large"	
+		return row["clean_target"], "target_dico"	
 
 	elif "tag" in row["clean_target"]:
 	#	si untagged dans les col 4, 11 et 13
