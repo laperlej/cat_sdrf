@@ -38,6 +38,15 @@ FIELDNAMES=OrderedDict([
 	('13)other', lambda title, row: re.search('.*', title))
 	])
 
+#dictionnaire des sortes d'essai
+ASSAY_DICO = OrderedDict([
+	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
+	("MNase-Seq",'mnase'),
+	("DNase-Seq",'dnase'),
+	("other",'other')
+	])
+
+#dictionnaire de marques d'histones
 HISTONES_MARKS_DICO = OrderedDict([
 	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sK4)'),
 	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sK4)'),
@@ -47,10 +56,18 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H3K56ac','(h3k56ac)'),
 	('H3K9ac','(h3k9ac)'),
 	('H3K4','h3k4'),
+	('H3', 'h3'),
 	('H4K16ac','(h4k16ac)'),
 	('H4K12ac', 'h4k12ac'),
 	('H4K44ac','h4k44ac'),
-	('H4K5ac','(h4k5ac)')
+	('H4K5ac','(h4k5ac)'),
+	('H4','h4'),
+	('H2A.Z','(htz1|h2a\.?z)'),
+	('H2A', '(h2a|ab13923)'),
+	('H2B', 'htb1'),
+	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
+	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
+	("DNAP31",'(pol31|pol\sδ)')
 	])
 #dictionnaire des cibles des anticorps
 TARGET_DICO=OrderedDict([
@@ -98,11 +115,11 @@ TARGET_DICO=OrderedDict([
 
 #dictionnaire des tag et leur regex pour la cible taggée
 TAG_DICO=OrderedDict([
-	 ('tag_HA','((\w+)::ha|(\w+)-ha|ha-(\w+)|ha::(\w+)|(\w+)::.*ha|(\w+)-.*ha|ha-(\w+)|ha.*::(\w+))'),
-	 ('tag_flag','((\w+)::flag|(\w+)::.*flag|(\w+)-flag|(\w+)-.*flag|flag-(\w+)|flag::(\w+)|flag.*-(\w+)|flag.*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
-	 ('tag_myc','((\w+)::myc|(\w+)-myc|myc-(\w+)|myc::(\w+)|(\w+)::.*myc|(\w+)-.*myc|myc.*-(\w+)|myc.*::(\w+)|(\w+)\smyc|(\w+)myc)'),
-	 ('tag_PK','((\w+)::.*pk|pk::(\w+)|(\w+)\s?pk|(\w+)-.*pk|pk.*-(\w+)|v5-(\w+))'),
-	 ('tag_T7','((\w+)::.*t7|(\w+)-.*t7|t7.*-(\w+)|t7.*::(\w+))')])
+	 ('tag_HA','((\w+)::ha|(\w+)-ha|ha-(\w+)|ha::(\w+)|(\w+)::\S*ha|(\w+)-\S*ha|ha-(\w+)|ha\S*::(\w+))'),
+	 ('tag_flag','((\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+)-\S*flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
+	 ('tag_myc','((\w+)::myc|(\w+)-myc|myc-(\w+)|myc::(\w+)|(\w+)::.*myc|(\w+)-\S*myc|myc\S*-(\w+)|myc\S*::(\w+)|(\w+)\smyc|(\w+)myc)'),
+	 ('tag_PK','((\w+)::\S*pk|pk::(\w+)|(\w+)\s?pk|(\w+)-\S*pk|pk\S*-(\w+)|v5-(\w+))'),
+	 ('tag_T7','((\w+)::\S*t7|(\w+)-\S*t7|t7\S*-(\w+)|t7\S*::(\w+))')])
 
 #dictionnaire utilisant le mot-clé chip pour trouver la protéine-cible de l'essai
 CHIP_DICO = OrderedDict ([
@@ -114,7 +131,7 @@ CHIP_DICO = OrderedDict ([
 	('chromatin ip against', '(chromatin\sip\sagainst\s(\w{2,})|chromatin\sip\sagainst\s(\w+\s\w+))'),
 	('IP','(\w{2,})\s?ip'),
 	('something IP','(\w{2,})\s.*\sip'),#vague
-	('something chip','(\w{2,})\s.+chip') #peut être problématique car vague et parfois 2 options
+	('something chip','(\w{2,})\s.*chip') #peut être problématique car vague et parfois 2 options
 	])
 	 
 
@@ -5471,11 +5488,5 @@ GENE_scerevisiae = OrderedDict([
 	("PCNA",'pcna'),
 	("NUT2",'(nut2)')
 	])
-#dictionnaire des sortes d'essai
-ASSAY_DICO = OrderedDict([
-	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
-	("MNase-Seq",'mnase'),
-	("DNase-Seq",'dnase'),
-	("other",'other')
-	])
+
 EMPTY_DICO = OrderedDict()
