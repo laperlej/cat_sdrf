@@ -28,13 +28,14 @@ FIELDNAMES=OrderedDict([
 	('reliability', lambda title, row: re.search('$a', title)),
 	('4)assaytype', lambda title, row: re.search('(comment\[library_selection\]|comment\[library_strategy\]|characteristics\[sampledescription\])',title)),
 	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno)", title)),
-	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|immunoprecipitate|target|\[tag\])', title)),
+	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\])', title)),
 	('7)treatment', lambda title, row: re.search('(phosphate|concentration|growth|medium|media|condition|cycle|stage|developmental|stage|culturetype|transformedwith|treatment|temperature|sac_cerandgla_glamixedpercentage|compound)', title)),
-	('8)strain', lambda title, row: re.search('(strain|cellline)', title)),
-	('9)genotype', lambda title, row: re.search('(genotype|genedeletion|\[variation\]|genetic|\[yrr1alleletransformed\])', title)),
+	('8)strain', lambda title, row: re.search('(strain|cellline|\[variant\])', title)),
+	('9)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
 	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
-	('11)description', lambda title, row: re.search('(comment\[sample_source_name\]|comment\[sample_description\]|\[individual\]|comment\[sample_title\])', title)),
+	('11)description', lambda title, row: re.search('(comment\[sample_source_name\]|comment\[sample_description\]|\[individual\]|comment\[sample_title\]|comment\[ena_alias\])', title)),
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
+	('file_description', '(array\sdata\sfile|arrayexpress|\[submitted_file_name\])'),
 	('13)other', lambda title, row: re.search('.*', title))
 	])
 
@@ -48,6 +49,9 @@ ASSAY_DICO = OrderedDict([
 
 #dictionnaire de marques d'histones
 HISTONES_MARKS_DICO = OrderedDict([
+	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
+	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
+	("DNAP31",'(pol31|pol\sδ)'),
 	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sK4)'),
 	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sK4)'),
 	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sK4)'),
@@ -65,6 +69,7 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H2A.Z','(htz1|h2a\.?z)'),
 	('H2A', '(h2a|ab13923)'),
 	('H2B', 'htb1'),
+	("DNAPIII",'(pol3|pol\s?iii)'),
 	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
 	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
 	("DNAP31",'(pol31|pol\sδ)')
@@ -73,9 +78,9 @@ HISTONES_MARKS_DICO = OrderedDict([
 TARGET_DICO=OrderedDict([
 	('input','(input|whole\scell\sextract)'),
 	('Mock', 'mock'),
-	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sK4|ab8895)'),
-	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sK4)'),
-	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sK4|ab8580|39159)'),
+	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sk4|ab8895)'),
+	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sk4)'),
+	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sk4|ab8580|39159)'),
 	('H3K14ac', '(h3k14ac|07-353)'),
 	('H3K36me','(h3k36me|ab9050)'),
 	('H3K56ac','(h3k56ac|07-677)'),
@@ -90,12 +95,14 @@ TARGET_DICO=OrderedDict([
 	('H2A', '(h2a|ab13923)'),
 	('H2B', 'htb1'),
 	('ESA1','esa1'),
+	('Q105me1','q105me1'),
+	('DNMT3b','(dnmt3b|ab2851)'),
 	('RNAPII_tyr1P','(tyr1|61383|mabe350)'),
 	('RNAPII_ser2P','(ser2p|ab24758|ab193468|ab5095)'),
 	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|ab193467)'),
 	('RNAPII_ser7P','(ser7p|ab126537)'),
-	('RNAPII_CTD','(ctd|8wg16|MMS-126R-200|ab817|MMS-126R-200)'),
-	('RNAPII_RPB3','(WP012|1Y26|ab202893|rpb3)'),
+	('RNAPII_CTD','(ctd|8wg16|MMS-126R-200|ab817|mms-126r-200)'),
+	('RNAPII_RPB3','(wp012|1Y26|ab202893|rpb3)'),
 	('PCNA','pcna'),
 	('RAD51','rad51'),
 	('ORC','orc'),
@@ -118,13 +125,13 @@ TAG_DICO=OrderedDict([
 	 ('tag_HA','((\w+)::ha|(\w+)-ha|ha-(\w+)|ha::(\w+)|(\w+)::\S*ha|(\w+)-\S*ha|ha-(\w+)|ha\S*::(\w+))'),
 	 ('tag_flag','((\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+)-\S*flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
 	 ('tag_myc','((\w+)::myc|(\w+)-myc|myc-(\w+)|myc::(\w+)|(\w+)::.*myc|(\w+)-\S*myc|myc\S*-(\w+)|myc\S*::(\w+)|(\w+)\smyc|(\w+)myc)'),
-	 ('tag_PK','((\w+)::\S*pk|pk::(\w+)|(\w+)\s?pk|(\w+)-\S*pk|pk\S*-(\w+)|v5-(\w+))'),
+	 ('tag_PK','((\w+)::\S*pk|pk::(\w+)|(\w+)\s?pk|(\w{2,})-pk|(\w+)-\S*pk|pk\S*-(\w+)|v5-(\w+))'),
 	 ('tag_T7','((\w+)::\S*t7|(\w+)-\S*t7|t7\S*-(\w+)|t7\S*::(\w+))')])
 
 #dictionnaire utilisant le mot-clé chip pour trouver la protéine-cible de l'essai
 CHIP_DICO = OrderedDict ([
 	('protein chip','((\w{2,})\sprotein\schip|(\w+\s\w+)\sprotein\schip)'),
-	('BrdU IP','(\w{2,})\sbrdu\sip'),
+	('BrdU IP','((\w{2,})\sbrdu\sip|(.+)brdu\sip)'),
 	('chip','(\w{2,})\s\s?chip'),
 	('_chip','(\w{2,})_chip'),
 	('chromatin immunoprecipitation', '(\w{2,})\s(?:wildtype|\w+)\snative\schromatin\simmunoprecipi?t?ation'),
