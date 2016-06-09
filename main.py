@@ -12,15 +12,19 @@ import sys
 from antibody_filter import filter_rows, assign_tag_multiple 
 
 def main():
-	if len(sys.argv) < 4:
-		print "Usage: python main.py output_clean output_discard file_names*"
+	if len(sys.argv) < 5:
+		print "Usage: python main.py output_clean output_discard species file_names*"
 		exit()
 
 	output_clean= sys.argv[1]
 	output_discard= sys.argv[2]
-	file_names= sys.argv[3:]
+	species= sys.argv[3]
+	file_names= sys.argv[4:]
 
-	
+	#gene_dict is assigned to the gene_dict of the species called in the command
+	gene_dict = config.GENE_DICT[species]
+	gene_descrip_dict = config.GENE_DESCRIP_DICT[species]
+
 	fieldnames = config.FIELDNAMES
 	#section read_csv
 	csv_manager = CsvManager(fieldnames.keys(), fieldnames)
@@ -29,12 +33,10 @@ def main():
 
 	#section filtre pour anticorps
 	csv_manager.rows = filter_rows(csv_manager.rows, config.TARGET_DICO, ["4)assaytype","5)antibody", "6)target"], "clean_target")
-	#section filtre pour les marques d'histones
-	#csv_manager.rows = filter_rows(csv_manager.rows, config.HISTONES_MARKS_DICO, ["1)identifier", "4)assaytype","5)antibody", "6)target", "11)description", 13)other"], "clean_target")
 	#section filtre pour le type d'essai
 	csv_manager.rows = filter_rows(csv_manager.rows, config.ASSAY_DICO, ["4)assaytype"], "clean_assay")
-	#section filtre pour les tags
-	csv_manager.rows = assign_tag_multiple(csv_manager.rows, config.TAG_DICO, config.GENE_scerevisiae, config.CHIP_DICO)
+	#section filtre pour les tags et vides
+	csv_manager.rows = assign_tag_multiple(csv_manager.rows, config.TAG_DICO, config.HISTONES_MARKS_DICO, gene_dict, gene_descrip_dict, config.CHIP_DICO)
 	#section pour dupliquer la liste en un fichier clean et les lignes indésirables dans un autre fichier
 	csv_managers=csv_manager.split(config.split_condition)	
 	

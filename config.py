@@ -4,6 +4,7 @@ import os.path
 import operator
 import re
 from collections import OrderedDict
+import saccer, pombe
 
 PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name)) #row['filename']=os.path.basename(csvfile.name)
 
@@ -18,6 +19,15 @@ def split_condition(row):
 		   "fastq" in row["12)fastq"] and
 	 	   not [False for discard_assay in discard_assays if discard_assay in row["4)assaytype"].lower()])
 
+GENE_DICT = {
+	"saccer": saccer.GENE_DICT,
+	"pombe": pombe.GENE_DICT
+	}
+
+GENE_DESCRIP_DICT = {
+	"saccer": saccer.GENE_DESCRIP_DICT,
+	"pombe": pombe.GENE_DESCRIP_DICT
+	}
 
 FIELDNAMES=OrderedDict([
 	('1)identifier', lambda title, row: re.search('sourcename', title)),
@@ -35,7 +45,7 @@ FIELDNAMES=OrderedDict([
 	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
 	('11)description', lambda title, row: re.search('(comment\[sample_source_name\]|comment\[sample_description\]|\[individual\]|comment\[sample_title\]|comment\[ena_alias\])', title)),
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
-	('file_description', '(array\sdata\sfile|arrayexpress|\[submitted_file_name\])'),
+	('file_description', lambda title, row: re.search('(array\sdata\sfile|arrayexpress|\[submitted_file_name\])', title)),
 	('13)other', lambda title, row: re.search('.*', title))
 	])
 
