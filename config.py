@@ -14,11 +14,18 @@ def split_condition(row):
 	assays=["chip", "mnase", "dnase","other"]
 	#Les types d'essais qui ne nous intéressent pas
 	discard_assays=["rip-seq","rna-seq", "random"]
+	species_dict={
+		"saccer": "Saccharomyces cerevisiae",
+		"pombe": "Schizosaccharomyces pombe"
+		}
+		
 	return ("Saccharomyces cerevisiae" in row["3)organism"] and 
-		   [True for assay in assays if assay in row["4)assaytype"].lower()] and 
+		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
 		   "fastq" in row["12)fastq"] and
-	 	   not [False for discard_assay in discard_assays if discard_assay in row["4)assaytype"].lower()])
+			not "unwanted" in row["clean_assay"])
+	 	   #not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
 
+#dictionnaire dans lequel les clés sont les espèces et les valeurs sont leur dictionnaire de gène
 GENE_DICT = {
 	"saccer": saccer.GENE_DICT,
 	"pombe": pombe.GENE_DICT
@@ -54,7 +61,8 @@ ASSAY_DICO = OrderedDict([
 	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
 	("MNase-Seq",'mnase'),
 	("DNase-Seq",'dnase'),
-	("other",'other')
+	("other",'other'),
+	("unwanted", '.*'),
 	])
 
 #dictionnaire de marques d'histones
