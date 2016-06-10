@@ -9,21 +9,27 @@ import saccer, pombe
 PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name)) #row['filename']=os.path.basename(csvfile.name)
 
 #itère sur chaque ligne et retourne vrai si remplit les 4 conditions.
-def split_condition(row):
+def split_condition_aux(row, species):
 	#les types d'essai qui nous intéressent
-	assays=["chip", "mnase", "dnase","other"]
+	#assays=["chip", "mnase", "dnase","other"]
 	#Les types d'essais qui ne nous intéressent pas
-	discard_assays=["rip-seq","rna-seq", "random"]
+	#discard_assays=["rip-seq","rna-seq", "random"]
+	
+	#dictionnaire des noms d'espèces
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
 		"pombe": "Schizosaccharomyces pombe"
 		}
-		
-	return ("Saccharomyces cerevisiae" in row["3)organism"] and 
+	for row in rows:
+		return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
 		   "fastq" in row["12)fastq"] and
 			not "unwanted" in row["clean_assay"])
 	 	   #not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
+split_condition = {
+	"saccer": lambda row: split_condition_aux(rows, "saccer"),
+	"pombe": lambda row: split_condition_aux(rows, "pombe")
+	}
 
 #dictionnaire dans lequel les clés sont les espèces et les valeurs sont leur dictionnaire de gène
 GENE_DICT = {
