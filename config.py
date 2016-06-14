@@ -24,6 +24,7 @@ def split_condition_aux(row, species):
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
 		   "fastq" in row["12)fastq"] and
+			not "rip-seq" in row["clean_assay"] and
 			not "unwanted" in row["clean_assay"])
 	 	   #not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
 split_condition = {
@@ -67,8 +68,9 @@ ASSAY_DICO = OrderedDict([
 	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
 	("MNase-Seq",'mnase'),
 	("DNase-Seq",'dnase'),
+	("rip-seq", 'rip-seq'),
 	("other",'other'),
-	("unwanted", '.*'),
+	("unwanted", '.*')
 	])
 
 #dictionnaire de marques d'histones
