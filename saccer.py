@@ -1,4 +1,12 @@
+# -*- coding: utf-8 -*-
 from collections import OrderedDict
+
+"""
+modifications:
+	Rpb3 est assigné à RNAPII_RPB3 (consistance avec le dictionnaire de target)
+
+	occurence d'un nom/alias à deux endroits: gène Isw1 et gène Spn1 (contient Isw1)
+"""
 #dictionnaire des genes de s. cerevisiae seulement
 GENE_DICT = OrderedDict ([
 	("AAC1","aac1"),
@@ -3499,7 +3507,7 @@ GENE_DICT = OrderedDict ([
 	("RPB10","rpb10"),
 	("RPB11","rpb11"),
 	("RPB2","rpb2"),
-	("RPB3","rpb3"),
+	("RNAPII_RPB3","rpb3"),
 	("RPB4","rpb4"),
 	("RPB5","rpb5"),
 	("RPB7","rpb7"),
@@ -8633,7 +8641,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("RPB10","(yor210w|dna-directed.rna.polymerase.core.subunit.rpb10|abc10-beta)"),
 	("RPB11","(yol005c|dna-directed.rna.polymerase.ii.core.subunit.rpb11|b12.5)"),
 	("RPB2","(yor151c|dna-directed.rna.polymerase.ii.core.subunit.rpb2|b150|soh2|sit2|rpo22|rpb150)"),
-	("RPB3","(yil021w|dna-directed.rna.polymerase.ii.core.subunit.rpb3|b44)"),
+	("RNAPII_RPB3","(yil021w|dna-directed.rna.polymerase.ii.core.subunit.rpb3|b44)"),
 	("RPB4","(yjl140w|dna-directed.rna.polymerase.ii.subunit.rpb4|b32|ctf15)"),
 	("RPB5","(ybr154c|dna-directed.rna.polymerase.core.subunit.rpb5|abc27)"),
 	("RPB7","(ydr404c|dna-directed.rna.polymerase.ii.subunit.rpb7|b16)"),
