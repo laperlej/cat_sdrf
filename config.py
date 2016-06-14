@@ -20,15 +20,15 @@ def split_condition_aux(row, species):
 		"saccer": "Saccharomyces cerevisiae",
 		"pombe": "Schizosaccharomyces pombe"
 		}
-	for row in rows:
-		return (species_dict[species] in row["3)organism"] and 
+	
+	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
 		   "fastq" in row["12)fastq"] and
 			not "unwanted" in row["clean_assay"])
 	 	   #not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
 split_condition = {
-	"saccer": lambda row: split_condition_aux(rows, "saccer"),
-	"pombe": lambda row: split_condition_aux(rows, "pombe")
+	"saccer": lambda row: split_condition_aux(row, "saccer"),
+	"pombe": lambda row: split_condition_aux(row, "pombe")
 	}
 
 #dictionnaire dans lequel les clés sont les espèces et les valeurs sont leur dictionnaire de gène
@@ -73,6 +73,8 @@ ASSAY_DICO = OrderedDict([
 
 #dictionnaire de marques d'histones
 HISTONES_MARKS_DICO = OrderedDict([
+	('RNAPII_ser5P', 's5\sphosphorylated\srna\spolii'),
+	("DNAPIII",'(pol3|pol\s?iii)'),
 	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
 	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
 	("DNAP31",'(pol31|pol\sδ)'),
@@ -80,38 +82,59 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sK4)'),
 	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sK4)'),
 	('H3K14ac', '(h3k14ac)'),
+	('H3K14', '(h3k14)'),
+	('H3K36me3','(h3k36me3)'),
 	('H3K36me','(h3k36me)'),
+	('H3K36','(h3k36)'),
 	('H3K56ac','(h3k56ac)'),
+	('H3K56','(h3k56)'),
 	('H3K9ac','(h3k9ac)'),
+	('H3K9me3','(h3k9me3|h3.?k9.?me3)'),
+	('H3K9me2','(h3k9me2|h3.?k9.?me2)'),
+	('H3K9','h3k9'),
+	('H3K4me3', '(h3.?k4.?me3)'),
 	('H3K4','h3k4'),
 	('H3', 'h3'),
 	('H4K16ac','(h4k16ac)'),
+	('H4K16','(h4k16)'),
 	('H4K12ac', 'h4k12ac'),
+	('H4K12', 'h4k12'),
 	('H4K44ac','h4k44ac'),
+	('H4K44','h4k44'),
 	('H4K5ac','(h4k5ac)'),
+	('H4K5','(h4k5)'),
 	('H4','h4'),
 	('H2A.Z','(htz1|h2a\.?z)'),
-	('H2A', '(h2a|ab13923)'),
-	('H2B', 'htb1'),
-	("DNAPIII",'(pol3|pol\s?iii)'),
-	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
-	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
-	("DNAP31",'(pol31|pol\sδ)')
+	('H2A', '(h2a)'),
+	('H2B', 'htb1')
 	])
 #dictionnaire des cibles des anticorps
 TARGET_DICO=OrderedDict([
 	('input','(input|whole\scell\sextract)'),
+	('Negative control', 'negative\scontrol'),
 	('Mock', 'mock'),
 	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sk4|ab8895)'),
 	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sk4)'),
-	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sk4|ab8580|39159)'),
+	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sk4|ab8580|39159|h3.?k4.?me3|ab8678)'),
 	('H3K14ac', '(h3k14ac|07-353)'),
-	('H3K36me','(h3k36me|ab9050)'),
+	('H3K14', '(h3k14)'),
+	('H3K36me3','(h3k36me3|ab9050)'),
+	('H3K36me','(h3k36me)'),
+	('H3K36','(h3k36)'),
 	('H3K56ac','(h3k56ac|07-677)'),
+	('H3K56','(h3k56)'),
 	('H3K9ac','(h3k9ac|06-942)'),
+	('H3K9me3','(h3k9me3|h3.?k9.?me3)'),
+	('H3K9me2','(h3k9me2|h3.?k9.?me2)'),
+	('H3K9','h3k9'),
 	('H4K16ac','(h4k16ac|07-329)'),
+	('H4K16','(h4k16)'),
+	('H4K12ac', 'h4k12ac'),
+	('H4K12', 'h4k12'),
 	('H4K44ac','h4k44ac'),
+	('H4K44','h4k44'),
 	('H4K5ac','(h4k5ac|07-327)'),
+	('H4K5','(h4k5)'),
 	('H3K4','h3k4'),
 	('H3','(h3|ab12079|05-928|07-690|ab1791)'),
 	('H4','(h4|ab7311)'),
@@ -122,47 +145,50 @@ TARGET_DICO=OrderedDict([
 	('Q105me1','q105me1'),
 	('DNMT3b','(dnmt3b|ab2851)'),
 	('RNAPII_tyr1P','(tyr1|61383|mabe350)'),
-	('RNAPII_ser2P','(ser2p|ab24758|ab193468|ab5095)'),
-	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|ab193467)'),
+	('RNAPII_ser2P','(ser2p|ab24758|ab193468|ab5095|s5\sphosphorylated\srna\spolii)'),
+	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|ab193467|ab5131)'),
 	('RNAPII_ser7P','(ser7p|ab126537)'),
-	('RNAPII_CTD','(ctd|8wg16|MMS-126R-200|ab817|mms-126r-200)'),
+	('RNAPII_CTD','(ctd|8wg16|ab817|mms-126r-200)'),
 	('RNAPII_RPB3','(wp012|1Y26|ab202893|rpb3)'),
-	('PCNA','pcna'),
+	('POL30','pcna'),
 	('RAD51','rad51'),
 	('ORC','orc'),
 	('TBP','tbp'),
+	('TAF7','ptr6'),
 	('Mcm2-7','(mcm2-7|um185)'),
-	('RNAPII','(rnapii|pol.*2?i?i?|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
+	('RNAPII','(rnapii|pol.?2|pol.?i{2}|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
 	('tag_myc','(myc|05-419)'),
 	('tag_HA','(^ha|ha$|anti.ha|ha11|12ca5|ab16918)'),
-	('tag_PK','(v5|sv5-pk1|pk)'),
+	('tag_PK','(v5|sv5-pk1|pk|mca1360)'),
 	('tag_flag','flag'),
 	('tag_T7', 't7'),
+	('tag_tap','(tap|igg\ssepharose\s6\sfast\sflow)'),
 	('Mock_IgG','igg'),
 	("RNA/DNA hybrid",'rna/dna\shybrid'),
-	('none','(none|n/a|not.?specified|no.?antibody)'),
+	('none','(none|n/a|no.?antibody)'),
 	('empty', '.*')
 	])
 
 #dictionnaire des tag et leur regex pour la cible taggée
 TAG_DICO=OrderedDict([
-	 ('tag_HA','((\w+)::ha|(\w+)-ha|ha-(\w+)|ha::(\w+)|(\w+)::\S*ha|(\w+)-\S*ha|ha-(\w+)|ha\S*::(\w+))'),
-	 ('tag_flag','((\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+)-\S*flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
-	 ('tag_myc','((\w+)::myc|(\w+)-myc|myc-(\w+)|myc::(\w+)|(\w+)::.*myc|(\w+)-\S*myc|myc\S*-(\w+)|myc\S*::(\w+)|(\w+)\smyc|(\w+)myc)'),
+	 ('tag_HA','((\w+)\.ha|(\w+)::ha|(\w+)-ha|ha-(\w+)|ha::(\w+)|(\w+)::\S*ha|(\w+)-\S*ha|ha-(\w+)|ha\S*::(\w+))'),
+	 ('tag_flag','((\w+)\.flag|(\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+)-\S*flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
+	 ('tag_myc','((\w+)\.myc|(\w+)::myc|(\w+)-myc|myc-(\w+)|myc::(\w+)|(\w+)::\w*myc|(\w+)-\S*myc|myc\S*-(\w+)|myc\S*::(\w+)|(\w+)\smyc|(\w+)myc)'),
 	 ('tag_PK','((\w+)::\S*pk|pk::(\w+)|(\w+)\s?pk|(\w{2,})-pk|(\w+)-\S*pk|pk\S*-(\w+)|v5-(\w+))'),
+	 ('tag_tap','((\w+)\.tap|(\w+)::tap|(\w+)-tap|((\w+)-\w{2,}-tap|(\w+)-tap)|tap::(\w+)|(\w+)::\w*tap|tap\S*-(\w+)|tap\S*::(\w+)|(\w+)\stap|(\w+)tap)'),
 	 ('tag_T7','((\w+)::\S*t7|(\w+)-\S*t7|t7\S*-(\w+)|t7\S*::(\w+))')])
 
 #dictionnaire utilisant le mot-clé chip pour trouver la protéine-cible de l'essai
 CHIP_DICO = OrderedDict ([
 	('protein chip','((\w{2,})\sprotein\schip|(\w+\s\w+)\sprotein\schip)'),
-	('BrdU IP','((\w{2,})\sbrdu\sip|(.+)brdu\sip)'),
+	('BrdU IP','((\w{2,})\sbrdu\sip|(\w+)\s\w*\sbrdu\sip)'),
 	('chip','(\w{2,})\s\s?chip'),
 	('_chip','(\w{2,})_chip'),
 	('chromatin immunoprecipitation', '(\w{2,})\s(?:wildtype|\w+)\snative\schromatin\simmunoprecipi?t?ation'),
 	('chromatin ip against', '(chromatin\sip\sagainst\s(\w{2,})|chromatin\sip\sagainst\s(\w+\s\w+))'),
-	('IP','(\w{2,})\s?ip'),
-	('something IP','(\w{2,})\s.*\sip'),#vague
-	('something chip','(\w{2,})\s.*chip') #peut être problématique car vague et parfois 2 options
+	('IP','(\w{2,}_(\w+)_ip|(\w{2,})\s?ip|(\w+)_ip)'),
+	('something IP','((\w{2,})_ip|(\w{2,})\s.*\sip)'),#vague
+	('something chip','(\w{2,})\s\w*\schip') #peut être problématique car vague et parfois 2 options
 	])
 	 
 
