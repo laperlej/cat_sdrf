@@ -78,7 +78,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	#Assigne 'N/A' à la colonne clean_target si l'essai est mnase, dnase ou FAIRE-Seq
 	if "MNase" in row["clean_assay"] or "DNase" in row["clean_assay"]:
 		return "N/A", "assay type (1)"
-	elif "FAIRE" in merge_cols(row,["13)other", "11)description"]) or "FAIRE-seq" in merge_cols(row,["13)other", "11)description"]):
+	elif "faire" in merge_cols(row,["13)other", "11)description"]):
 		return "N/A", "assay type (1)"	
 	#Assigne 'input' à la colonne clean_target si le mot-clé input est trouvé dans la ligne
 	elif "input" in merge_cols(row, ["4)assaytype", "11)description","13)other"]).lower():
