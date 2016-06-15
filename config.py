@@ -4,7 +4,7 @@ import os.path
 import operator
 import re
 from collections import OrderedDict
-import saccer, pombe
+import saccer, pombe, celegans
 
 PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name)) #row['filename']=os.path.basename(csvfile.name)
 
@@ -18,7 +18,8 @@ def split_condition_aux(row, species):
 	#dictionnaire des noms d'espèces
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
-		"pombe": "Schizosaccharomyces pombe"
+		"pombe": "Schizosaccharomyces pombe",
+		"celegans":"Caenorhabditis elegans"
 		}
 	
 	return (species_dict[species] in row["3)organism"] and 
@@ -35,12 +36,14 @@ split_condition = {
 #dictionnaire dans lequel les clés sont les espèces et les valeurs sont leur dictionnaire de gène
 GENE_DICT = {
 	"saccer": saccer.GENE_DICT,
-	"pombe": pombe.GENE_DICT
+	"pombe": pombe.GENE_DICT,
+	"celegans": celegans.GENE_DICT
 	}
 
 GENE_DESCRIP_DICT = {
 	"saccer": saccer.GENE_DESCRIP_DICT,
-	"pombe": pombe.GENE_DESCRIP_DICT
+	"pombe": pombe.GENE_DESCRIP_DICT,
+	"celegans": celegans.GENE_DESCRIP_DICT
 	}
 
 FIELDNAMES=OrderedDict([
