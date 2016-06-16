@@ -3,7 +3,10 @@ from collections import OrderedDict
 
 """
 modifications:
-	
+	gei-11 est synonyme de SNPC-4 (et F32H2.1); doit placer SNPC-4 avant gei-1
+	Htz1 est renommé H2A.Z (consistance avec target_dico dans config)
+	Rep-1 ne prendra plus rep1 (dans le regex); ambiguité avec rep(etition)1
+	EAP-1 est un synonyme de TAG-260 (EAP-1)
 """
 #dictionnaire de gènes pour c. elegans
 GENE_DICT = OrderedDict ([
@@ -19628,7 +19631,7 @@ GENE_DICT = OrderedDict ([
 	("HTP-1","(htp-1|htp1)"),
 	("HTP-2","(htp-2|htp2)"),
 	("HTP-3","(htp-3|htp3)"),
-	("HTZ-1","(htz-1|htz1)"),
+	("H2A.Z","(htz-1|htz1)"),
 	("HUM-10","(hum-10|hum10)"),
 	("HUM-1","(hum-1|hum1)"),
 	("HUM-2","(hum-2|hum2)"),
@@ -23599,7 +23602,7 @@ GENE_DICT = OrderedDict ([
 	("REF-2","(ref-2|ref2)"),
 	("REI-1","(rei-1|rei1)"),
 	("REI-2","(rei-2|rei2)"),
-	("REP-1","(rep-1|rep1)"),
+	("REP-1","(rep-1)"),
 	("REPO-1","(repo-1|repo1)"),
 	("REPS-1","(reps-1|reps1)"),
 	("RER-1","(rer-1|rer1)"),
@@ -24569,7 +24572,6 @@ GENE_DICT = OrderedDict ([
 	("SNPC-3.2","(snpc-3.2|snpc3.2)"),
 	("SNPC-3.3","(snpc-3.3|snpc3.3)"),
 	("SNPC-3.4","(snpc-3.4|snpc3.4)"),
-	("SNPC-4","(snpc-4|snpc4)"),
 	("SNPN-1","(snpn-1|snpn1)"),
 	("SNR-1","(snr-1|snr1)"),
 	("SNR-2","(snr-2|snr2)"),
@@ -57015,6 +57017,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("GCY-9","(gcy9|wbgene00001536|zk455\.2)"),
 	("GDH-1","(gdh1|wbgene00014095|zk829\.4)"),
 	("GDI-1","(gdi1|wbgene00001558|y57g11c\.10)"),
+	("SNPC-4","(snpc-4|snpc4|gei-11|gei11)"),
 	("GEI-13","(gei13|wbgene00001570|f58a4\.11)"),
 	("GEI-14","(gei14|wbgene00001571|k01c8\.5)"),
 	("GEI-15","(gei15|wbgene00001572|m03a8\.4)"),
@@ -58055,7 +58058,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("HTP-1","(htp1|wbgene00002032|f41h10\.10)"),
 	("HTP-2","(htp2|wbgene00002033|y73b6bl\.2)"),
 	("HTP-3","(htp3|wbgene00002034|f57c9\.5)"),
-	("HTZ-1","(htz1|wbgene00019947|r08c7\.3)"),
+	("H2A.Z","(htz1|wbgene00019947|r08c7\.3)"),
 	("HUM-10","(hum10|wbgene00018377|f43c9\.3)"),
 	("HUM-1","(hum1|wbgene00002035|f29d10\.4)"),
 	("HUM-2","(hum2|wbgene00002036|f36d4\.3)"),
@@ -64468,7 +64471,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("REF-2","(ref2|wbgene00004335|c47c12\.3)"),
 	("REI-1","(rei1|wbgene00007270|c03c10\.4)"),
 	("REI-2","(rei2|wbgene00019365|k03e6\.7)"),
-	("REP-1","(rep1|wbgene00022051|y67d2\.1)"),
+	("REP-1","(wbgene00022051|y67d2\.1)"),
 	("REPO-1","(repo1|wbgene00008683|f11a10\.2)"),
 	("REPS-1","(reps1|wbgene00012696|y39b6a\.38)"),
 	("RER-1","(rer1|wbgene00009783|f46c5\.8)"),
@@ -65438,7 +65441,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("SNPC-3.2","(snpc3\.2|wbgene00021667|y48g1bm\.1)"),
 	("SNPC-3.3","(snpc3\.3|wbgene00021662|y48g1bl\.1)"),
 	("SNPC-3.4","(snpc3\.4|wbgene00011367|t02c12\.2)"),
-	("SNPC-4","(snpc4|wbgene00001568|f32h2\.1)"),
+	("SNPC-4","(snpc4|wbgene00001568|f32h2\.1|gei-11)"),
 	("SNPN-1","(snpn1|wbgene00015327|c02b10\.2)"),
 	("SNR-1","(snr1|wbgene00004914|y116a8c\.42)"),
 	("SNR-2","(snr2|wbgene00004915|w08e3\.1)"),
@@ -69755,7 +69758,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("TAG-244","(tag244|wbgene00044073|c34h4\.3)"),
 	("TAG-250","(tag250|wbgene00016203|c29e4\.5)"),
 	("TAG-257","(tag257|wbgene00018516|f46g11\.3)"),
-	("TAG-260","(tag260|wbgene00010867|m04g12\.1)"),
+	("TAG-260","(eap-1|eap1|tag260|wbgene00010867|m04g12\.1)"),
 	("TAG-261","(tag261|wbgene00020300|t07a9\.13)"),
 	("TAG-262","(tag262|wbgene00021901|y54h5a\.3)"),
 	("TAG-266","(tag266|wbgene00044319|w06e11\.5)"),
