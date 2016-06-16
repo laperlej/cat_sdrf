@@ -42,7 +42,7 @@ def filter_row(row, target_dico, input_cols, output_col):
 	return row
 
 
-def assign_tag_multiple(rows, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico):
+def assign_tag_multiple(rows, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico, antibody_dico):
 	"""
 	input: 
 		tag_dico: dictionnaire de regex pour matcher la cible des tag (..... - tag)
@@ -50,6 +50,7 @@ def assign_tag_multiple(rows, tag_dico, histones_dico, gene_dico, gene_descrip_d
 		gene_dico: dictionnaire de gènes avec regex
 		gene_descrip_dico: dictionnaire de noms standards et des alias pour les gènes (non redondant)
 		chip_dico: dictionaire de regex pour matcher la cible des chip (.... chip)
+		antibody_dico: dictionnaire de numéros d'anticorps
 	"""
 	#fonction qui permet d'utiliser tous les cpu disponibles (accélère)
 	import multiprocessing
@@ -57,7 +58,7 @@ def assign_tag_multiple(rows, tag_dico, histones_dico, gene_dico, gene_descrip_d
 	num_cpu = multiprocessing.cpu_count()
 	try:	
 		p = multiprocessing.Pool(num_cpu)
-		arguments = ((row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico) for row in rows)
+		arguments = ((row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico, antibody_dico) for row in rows)
 		results = p.map(assign_tag_parallel, arguments)
 		for row, result in zip(rows, results):		
 			row["clean_target"], row["reliability"] = result
@@ -74,7 +75,7 @@ def assign_tag_parallel(data):
 
 #section qui trie entre les input, mock, tag et types d'essai
 #appelle compare_tag, compare_chip et compare_directly (différents niveaux de comparaisons) 
-def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico):
+def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico, antibody_dico):
 	#Assigne 'N/A' à la colonne clean_target si l'essai est mnase, dnase ou FAIRE-Seq
 	if "MNase" in row["clean_assay"] or "DNase" in row["clean_assay"]:
 		return "N/A", "assay type (1)"
@@ -99,6 +100,9 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 			var_search_target = search_target(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico)
 			if var_search_target is not None:
 				return var_search_target
+			var_search_antibody = search_antibody(row, antibody_dico)
+			if var_search_antibody is not None:
+				return var_search_antibody	
 			var_compare_tag2 = 	compare_tag2(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico)
 			if var_compare_tag2 is not None:
 				return var_compare_tag2
@@ -126,6 +130,9 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 			var_search_target = search_target(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico)
 			if var_search_target is not None:
 				return var_search_target
+			var_search_antibody = search_antibody(row, antibody_dico)
+			if var_search_antibody is not None:
+				return var_search_antibody	
 			var_compare_tag1 = 	compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico)
 			if var_compare_tag1 is not None:
 				return var_compare_tag1
@@ -148,16 +155,22 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 def search_target(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico):
 	#cherche la cible dans les col 5-6 en comparant directement dans le dict de gènes
 	for gene in gene_dico.keys():
-		if re.search(gene_dico[gene],merge_cols(row,["5)antibody", "6)target"]).lower()):
+		if re.search(gene_dico[gene],merge_cols(row,["5)antibody", "6)target"])):
 			return gene, "target (2)"
-	return None			
+	return None	
+
+def search_antibody(row, antibody_dico):
+	#cherche pour des numéros d'anticorps dans la col 11)description
+	for antibody in antibody_dico.keys():
+		if re.search(antibody_dico[antibody],merge_cols(row,["11)description"])):
+			return antibody, "antibody no (2)"		
 
 def compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico): 
 	#pour "tag" dans clean_target
 	#cherche la cible d'un tag dans les colonnes 4-9 (plus spécifique normalement)
 	tagged = row["clean_target"]
 	#compare le regex (valeur) dont le tag de clean_target est la clé à ce qu'il y a dans les colonnes 4-6-11 (contiennent des occurences de cible-tag)
-	match = re.search(tag_dico[tagged],merge_cols(row,["4)assaytype", "11)description"]).lower())
+	match = re.search(tag_dico[tagged],merge_cols(row,["4)assaytype", "11)description"]))
 	if match:
 		#compare match du tag avec histones_dico
 		for hist in histones_dico.keys():
