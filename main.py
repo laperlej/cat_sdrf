@@ -36,8 +36,10 @@ def main():
 	csv_manager.rows = filter_rows(csv_manager.rows, config.TARGET_DICO, ["4)assaytype","5)antibody", "6)target"], "clean_target")
 	#section filtre pour le type d'essai. Prend en argument le dictionnaire utilisé, les colonnes dans lesquelles on cherche, et la colone qu'on veux ensuite modifier
 	csv_manager.rows = filter_rows(csv_manager.rows, config.ASSAY_DICO, ["4)assaytype"], "clean_assay")
+	#section filtre pour le type de cellules utilisées pour le ChIP-Seq. Prend en argument le dict utilisé, les col dans lesquelles on cherche, et la colone qu'on veux ensuite modifier
+	csv_manager.rows = filter_rows(csv_manager.rows, config.CELL_TYPE, ["cell_type"], "clean_celltype")
 	#section filtre pour les tags et vides. Prend en argument les dictionnaires utilisés
-	csv_manager.rows = assign_tag_multiple(csv_manager.rows, config.TAG_DICO, config.HISTONES_MARKS_DICO, gene_dict, gene_descrip_dict, config.CHIP_DICO)
+	csv_manager.rows = assign_tag_multiple(csv_manager.rows, config.TAG_DICO, config.HISTONES_MARKS_DICO, gene_dict, gene_descrip_dict, config.CHIP_DICO, config.ANTIBODY_DICO)
 	#section pour dupliquer la liste en un fichier clean et les lignes indésirables dans un autre fichier; prend en argument le dict d'espèces pour savoir laquelle utiliser
 	csv_managers=csv_manager.split(config.split_condition[species])	
 	
