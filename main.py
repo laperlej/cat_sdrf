@@ -30,7 +30,7 @@ def main():
 	#section read_csv
 	csv_manager = CsvManager(fieldnames.keys(), fieldnames)
 	for file_name in file_names:
-		csv_manager.read_csv(open(file_name, 'r'), preprocess=config.PREPROCESS)
+		csv_manager.read_csv(open(file_name, 'r'), preprocess=config.PREPROCESS, preprocess2=config.PREPROCESS2)
 
 	#section filtre pour anticorps. Prend en argument le dictionnaire utilisé, les colonnes dans lesquelles on cherche, et la colone qu'on veux ensuite modifier
 	csv_manager.rows = filter_rows(csv_manager.rows, config.TARGET_DICO, ["4)assaytype","5)antibody", "6)target"], "clean_target")
