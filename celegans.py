@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 """
 modifications:
-	gei-11 est synonyme de SNPC-4 (et F32H2.1); doit placer SNPC-4 avant gei-1
+	gei-11 est synonyme de SNPC-4 (et F32H2.1); doit placer SNPC-4 avant gei-1 dans les 2 dico
 	Htz1 est renommé H2A.Z (consistance avec target_dico dans config)
 	Rep-1 ne prendra plus rep1 (dans le regex); ambiguité avec rep(etition)1
 	EAP-1 est un synonyme de TAG-260 (EAP-1)
@@ -18922,6 +18922,7 @@ GENE_DICT = OrderedDict ([
 	("GCY-9","(gcy-9|gcy9)"),
 	("GDH-1","(gdh-1|gdh1)"),
 	("GDI-1","(gdi-1|gdi1)"),
+	("SNPC-4","(snpc-4|snpc4|gei-11|gei11)"),
 	("GEI-13","(gei-13|gei13)"),
 	("GEI-14","(gei-14|gei14)"),
 	("GEI-15","(gei-15|gei15)"),
@@ -26687,7 +26688,7 @@ GENE_DICT = OrderedDict ([
 	("TAG-244","(tag-244|tag244)"),
 	("TAG-250","(tag-250|tag250)"),
 	("TAG-257","(tag-257|tag257)"),
-	("TAG-260","(tag-260|tag260)"),
+	("TAG-260","(tag-260|eap-1|tag260)"),
 	("TAG-261","(tag-261|tag261)"),
 	("TAG-262","(tag-262|tag262)"),
 	("TAG-266","(tag-266|tag266)"),
@@ -57017,7 +57018,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("GCY-9","(gcy9|wbgene00001536|zk455\.2)"),
 	("GDH-1","(gdh1|wbgene00014095|zk829\.4)"),
 	("GDI-1","(gdi1|wbgene00001558|y57g11c\.10)"),
-	("SNPC-4","(snpc-4|snpc4|gei-11|gei11)"),
+	("SNPC-4","(snpc4|wbgene00001568|f32h2\.1|gei-11|gei11)"),
 	("GEI-13","(gei13|wbgene00001570|f58a4\.11)"),
 	("GEI-14","(gei14|wbgene00001571|k01c8\.5)"),
 	("GEI-15","(gei15|wbgene00001572|m03a8\.4)"),
@@ -65441,7 +65442,6 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("SNPC-3.2","(snpc3\.2|wbgene00021667|y48g1bm\.1)"),
 	("SNPC-3.3","(snpc3\.3|wbgene00021662|y48g1bl\.1)"),
 	("SNPC-3.4","(snpc3\.4|wbgene00011367|t02c12\.2)"),
-	("SNPC-4","(snpc4|wbgene00001568|f32h2\.1|gei-11)"),
 	("SNPN-1","(snpn1|wbgene00015327|c02b10\.2)"),
 	("SNR-1","(snr1|wbgene00004914|y116a8c\.42)"),
 	("SNR-2","(snr2|wbgene00004915|w08e3\.1)"),
@@ -69758,7 +69758,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("TAG-244","(tag244|wbgene00044073|c34h4\.3)"),
 	("TAG-250","(tag250|wbgene00016203|c29e4\.5)"),
 	("TAG-257","(tag257|wbgene00018516|f46g11\.3)"),
-	("TAG-260","(eap-1|eap1|tag260|wbgene00010867|m04g12\.1)"),
+	("TAG-260","(eap-1|tag260|wbgene00010867|m04g12\.1)"),
 	("TAG-261","(tag261|wbgene00020300|t07a9\.13)"),
 	("TAG-262","(tag262|wbgene00021901|y54h5a\.3)"),
 	("TAG-266","(tag266|wbgene00044319|w06e11\.5)"),
