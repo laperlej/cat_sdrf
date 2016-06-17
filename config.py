@@ -6,7 +6,22 @@ import re
 from collections import OrderedDict
 import saccer, pombe, celegans
 
-PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name)) #row['filename']=os.path.basename(csvfile.name)
+# Assigne la valeur de row à l'index 'filename' comme étant 'csvfile.name'
+PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
+
+def idf_extract(csvfile):
+	if "seq.sdrf.txt" in csvfile.name:
+		idf_file_path = csvfile.name.replace("seq.sdrf.txt", "idf.txt")
+	else:
+		idf_file_path = csvfile.name.replace("sdrf.txt", "idf.txt")
+	idf_file = open(idf_file_path)
+	for line in idf_file.readlines():
+		if "Experiment Description" in line:
+			expdescription = line.replace("Experiment Description	", "")
+			return expdescription
+
+PREPROCESS2 = lambda csvfile, row: operator.setitem(row, "expdescription", idf_extract(csvfile))
+ 
 
 #itère sur chaque ligne et retourne vrai si remplit les 4 conditions.
 def split_condition_aux(row, species):
@@ -67,6 +82,7 @@ FIELDNAMES=OrderedDict([
 	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
 	('11)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\])', title)),
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
+	('Experiment description', lambda title, row: re.search('expdescription', title)),
 	('file_description', lambda title, row: re.search('(array\sdata\sfile|arrayexpress|\[submitted_file_name\])', title)),
 	('13)other', lambda title, row: re.search('.*', title))
 	])
@@ -213,10 +229,10 @@ ANTIBODY_DICO = OrderedDict ([
 
 #dictionnaire des tag et leur regex pour la cible taggée
 TAG_DICO=OrderedDict([
-	 ('tag_HA','((\w+)\.ha|(\w+)::ha|(\w+)-ha|ha-(\w+)|ha::(\w+)|(\w+)::\S*ha|(\w+-\d+)_ha|(\w+)-\S*ha|ha-(\w+)|ha\S*::(\w+))'),
-	 ('tag_GFP','((\w+)\.gfp|(\w+-\d+)::egfp|(\w+)::gfp|(\w+)-gfp|gfp-(\w+)|gfp::(\w+)|(\w+)::\S*gfp|(\w+-\d+)_gfp|(\w+\.\d+)_gfp|(\w+)-\S*gfp|gfp\S*::(\w+))'),
-	 ('tag_flag','((\w+)\.flag|(\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+-\d+)_flag|(\w+)-\S*flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
-	 ('tag_myc','((\w+)\.myc|(\w+)::myc|(\w+)-myc|myc-(\w+)|myc::(\w+)|(\w+)::\w*myc|(\w+-\d+)_myc|(\w+)-\S*myc|myc\S*-(\w+)|myc\S*::(\w+)|(\w+)\smyc|(\w+)myc)'),
+	 ('tag_HA','((\w+)\.ha|(\w+)::ha|(\w+)-ha|ha::(\w+)|(\w+)::\S*ha|(\w+-\d+)_ha|(\w+)-\S*ha|ha-(\w+)|ha\S*::(\w+))'),
+	 ('tag_GFP','((\w+)\.gfp|(?:anti)(\w+)-gfp|gfp-(\w+)|gfp::(?:3xflag)(\w+)|(\w+-?\d+)_gfp|(\w+\.\d+)_gfp|(?:anti)(\w+)-\S*gfp|gfp\S*::(?:3xflag)(\w+)|gfp-tagged\s(\w+-?\d+)|(\w+.\d+)::?ty1\se?gfp|(\w+.?\d*)::\S*gfp)'),
+	 ('tag_flag','((\w+)\.flag|(\w+)::flag|(\w+)::\S*flag|(?:anti)(\w+)-flag|(\w+-\d+)_flag|(?:anti)(\w+)-\S*flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
+	 ('tag_myc','((\w+)\.myc|(\w+)::myc|(?:anti)(\w+)-myc|myc-(\w+)|myc::(\w+)|(\w+)::\w*myc|(\w+-\d+)_myc|(?:anti)(\w+)-\S*myc|myc\S*-(\w+)|myc\S*::(\w+)|(\w+)\smyc|(\w+)myc)'),
 	 ('tag_PK','((\w+)::\S*pk|pk::(\w+)|(\w+)\s?pk|(\w{2,})-pk|(\w+)-\S*pk|pk\S*-(\w+)|v5-(\w+))'),
 	 ('tag_tap','((\w+)\.tap|(\w+)::tap|(\w+)-tap|(\w+)-\w{2,}-tap|(\w+-\d+)_tap|tap::(\w+)|(\w+)::\w*tap|tap\S*-(\w+)|tap\S*::(\w+)|(\w+)\stap|(\w+)tap)'),
 	 ('tag_T7','((\w+)::\S*t7|(\w+)-\S*t7|t7\S*-(\w+)|t7\S*::(\w+))') ])
@@ -236,6 +252,7 @@ CHIP_DICO = OrderedDict ([
 	 
 #dictionnaire des les types cellulaires utilisés pour le ChIP-Seq
 CELL_TYPE = OrderedDict ([
+	('L1 arrest', 'l1\sarrest'),
 	('L1', '(\s(l1)|\|(l1)|^l1|_(l1))'),
 	('L2-L3', 'l2-l3'),
 	('L2', '(\s(l2)|\|(l2)|^l2|_(l2))'),
