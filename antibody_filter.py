@@ -153,9 +153,9 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 
 
 def search_target(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico):
-	#cherche la cible dans les col 5-6 en comparant directement dans le dict de gènes
+	#cherche la cible dans les col 4-5-6 en comparant directement dans le dict de gènes
 	for gene in gene_dico.keys():
-		if re.search(gene_dico[gene],merge_cols(row,["5)antibody", "6)target"])):
+		if re.search(gene_dico[gene],merge_cols(row,["4)assaytype", "5)antibody", "6)target"])):
 			return gene, "target (2)"
 	return None	
 
@@ -215,7 +215,7 @@ def compare_tag_larger1(row, tag_dico, histones_dico, gene_dico, gene_descrip_di
 	tagged = row["clean_target"]
 	#compare le regex du tag de clean_target à ce qu'il y a dans les colonnes 8-9
 	#la colonne 8)strain et 9)genotype amènent parfois des faux positifs (beaucoup de gènes)
-	match = re.search(tag_dico[tagged],merge_cols(row,["8)strain", "9)genotype"]).lower())
+	match = re.search(tag_dico[tagged],merge_cols(row,["cell_type", "8)strain", "9)genotype"]).lower())
 	if match:
 		#compare match du tag avec histones_dico
 		for hist in histones_dico.keys():
@@ -238,7 +238,7 @@ def compare_tag2(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 	#cherche pour des tags qui n'ont pas été indiqués dans les colonnes 5-6; recherche assez spécifique
 	for tag in tag_dico:
 		#compare le regex (valeur) dont le tag de clean_target est la clé à ce qu'il y a dans les colonnes 4-6-11
-		match = re.search(tag_dico[tag],merge_cols(row,["11)description"]).lower())
+		match = re.search(tag_dico[tag],merge_cols(row,["cell_type", "11)description"]).lower())
 		if match:
 			#compare match du tag avec histones_dico
 			for hist in histones_dico.keys():
@@ -259,7 +259,7 @@ def compare_tag_larger2(row, tag_dico, histones_dico, gene_dico, gene_descrip_di
 	#cherche pour des tags qui n'ont pas été indiqués dans les colonnes 5-6; recherche plus large
 	for tag in tag_dico:
 		#compare le regex (valeur) dont le tag de clean_target est la clé à ce qu'il y a dans les colonnes 8-9
-		match = re.search(tag_dico[tag],merge_cols(row,["8)strain", "9)genotype"]).lower())
+		match = re.search(tag_dico[tag],merge_cols(row,["cell_type", "8)strain", "9)genotype"]).lower())
 		if match:
 			#compare match du tag avec histones_dico
 			for hist in histones_dico.keys():
@@ -279,7 +279,7 @@ def compare_tag_larger2(row, tag_dico, histones_dico, gene_dico, gene_descrip_di
 def compare_chip2(row, histones_dico, gene_dico, gene_descrip_dico, chip_dico): 
 	#itère sur les regex du chip_dico (pour trouver la cible des ChIP)
 	for regex in chip_dico.keys():
-		match = re.search(chip_dico[regex], merge_cols(row,["1)identifier", "8)strain", "9)genotype"]).lower())
+		match = re.search(chip_dico[regex], merge_cols(row,["1)identifier", "cell_type", "8)strain", "9)genotype"]).lower())
 		if match:
 			for hist in histones_dico.keys():
 				#compare match du regex chip avec le dico d'histones
@@ -318,13 +318,13 @@ def compare_directly(row, histones_dico, gene_dico, gene_descrip_dico):
 	#Deuxième passe, plus large
 	#itère sur le dictionnaire de gènes et compare sur les lignes les moins spécifiques
 	for gene in gene_dico.keys():
-		if re.search(gene_dico[gene], row["8)strain"].lower()):
+		if re.search(gene_dico[gene], merge_cols(row,["cell_type", "8)strain"]).lower()):
 			return gene, "gene (5)"
 		elif re.search(gene_dico[gene], row["9)genotype"].lower()):
 			return gene, "gene (5)"		
 	#itère sur le dictionnaire d'alias et compare sur les lignes les moins spécifiques
 	for gene in gene_descrip_dico.keys():
-		if re.search(gene_descrip_dico[gene], row["8)strain"].lower()):
+		if re.search(gene_descrip_dico[gene], merge_cols(row,["cell_type", "8)strain"]).lower()):
 			return gene, "gene descr (5)"
 		elif re.search(gene_descrip_dico[gene], row["9)genotype"].lower()):
 			return gene, "gene descr (5)"
