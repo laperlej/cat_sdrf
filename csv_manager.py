@@ -19,10 +19,11 @@ class CsvManager(object):
 		self.sep = sep
 		self.rows = []
 
-	def read_csv(self, csvfile, preprocess=lambda csvfile, row: None):
+	def read_csv(self, csvfile, preprocess=lambda csvfile, row: None, preprocess2=lambda csvfile, row: None):
 		reader = csv.DictReader(csvfile, dialect='excel-tab')
 		for row in reader:
 			preprocess(csvfile, row)
+			preprocess2(csvfile, row)
 			self.rows.append(self.translate_row(row))
 
 	def empty_row(self):
