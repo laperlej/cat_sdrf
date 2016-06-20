@@ -4,8 +4,11 @@ from collections import OrderedDict
 """
 modifications:
 	Rpb3 est assigné à RNAPII_RPB3 (consistance avec le dictionnaire de target)
-
-	occurence d'un nom/alias à deux endroits: gène Isw1 et gène Spn1 (contient Isw1)
+	Ndc10 est un synonyme de CBF2 (doit l'ajouter au dict de gène, sinon reconnu par Ndc1 avant de passer au 2e dict)
+	Htz1 est renommé H2A.Z (consistance avec target_dico dans config)
+	MCA1 :(^mca1|mca1\s) (adaptation du regex, sinon reconnait # de catalogue d'anticorps)
+	Med17 et med 15 sont reconnus par Med1 (portent d'autres noms, dont besoin d'adapter le regex de med 1:(med1$|med1\s) )
+	TBP est un synonyme de spt15 (ajouté, sinon devrait utiliser aussi le dict d'alias dans la colonne target)
 """
 #dictionnaire des genes de s. cerevisiae seulement
 GENE_DICT = OrderedDict ([
@@ -564,7 +567,7 @@ GENE_DICT = OrderedDict ([
 	("CAX4","cax4"),
 	("CBC2","cbc2"),
 	("CBF1","cbf1"),
-	("CBF2","cbf2"),
+	("CBF2","(cbf2|ndc10)"),
 	("CBF5","cbf5"),
 	("CBK1","cbk1"),
 	("CBP1","cbp1"),
@@ -1774,7 +1777,7 @@ GENE_DICT = OrderedDict ([
 	("HTD2","htd2"),
 	("HTL1","htl1"),
 	("HTS1","hts1"),
-	("HTZ1","htz1"),
+	("H2A.Z","htz1"),
 	("HUA1","hua1"),
 	("HUA2","hua2"),
 	("HUB1","hub1"),
@@ -2176,7 +2179,7 @@ GENE_DICT = OrderedDict ([
 	("MBF1","mbf1"),
 	("MBP1","mbp1"),
 	("MBR1","mbr1"),
-	("MCA1","mca1"),
+	("MCA1","(^mca1|mca1\s)"),
 	("MCD1","mcd1"),
 	("MCD4","mcd4"),
 	("MCH1","mch1"),
@@ -2229,7 +2232,7 @@ GENE_DICT = OrderedDict ([
 	("MEC1","mec1"),
 	("MEC3","mec3"),
 	("MED11","med11"),
-	("MED1","med1"),
+	("MED1","(med1$|med1\s)"),
 	("MED2","med2"),
 	("MED4","med4"),
 	("MED6","med6"),
@@ -4233,7 +4236,7 @@ GENE_DICT = OrderedDict ([
 	("SPS4","sps4"),
 	("SPT10","spt10"),
 	("SPT14","spt14"),
-	("SPT15","spt15"),
+	("SPT15","(spt15|tbp)"),
 	("SPT16","spt16"),
 	("SPT20","spt20"),
 	("SPT21","spt21"),
@@ -4248,7 +4251,7 @@ GENE_DICT = OrderedDict ([
 	("SQS1","sqs1"),
 	("SQT1","sqt1"),
 	("SRB2","srb2"),
-	("SRB4","srb4"),
+	("SRB4","(srb4|med17)"),
 	("SRB5","srb5"),
 	("SRB6","srb6"),
 	("SRB7","srb7"),
@@ -6898,7 +6901,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("HTD2","(yhr067w|hydroxyacyl-thioester.dehydratase.htd2|rmd12)"),
 	("HTL1","(ycr020w-b)"),
 	("HTS1","(ypr033c|ts4572|histidine--trna.ligase|tsm4572)"),
-	("HTZ1","(yol012c|histone.h2az|h2az|h2a.f/z|hta3)"),
+	("H2A.Z","(yol012c|histone.h2az|h2az|h2a.f/z|hta3)"),
 	("HUA1","(ygr268c)"),
 	("HUA2","(yor284w)"),
 	("HUB1","(ynr032c-a|ubiquitin-like.protein.hub1)"),
