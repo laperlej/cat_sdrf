@@ -30,7 +30,7 @@ def split_condition_aux(row, species):
 	#les types d'essai qui nous intéressent
 	#assays=["chip", "mnase", "dnase","other"]
 	#Les types d'essais qui ne nous intéressent pas
-	#discard_assays=["rip-seq","rna-seq", "random"]
+	discard_assays=["rip-seq","rna-seq", "bisulfite-seq", "unwanted"]
 	
 	#dictionnaire des noms d'espèces
 	species_dict={
@@ -42,9 +42,9 @@ def split_condition_aux(row, species):
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
 		   "fastq" in row["12)fastq"] and
-			not "rip-seq" in row["clean_assay"] and
-			not "unwanted" in row["clean_assay"])
-	 	   #not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
+			#not "rip-seq" in row["clean_assay"] and
+			#not "unwanted" in row["clean_assay"])
+	 	   not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
 
 #selon l'espèce demandée (sys.argv[3]), appelle split_condition avec cette espèce
 split_condition = {
@@ -73,28 +73,32 @@ FIELDNAMES=OrderedDict([
 	('clean_assay',lambda title, row: re.search('$a', title)),
 	('clean_target', lambda title, row: re.search('$a', title)),
 	('reliability', lambda title, row: re.search('$a', title)),
-	('4)assaytype', lambda title, row: re.search('(comment\[library_selection\]|comment\[library_strategy\]|characteristics\[sampledescription\])',title)),
-	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno|vendor|label)", title)),
-	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\])', title)),
-	('7)treatment', lambda title, row: re.search('(phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|variable)', title)),
+	('4)assaytype', lambda title, row: re.search('(comment\[library_selection\]|comment\[library_strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\])',title)),
+	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno|vendor|\[label\|label$|antibodies)", title)),
+	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|histone|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\]|\[ip\])', title)),
+	('7)treatment', lambda title, row: re.search('(phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|variable|spikedna|\[time\])', title)),
 	('clean_celltype', lambda title, row: re.search('$a', title)),
-	('cell_type',lambda title, row: re.search('(comment\[sample_source_name\]|\[age\]|cellline|growth|stage|developmental|tissue|cell\stype|organism\spart|sample\stype)', title)),
+	('cell_type',lambda title, row: re.search('(comment\[sample_source_name\]|\[age\]|cellline|growth|stage|developmental|tissue|cell\stype|organism\spart|sampletype|organelle|\[samplesubtype\]|materialtype|samplecomposition|\[fraction\])', title)),
 	('8)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
 	('9)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
 	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
-	('11)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\])', title)),
+	('11)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\])', title)),
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
 	('Experiment description', lambda title, row: re.search('expdescription', title)),
 	('file_description', lambda title, row: re.search('(array\sdata\sfile|arrayexpress|\[submitted_file_name\])', title)),
 	('13)other', lambda title, row: re.search('.*', title))
 	])
 
-#dictionnaire des sortes d'essai
+#dictionnaire des sortes d'essai (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
+	('BrdU chip', 'brdu'),
 	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
 	("MNase-Seq",'mnase'),
 	("DNase-Seq",'dnase'),
 	("rip-seq", 'rip-seq'),
+	("RNA-Seq", 'rna-seq')
+	("Bisulfite-Seq", "bisulfite-seq"),
+	("WGS", 'wgs'),
 	("other",'other'),
 	("unwanted", '.*')
 	])
