@@ -30,7 +30,7 @@ def split_condition_aux(row, species):
 	#les types d'essai qui nous intéressent
 	#assays=["chip", "mnase", "dnase","other"]
 	#Les types d'essais qui ne nous intéressent pas
-	discard_assays=["rip-seq","rna-seq", "bisulfite-seq", "unwanted"]
+	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic']
 	
 	#dictionnaire des noms d'espèces
 	species_dict={
@@ -42,9 +42,8 @@ def split_condition_aux(row, species):
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
 		   "fastq" in row["12)fastq"] and
-			#not "rip-seq" in row["clean_assay"] and
-			#not "unwanted" in row["clean_assay"])
-	 	   not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
+			#not "non-genomic" in row["Material_type"] and
+	 	   	not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
 
 #selon l'espèce demandée (sys.argv[3]), appelle split_condition avec cette espèce
 split_condition = {
@@ -66,11 +65,11 @@ GENE_DESCRIP_DICT = {
 	"celegans": celegans.GENE_DESCRIP_DICT
 	}
 # à mettre en application correctement
-#CELL_TYPE_DICT = {
-#	"saccer": saccer.CELL_TYPE,
-#	"pombe": saccer.CELL_TYPE,
-#	"celegans": celegans.CELL_TYPE
-#	}
+CELL_TYPE_DICT = {
+	"saccer": saccer.CELL_TYPE,
+	"pombe": saccer.CELL_TYPE,
+	"celegans": celegans.CELL_TYPE
+	}
 
 FIELDNAMES=OrderedDict([
 	('1)identifier', lambda title, row: re.search('sourcename', title)),
@@ -79,11 +78,11 @@ FIELDNAMES=OrderedDict([
 	('clean_assay',lambda title, row: re.search('$a', title)),
 	('clean_target', lambda title, row: re.search('$a', title)),
 	('reliability', lambda title, row: re.search('$a', title)),
-	('4)assaytype', lambda title, row: re.search('(comment\[library_selection\]|comment\[library_strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\])',title)),
+	('4)assaytype', lambda title, row: re.search('(\[library.?selection\]|\[library.?strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\])',title)),
 	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno|vendor|\[label\|label$|antibodies)", title)),
 	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|histone|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\]|\[ip\])', title)),
-	('7)treatment', lambda title, row: re.search('(phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|variable|spikedna|\[time\])', title)),
-	('Material_type',lambda title, row: re.search('(sampletype|materialtype|samplecomposition|\[samplesubtype\]|\[fraction\]|tissue|cell\stype|organism\spart|organelle)', title)),
+	('7)treatment', lambda title, row: re.search('(\[mnasedigestiontime\]|\[mnaseorexoiii\]|phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|variable|spikedna|\[time\])', title)),
+	('Material_type',lambda title, row: re.search('(\[library_source\]|sampletype|materialtype|samplecomposition|\[samplesubtype\]|\[fraction\]|tissue|cell\stype|organism\spart|organelle)', title)),
 	('clean_celltype', lambda title, row: re.search('$a', title)),
 	('cell_type',lambda title, row: re.search('(comment\[sample_source_name\]|\[age\]|cellline|growth|stage|developmental)', title)),
 	('8)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
@@ -99,14 +98,17 @@ FIELDNAMES=OrderedDict([
 #dictionnaire des sortes d'essai (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
 	('BrdU chip', 'brdu'),
-	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
-	("MNase-Seq",'mnase'),
+	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|mononucleosomal\sdna)'),
 	("DNase-Seq",'dnase'),
-	("rip-seq", 'rip-seq'),
-	("RNA-Seq", 'rna-seq'),
+	('ChIP-exo', 'chip-exo'),
+	('FAIRE-Seq', 'faire'),
+	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
 	("Bisulfite-Seq", "bisulfite"),
+	("Rip-Seq", 'rip-seq'),
+	("RNA-Seq", 'rna-seq'),
 	("WGS", 'wgs'),
-	("other",'other'),
+	("other",'(other|genomic\sdna)'),
+	('Non-genomic', 'non.genomic'),
 	("unwanted", '.*')
 	])
 

@@ -25,7 +25,7 @@ def main():
 	#gene_dict est assigné au gene_dict de l'espèce appellée (sys.argv[3]) dans la commande
 	gene_dict = config.GENE_DICT[species]
 	gene_descrip_dict = config.GENE_DESCRIP_DICT[species]
-	#CELL_TYPE = config.CELL_TYPE_DICT[species]
+	CELL_TYPE = config.CELL_TYPE_DICT[species]
 
 	fieldnames = config.FIELDNAMES
 	#section read_csv
@@ -36,9 +36,9 @@ def main():
 	#section filtre pour anticorps. Prend en argument le dictionnaire utilisé, les colonnes dans lesquelles on cherche, et la colone qu'on veux ensuite modifier
 	csv_manager.rows = filter_rows(csv_manager.rows, config.TARGET_DICO, ["4)assaytype","5)antibody", "6)target"], "clean_target")
 	#section filtre pour le type d'essai. Prend en argument le dictionnaire utilisé, les colonnes dans lesquelles on cherche, et la colone qu'on veux ensuite modifier
-	csv_manager.rows = filter_rows(csv_manager.rows, config.ASSAY_DICO, ["4)assaytype", "Material_type", "11)description"], "clean_assay")
+	csv_manager.rows = filter_rows(csv_manager.rows, config.ASSAY_DICO, ["4)assaytype", "Material_type", 'cell_type', "11)description"], "clean_assay")
 	#section filtre pour le type de cellules utilisées pour le ChIP-Seq. Prend en argument le dict utilisé, les col dans lesquelles on cherche, et la colone qu'on veux ensuite modifier
-	csv_manager.rows = filter_rows(csv_manager.rows, config.CELL_TYPE_SACCER, ["cell_type"], "clean_celltype")
+	csv_manager.rows = filter_rows(csv_manager.rows, CELL_TYPE, ["cell_type"], "clean_celltype")
 
 	#section filtre pour les tags et vides. Prend en argument les dictionnaires utilisés
 	csv_manager.rows = assign_tag_multiple(csv_manager.rows, config.TAG_DICO, config.HISTONES_MARKS_DICO, gene_dict, gene_descrip_dict, config.CHIP_DICO, config.ANTIBODY_DICO)

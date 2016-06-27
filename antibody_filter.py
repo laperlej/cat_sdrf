@@ -33,7 +33,9 @@ def filter_row(row, target_dico, input_cols, output_col):
 	#section qui itère sur target_dico	
 	new_value = ""
 	for info in target_dico.keys():
+		# Définit la cible comme étant des colonnes concaténées par merge_cols (met aussi en minuscule)
 		searchtarget = merge_cols(row, input_cols)
+		#S'il y a un match entre la valeur de 'info' dans le dict et la cible (searchtarget)	
 		if re.search(target_dico[info], searchtarget):
 			new_value = info
 			break
@@ -77,27 +79,27 @@ def assign_tag_parallel(data):
 #appelle compare_tag, compare_chip et compare_directly (différents niveaux de comparaisons) 
 def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico, antibody_dico):
 	#Assigne 'N/A' à la colonne clean_target si l'essai est mnase, dnase, avec BrdU ou FAIRE-Seq
-	assays_list = ['mnase', 'dnase', 'brdu', 'faire', 'ssdna', 'bisulfite-seq']
+	assays_list = ['mnase', 'dnase', 'faire', 'ssdna', 'bisulfite-seq']
 	if any(assay in merge_cols(row,["clean_assay", "13)other", "11)description"]) for assay in assays_list):
 		return "N/A", "assay type (1)"	
 	#Assigne 'input' à la colonne clean_target si le mot-clé input est trouvé dans la ligne
-	elif "input" in merge_cols(row, ["4)assaytype","cell_type", "5)antibody"]):
+	elif "input" in merge_cols(row, ["4)assaytype", "5)antibody"]):
 		return "input", "keyword (1)"
-	elif "reference dna" in merge_cols(row, ["4)assaytype","cell_type", "5)antibody"]):
+	elif "reference dna" in merge_cols(row, ["4)assaytype", "5)antibody"]):
 		return "input", "keyword (1)"	
-	input_word_list = ['chromatin input', 'wce fraction used for the nomalization', 'wce fraction used for normalization' ]
-	if any(input_word in merge_cols(row, ["11)description"]) for input_word in input_word_list):
-		return "input", "keyword (1)"	
+	input_word_list = ['chromatin input', 'input dna', 'input sonicated dna', 'wce fraction used for the nomalization', 'wce fraction used for normalization' ]
+	if any(input_word in merge_cols(row, ["11)description", 'cell_type', 'Material_type']) for input_word in input_word_list):
+		return "input", "keyword (1)"
+	elif 'input' in merge_cols(row, ["11)description"]):
+		return 'input', 'keyword (2)'
 	
 	#Assigne 'mock' à la colonne clean_target si un des mots-clés est trouvé
-	mock_list = ['mock', 'non antibody control', 'no epitope tag', 'no-epitope', 'untagged', 'un-tagged', 'no tag', 'notag']
-	if any(mock in merge_cols(row, ["4)assaytype","cell_type"]) for mock in mock_list): #and
-		#'ip/notag' not in coll 11
-		#'or mock treated' not in in merge_cols(row, ["4)assaytype","cell_type", "11)description","13)other"]):
+	mock_list = ['mock', 'non antibody control', 'no epitope tag', 'no-epitope', 'untagged', 'un-tagged', 'no tag', 'notag', 'no tap tag', 'null-tap']
+	if any(mock in merge_cols(row, ["4)assaytype", "11)description", '9)genotype', '8)strain', "13)other"]) for mock in mock_list):
 		return "Mock", "keyword (1)"
 	#Assigne 'control' à la colonne clean_target si un des mots-clés est trouvé
 	control_list = ['control for', 'control_for', 'control replicate', 'degron']
-	if any(control in merge_cols(row, ["4)assaytype","cell_type", "11)description","13)other"]) for control in control_list):
+	if any(control in merge_cols(row, ["4)assaytype", "11)description","13)other"]) for control in control_list):
 		return "control", "keyword (1)"
 
 	elif "empty" in row["clean_target"]:
@@ -162,15 +164,15 @@ def search_target(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, ch
 def search_antibody(row, antibody_dico):
 	#cherche pour des numéros d'anticorps dans la col 11)description
 	for antibody in antibody_dico.keys():
-		if re.search(antibody_dico[antibody],merge_cols(row,["11)description"])):
+		if re.search(antibody_dico[antibody],merge_cols(row,['cell_type', "11)description"])):
 			return antibody, "antibody no (2)"		
 
 def compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico): 
 	#pour "tag" dans clean_target
 	#cherche la cible d'un tag dans les colonnes 4-9 (plus spécifique normalement)
 	tagged = row["clean_target"]
-	#compare le regex (valeur) dont le tag de clean_target est la clé à ce qu'il y a dans les colonnes 4-11 et cell_type (contiennent des occurences de cible-tag)
-	match = re.search(tag_dico[tagged],merge_cols(row,["4)assaytype","cell_type", "11)description"]))
+	#compare le regex (valeur) dont le tag de clean_target est la clé à ce qu'il y a dans les colonnes 4-11 
+	match = re.search(tag_dico[tagged],merge_cols(row,["4)assaytype",'cell_type', "11)description"]))
 	if match:
 		#compare match du tag avec histones_dico
 		for hist in histones_dico.keys():
@@ -191,7 +193,7 @@ def compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 def compare_chip1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico): 
 	#itère sur les regex du chip_dico (pour trouver la cible des ChIP)
 	for regex in chip_dico.keys():
-		match = re.search(chip_dico[regex], merge_cols(row,["cell_type","11)description"]))
+		match = re.search(chip_dico[regex], merge_cols(row,['cell_type', "11)description"]))
 		if match:
 			for hist in histones_dico.keys():
 				#compare match du regex chip avec le dico d'histones
@@ -238,7 +240,7 @@ def compare_tag2(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 	#cherche pour des tags qui n'ont pas été indiqués dans les colonnes 5-6; recherche assez spécifique
 	for tag in tag_dico:
 		#compare le regex (valeur) dont le tag de clean_target est la clé à ce qu'il y a dans les colonnes 4-6-11
-		match = re.search(tag_dico[tag],merge_cols(row,["cell_type", "11)description"]))
+		match = re.search(tag_dico[tag],merge_cols(row,[ 'cell_type', "11)description"]))
 		if match:
 			#compare match du tag avec histones_dico
 			for hist in histones_dico.keys():
@@ -259,7 +261,7 @@ def compare_tag_larger2(row, tag_dico, histones_dico, gene_dico, gene_descrip_di
 	#cherche pour des tags qui n'ont pas été indiqués dans les colonnes 5-6; recherche plus large
 	for tag in tag_dico:
 		#compare le regex (valeur) dont le tag de clean_target est la clé à ce qu'il y a dans les colonnes 8-9
-		match = re.search(tag_dico[tag],merge_cols(row,["cell_type", "8)strain", "9)genotype"]))
+		match = re.search(tag_dico[tag],merge_cols(row,[ "8)strain", "9)genotype"]))
 		if match:
 			#compare match du tag avec histones_dico
 			for hist in histones_dico.keys():
@@ -279,7 +281,7 @@ def compare_tag_larger2(row, tag_dico, histones_dico, gene_dico, gene_descrip_di
 def compare_chip2(row, histones_dico, gene_dico, gene_descrip_dico, chip_dico): 
 	#itère sur les regex du chip_dico (pour trouver la cible des ChIP)
 	for regex in chip_dico.keys():
-		match = re.search(chip_dico[regex], merge_cols(row,["1)identifier", "cell_type", "8)strain", "9)genotype"]))
+		match = re.search(chip_dico[regex], merge_cols(row,["1)identifier", "8)strain", "9)genotype"]))
 		if match:
 			for hist in histones_dico.keys():
 				#compare match du regex chip avec le dico d'histones
@@ -302,29 +304,29 @@ def compare_directly(row, histones_dico, gene_dico, gene_descrip_dico):
 	#Première passe, plus spécifique
 	#itère sur le dictionnaire d'histones 
 	for hist in histones_dico.keys():
-		if re.search(histones_dico[hist], merge_cols(row, ["1)identifier", "5)antibody", "6)target", "cell_type", "11)description"])):
+		if re.search(histones_dico[hist], merge_cols(row, ["1)identifier", "5)antibody", "6)target", "11)description"])):
 			return hist, "histone mark (3)"
 		elif re.search(histones_dico[hist], row["9)genotype"].lower()):
 			return hist, "histone mark (4)"
 	#itère sur le dict de gènes et compare à plusieurs niveaux (moins au plus large en principe)
 	for gene in gene_dico.keys():
-		if re.search(gene_dico[gene], merge_cols(row, ["5)antibody","6)target","cell_type", "11)description"])):
+		if re.search(gene_dico[gene], merge_cols(row, ["5)antibody","6)target", "11)description"])):
 			return gene, "gene (4)"
 	#itère sur le dict d'alias et compare sur plusieurs niveaux (moins au plus large en principe)
 	for gene in gene_descrip_dico.keys():
-		if re.search(gene_descrip_dico[gene], merge_cols(row, ["5)antibody","6)target","cell_type", "11)description"])):
+		if re.search(gene_descrip_dico[gene], merge_cols(row, ["5)antibody","6)target", "11)description"])):
 			return gene, "gene descr (5)"
 	
 	#Deuxième passe, plus large
 	#itère sur le dictionnaire de gènes et compare sur les lignes les moins spécifiques
 	for gene in gene_dico.keys():
-		if re.search(gene_dico[gene], merge_cols(row,["cell_type", "8)strain"])):
+		if re.search(gene_dico[gene], merge_cols(row,[ "8)strain"])):
 			return gene, "gene (5)"
 		elif re.search(gene_dico[gene], row["9)genotype"].lower()):
 			return gene, "gene (5)"		
 	#itère sur le dictionnaire d'alias et compare sur les lignes les moins spécifiques
 	for gene in gene_descrip_dico.keys():
-		if re.search(gene_descrip_dico[gene], merge_cols(row,["cell_type", "8)strain"])):
+		if re.search(gene_descrip_dico[gene], merge_cols(row,[ "8)strain"])):
 			return gene, "gene descr (5)"
 		elif re.search(gene_descrip_dico[gene], row["9)genotype"].lower()):
 			return gene, "gene descr (5)"
