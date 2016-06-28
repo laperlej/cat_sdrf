@@ -101,6 +101,8 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	control_list = ['control for', 'control_for', 'control replicate', 'degron']
 	if any(control in merge_cols(row, ["4)assaytype", "11)description","13)other"]) for control in control_list):
 		return "control", "keyword (1)"
+	elif 'control' in  merge_cols(row, ["Material_type", "11)description"]):
+		return "control", "keyword (2)"
 
 	elif "empty" in row["clean_target"]:
 		#appelle différentes fonctions pour trouver une cible

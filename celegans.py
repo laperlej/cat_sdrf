@@ -1,12 +1,34 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
 
+#dictionnaire des les types cellulaires utilisés pour le ChIP-Seq avec celegans
+CELL_TYPE = OrderedDict ([
+	('L1 arrest', 'l1\sarrest'),
+	('L1', '(\s(l1)|\|(l1)|^l1|_(l1))'),
+	('L2-L3', 'l2-l3'),
+	('L2', '(\s(l2)|\|(l2)|^l2|_(l2))'),
+	('L3', '(\s(l3)|\|(l3)|^l3|_(l3))'),
+	('L4-young adult', 'l4/young\sadult'),
+	('L4', '(\s(l4)|\|(l4)|^l4|_(l4))'),
+	('Late embryo', 'late\sembryo'),
+	('Early embryo', 'early\sembryo'),
+	('Embryo', '(embryo|mxemb)'),
+	('Dauer', 'dauer'),
+	('Young adult', '(ya|young|young\sadult)'),
+	('Adult','(adult|old)'),
+	('Total nuclei', 'total\snuclei'),
+	('Muscle nuclei', 'muscle\snuclei'),
+	('Oocytes', 'oocytes'),
+	('DNA','dna'),
+	('N/A', '.*')])
+
 """
 modifications:
 	gei-11 est synonyme de SNPC-4 (et F32H2.1); doit placer SNPC-4 avant gei-1 dans les 2 dico
 	Htz1 est renommé H2A.Z (consistance avec target_dico dans config)
-	Rep-1 ne prendra plus rep1 (dans le regex); ambiguité avec rep(etition)1
+	Rep-1 :modification du regex; ambiguité avec rep(etition)1
 	EAP-1 est un synonyme de TAG-260 (EAP-1)
+	ges-1: adapté le regex pour que'il ne reconnaisse pas pGES-1
 """
 #dictionnaire de gènes pour c. elegans
 GENE_DICT = OrderedDict ([
@@ -18938,7 +18960,7 @@ GENE_DICT = OrderedDict ([
 	("GEM-4","(gem-4|gem4)"),
 	("GEN-1","(gen-1|gen1)"),
 	("GER-1","(ger-1|ger1)"),
-	("GES-1","(ges-1|ges1)"),
+	("GES-1","(^ges-1|\sges-1|ges1)"),
 	("GEX-2","(gex-2|gex2)"),
 	("GEX-3","(gex-3|gex3)"),
 	("GFAT-1","(gfat-1|gfat1)"),

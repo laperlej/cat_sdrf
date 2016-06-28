@@ -27,6 +27,7 @@ modifications:
 	REP1 et REP2: modificationd du regex pour ne pas reconnaitre rep(etition)1 et 2 
 	RPO21 est renommé RNAPII_RPB1 (consistance avec target_dico)
 	UBI4 déplacé avant BI2-3-4
+	Ho: (ho\s|ho$ ...) modification du regex pour être plus spécifique
 """
 #dictionnaire des genes de s. cerevisiae seulement
 GENE_DICT = OrderedDict ([
@@ -1730,7 +1731,7 @@ GENE_DICT = OrderedDict ([
 	("HOC1","(hoc1|yjr075w)"),
 	("HOF1","(hof1|ymr032w)"),
 	("HOG1","(hog1|ylr113w)"),
-	("HO","(ho|ydl227c)"),
+	("HO","(ho\s|ho$|ydl227c)"),
 	("HOL1","(hol1|ynr055c)"),
 	("HOM2","(hom2|ydr158w)"),
 	("HOM3","(hom3|yer052c)"),

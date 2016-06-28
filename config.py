@@ -6,9 +6,10 @@ import re
 from collections import OrderedDict
 import saccer, pombe, celegans
 
-# Assigne la valeur de row à l'index 'filename' comme étant 'csvfile.name'
+# Assign 'csvfile.name' as the value of row at the index 'filename' 
 PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
 
+#gets the experiment description from each associated idf file
 def idf_extract(csvfile):
 	if "seq.sdrf.txt" in csvfile.name:
 		idf_file_path = csvfile.name.replace("seq.sdrf.txt", "idf.txt")
@@ -25,14 +26,12 @@ def idf_extract(csvfile):
 PREPROCESS2 = lambda csvfile, row: operator.setitem(row, "expdescription", idf_extract(csvfile))
  
 
-#itère sur chaque ligne et retourne vrai si remplit les 4 conditions.
+#iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
-	#les types d'essai qui nous intéressent
-	#assays=["chip", "mnase", "dnase","other"]
-	#Les types d'essais qui ne nous intéressent pas
+	#Assays type to discard
 	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic']
 	
-	#dictionnaire des noms d'espèces
+	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
 		"pombe": "Schizosaccharomyces pombe",
@@ -45,14 +44,13 @@ def split_condition_aux(row, species):
 			#not "non-genomic" in row["Material_type"] and
 	 	   	not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
 
-#selon l'espèce demandée (sys.argv[3]), appelle split_condition avec cette espèce
+#Depending on species requested (sys.argv[3]), calls split_condition with the right species
 split_condition = {
 	"saccer": lambda row: split_condition_aux(row, "saccer"),
 	"pombe": lambda row: split_condition_aux(row, "pombe"),
 	"celegans": lambda row: split_condition_aux(row, "celegans")
 	}
 
-#dictionnaire dans lequel les clés sont les espèces et les valeurs sont leur dictionnaire de gène
 GENE_DICT = {
 	"saccer": saccer.GENE_DICT,
 	"pombe": pombe.GENE_DICT,
@@ -64,10 +62,10 @@ GENE_DESCRIP_DICT = {
 	"pombe": pombe.GENE_DESCRIP_DICT,
 	"celegans": celegans.GENE_DESCRIP_DICT
 	}
-# à mettre en application correctement
+
 CELL_TYPE_DICT = {
 	"saccer": saccer.CELL_TYPE,
-	"pombe": saccer.CELL_TYPE,
+	"pombe": pombe.CELL_TYPE,
 	"celegans": celegans.CELL_TYPE
 	}
 
@@ -78,7 +76,7 @@ FIELDNAMES=OrderedDict([
 	('clean_assay',lambda title, row: re.search('$a', title)),
 	('clean_target', lambda title, row: re.search('$a', title)),
 	('reliability', lambda title, row: re.search('$a', title)),
-	('4)assaytype', lambda title, row: re.search('(\[library.?selection\]|\[library.?strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\])',title)),
+	('4)assaytype', lambda title, row: re.search('(\[library.?selection\]|\[library.?strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\]|\[protocoltype\])',title)),
 	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno|vendor|\[label\|label$|antibodies)", title)),
 	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|histone|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\]|\[ip\])', title)),
 	('7)treatment', lambda title, row: re.search('(\[mnasedigestiontime\]|\[mnaseorexoiii\]|phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|variable|spikedna|\[time\])', title)),
@@ -92,30 +90,30 @@ FIELDNAMES=OrderedDict([
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
 	('Experiment description', lambda title, row: re.search('expdescription', title)),
 	('file_description', lambda title, row: re.search('(array\sdata\sfile|arrayexpress|\[submitted_file_name\])', title)),
-	('13)other', lambda title, row: re.search('.*', title))
-	])
+	('13)other', lambda title, row: re.search('.*', title))])
 
-#dictionnaire des sortes d'essai (WGS:Whole Genome Shotgun sequencing)
+#assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
+	('Non-genomic', 'non.genomic'),
 	('BrdU chip', 'brdu'),
+	("WGS", 'wgs'),
 	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|mononucleosomal\sdna)'),
 	("DNase-Seq",'dnase'),
 	('ChIP-exo', 'chip-exo'),
+	("ChIP-eSPAN", "chip-espan"),
 	('FAIRE-Seq', 'faire'),
 	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
 	("Bisulfite-Seq", "bisulfite"),
 	("Rip-Seq", 'rip-seq'),
 	("RNA-Seq", 'rna-seq'),
-	("WGS", 'wgs'),
 	("other",'(other|genomic\sdna)'),
-	('Non-genomic', 'non.genomic'),
 	("unwanted", '.*')
 	])
 
-#dictionnaire de marques d'histones
+#Histone marks dictionnary
 HISTONES_MARKS_DICO = OrderedDict([
 	('RNAPII_ser5P', 's5\sphosphorylated\srna\spolii'),
-	("DNAPIII",'(pol3|pol\s?iii)'),
+	("DNAPIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
 	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
 	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
 	("DNAP31",'(pol31|pol\sδ)'),
@@ -151,12 +149,12 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H4K5','(h4k5)'),
 	('H4K20me1','h4k20me1'),
 	('H4','h4'),
-	('H2A.Z','(htz1|h2a\.?z)'),
+	('H2A.Z','(htz1|h2a\.?z|pht1)'),
 	('H2A', '(h2a)'),
 	('H2B', '(htb1|htb2|h2b)')])
-#dictionnaire des cibles des anticorps
+#Target and antibody dictionnary
 TARGET_DICO=OrderedDict([
-	('input','(input|whole\scell\sextract)'),
+	('input','(input|input_dna|whole\scell\sextract)'),
 	('Negative control', '(negative\scontrol)'),
 	('Mock', '(mock|no.?antibody)'),
 	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sk4|ab8895)'),
@@ -191,7 +189,7 @@ TARGET_DICO=OrderedDict([
 	('H3K27me3', 'h3k27me3'),
 	('H3','(h3|ab12079|05-928|07-690|ab1791)'),
 	('H4','(h4|ab7311)'),
-	('H2A.Z','(htz1|h2a\.?z|ab4626)'),
+	('H2A.Z','(htz1|h2a\.?z|pht1|ab4626)'),
 	('H2A', '(h2a|ab13923)'),
 	('H2B', '(htb1|htb2|h2b|ab1790)'),
 	('ESA1','(esa1)'),
@@ -213,7 +211,7 @@ TARGET_DICO=OrderedDict([
 	('RNAPIII','(rpc1|53330002|rnapiii|pol.?3|pol.?i{3})'),
 	('RNAPII','(rnapii|pol.?2|pol.?i{2}|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
 	('tag_myc','(myc|05-419|9e10|9e11|ab56|dam1724025)'),
-	('tag_HA','(^ha|ha$|anti.ha|ha11|12ca5|ab16918)'),
+	('tag_HA','(^ha|ha$|ha\s|anti.ha|ha11|12ca5|ab16918)'),
 	('tag_PK','(v5|sv5-pk1|pk|mca1360)'),
 	('tag_flag','(flag|f1804)'),
 	('tag_T7', 't7'),
@@ -223,7 +221,7 @@ TARGET_DICO=OrderedDict([
 	("RNA/DNA hybrid",'(rna/dna\shybrid)'),
 	('none','(none|n/a)'),
 	('empty', '.*') ])
-
+#catalog number dictionnary
 ANTIBODY_DICO = OrderedDict ([
 	('H3K4me1', '(ab8895)'),
 	('H3K4me3', '(ab8580|39159|305-34819|ab8678)'),
@@ -252,7 +250,7 @@ ANTIBODY_DICO = OrderedDict ([
 	('RNAPII_RPB3','(wp012|1Y26|ab202893)') ])
 
 #dictionnaire des tag et leur regex pour la cible taggée
-TAG_DICO=OrderedDict([
+TAG_DICO_old=OrderedDict([
 	 ('tag_HA','((\w+)\.ha|(\w+)::ha|(\w+)-ha|ha-(\w+)|\|ha::(\w+)|(\w+)::\S*ha|(\w+-\d+)_ha|(\w+)-\S*ha|ha\S*::(\w+))'),
 	 ('tag_GFP','((\w+)\.gfp|(?:anti)(\w+)-gfp|gfp::(?:3xflag)(\w+)|(\w+-?\d+)_gfp|(\w+\.\d+)_gfp|(?:anti)(\w+)-\S*gfp|gfp\S*::(?:3xflag)(\w+)|gfp-tagged\s(\w+-?\d+)|(\w+.\d+)::?ty1\se?gfp|(\w+.?\d*)::\S*gfp)'),
 	 ('tag_flag','((\w+)\.flag|(\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+-\d+)_flag|(\w+)-\S*flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag-tagged\s(\w+))'),
@@ -262,17 +260,17 @@ TAG_DICO=OrderedDict([
 	 ('tag_T7','((\w+)::\S*t7|(\w+)-\S*t7|t7\S*-(\w+)|t7\S*::(\w+))') ])
 
 #dictionnaire des tag et leur regex pour la cible taggée
-TAG_DICO2=OrderedDict([
-	 ('tag_HA','((\w+)\.ha|(\w+)::\d?ha|(\w+)-ha|ha.tagged.(\w+)|ha-(\w+)|\|ha::(\w+)|(\w+)::\S*ha|(\w+-\d+)_ha|(\w+)-\S*ha|ha\S*::(\w+))'),
-	 ('tag_GFP','((\w+)\.gfp|(?:anti)(\w+)-gfp|gfp::(\w+)|(\w+-?\d+)_gfp|(\w+\.\d+)_gfp|(\w+)-\S*gfp|gfp\S*::(\w+)|gfp-tagged\s(\w+-?\d+)|(\w+.\d+)::?ty1\se?gfp|(\w+.?\d*)::\S*gfp)'),
-	 ('tag_flag','((\w+)\.flag|(\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+-\d+)_flag|(\w+)-\S*flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag.tagged\s(\w+))'),
-	 ('tag_myc','((\w+)\.myc|(\w+)::myc|(\w+)-myc|myc.tagged\s(\w+)|myc-(\w+)|myc::(\w+)|(\w+)::\w*myc|(\w+-\d+)_myc|(\w+)-\S*myc|myc\S*-(\w+)|myc\S*::(\w+)|(\w+)myc)'),
+TAG_DICO=OrderedDict([
+	 ('tag_HA','((\w+)\.ha|(\w+)::\d?ha|(\w+)-ha|ha.tagged.(\w+)|ha-(\w+)|\|ha::(\w+)|(\w+)::\S{1,5}ha|(\w+-\d+)_ha|(\w+)-\S{1,5}ha|ha\S{1,5}::(\w+))'),
+	 ('tag_GFP','((\w+)\.gfp|(?:anti)(\w+)-gfp|gfp::(\w+)|(\w+-?\d+)_gfp|(\w+\.\d+)_gfp|(\w+)-\S*gfp|gfp\S{1,5}::(\w+)|gfp-tagged\s(\w+-?\d+)|(\w+.\d+)::?ty1\se?gfp|(\w+.?\d*)::\S{1,5}gfp)'),
+	 ('tag_flag','((\w+)\.flag|(\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+-\d+)_flag|(\w+)-\S{1,5}flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag.tagged\s(\w+))'),
+	 ('tag_myc','((\w+)\.myc|(\w+)::myc|(\w+)-myc|myc.tagged\s(\w+)|myc-(\w+)|myc::(\w+)|(\w+)::\S{1,5}myc|(\w+-\d+)_myc|(\w+)-\S{1,5}myc|myc\S*-(\w+)|myc\S{1,5}::(\w+)|(\w+)myc)'),
 	 ('tag_PK','((\w+)::\S*pk|pk::(\w+)|(\w+)\s?pk|(\w{2,})-pk|(\w+)-\S*pk|pk\S*-(\w+)|v5-(\w+))'),
 	 ('tag_tap','((\w+)\.tap|(\w+)::tap|(\w+)-tap|(\w+)-\w{2,}-tap|(\w+-\d+)_tap|tap::(\w+)|(\w+)::\w*tap|tap\S*-(\w+)|tap\S*::(\w+)|(\w+)\stap|(\w+)tap)'),
 	 ('tag_T7','((\w+)::\S*t7|(\w+)-\S*t7|t7\S*-(\w+)|t7\S*::(\w+))') ])
 
 #dictionnaire utilisant le mot-clé chip pour trouver la protéine-cible de l'essai
-CHIP_DICO = OrderedDict ([
+CHIP_DICO_old = OrderedDict ([
 	('protein chip','((\w{2,})\sprotein\schip|(\w+\s\w+)\sprotein\schip)'),
 	('BrdU IP','((\w{2,})\sbrdu\sip|(\w+)\s\w*\sbrdu\sip)'),
 	('chip','(\w{2,})\s\s?chip'),
@@ -285,7 +283,7 @@ CHIP_DICO = OrderedDict ([
 	])
 
 #dictionnaire utilisant le mot-clé chip pour trouver la protéine-cible de l'essai
-CHIP_DICO2 = OrderedDict ([
+CHIP_DICO = OrderedDict ([
 	('protein chip','((\w{2,})\sprotein\schip|(\w+\s\w+)\sprotein\schip)'),
 	('BrdU IP','((\w{2,})\sbrdu\sip|(\w+)\s\w*\sbrdu\sip)'),
 	('chip','((\w{2,})\s\s?chip|(\w{2,}\.\w+)\schip)'),

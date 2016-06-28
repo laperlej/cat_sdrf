@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
 
+#cell type dictionnary for s. pombe 
+CELL_TYPE = OrderedDict ([
+	('N/A', '.*') ])
+
 """
 modifications:
 rad22 est synonyme de rad52 (ancien nom); à placer avant RAD2
 Nrc1 synonyme de Bdf2
 Ptr6 est synonyme de Taf7
 Rpb3 est assigné à RNAPII_RPB3 (consistance avec le dictionnaire de target)
+CENP-A est un homologue de CNP1
+PHT1 est synonyme de H2A.Z
 """
 
-#dictionnaire des genes de s. pombe seulement
+# Gene dictionnary with usual gene name for S. pombe
 GENE_DICT = OrderedDict ([
 	("AAH2","aah2"),
 	("AAH3","aah3"),
@@ -496,7 +502,7 @@ GENE_DICT = OrderedDict ([
 	("CND2","cnd2"),
 	("CND3","cnd3"),
 	("CNL2","cnl2"),
-	("CNP1","cnp1"),
+	("CNP1","(cnp1|cenp-a|cenpa)"),
 	("CNP20","cnp20"),
 	("CNP3","cnp3"),
 	("CNS1","cns1"),
@@ -2202,7 +2208,7 @@ GENE_DICT = OrderedDict ([
 	("PHP4","php4"),
 	("PHP5","php5"),
 	("PHS1","phs1"),
-	("PHT1","pht1"),
+	("H2A.Z","pht1"),
 	("PHX1","phx1"),
 	("PIC1","pic1"),
 	("PIK1","pik1"),
@@ -5147,7 +5153,17 @@ GENE_DICT = OrderedDict ([
 
 
 
-#dictionnaire de gene et alias et nom standard pour s. pombe (pas de redondance avec le dictionnaire saccer_gene_dict)
+
+
+
+
+
+
+
+
+
+
+# Gene dictionnary with standard gene name and aliases for S. pombe
 GENE_DESCRIP_DICT = OrderedDict ([
 	("AAH2","spac23d3\.14c"),
 	("AAH3","spcc63\.02c"),
@@ -7340,7 +7356,7 @@ GENE_DESCRIP_DICT = OrderedDict ([
 	("PHP4","spbc16e9\.01c"),
 	("PHP5","spbc3b8\.02"),
 	("PHS1","spbc19c2\.15c"),
-	("PHT1","spbc11b10\.10c"),
+	("H2A.Z","spbc11b10\.10c"),
 	("PHX1","spac32a11\.03c"),
 	("PIC1","spbc336\.15"),
 	("PIK1","spac22e12\.16c"),
