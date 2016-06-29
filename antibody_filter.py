@@ -82,17 +82,26 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	assays_list = ['mnase', 'dnase', 'faire', 'ssdna', 'bisulfite-seq']
 	if any(assay in merge_cols(row,["clean_assay", "13)other", "11)description"]) for assay in assays_list):
 		return "N/A", "assay type (1)"	
+
+	if 'none' in merge_cols(row,["clean_target", "5)antibody"]) and 'input' in merge_cols(row,["clean_assay", "11)description", "13)other"]):
+		return 'input', 'keyword (1)'
+	elif 'not specified' in merge_cols(row,["5)antibody"])  and 'input' in merge_cols(row,["cell_type","11)description"]):
+		return 'input', 'keyword (1)'
 	#Assigne 'input' à la colonne clean_target si le mot-clé input est trouvé dans la ligne
-	elif "input" in merge_cols(row, ["4)assaytype", "5)antibody"]):
+	elif "input" in merge_cols(row, ["4)assaytype", "5)antibody"]) or "reference dna" in merge_cols(row, ["4)assaytype", "5)antibody"]):
 		return "input", "keyword (1)"
-	elif "reference dna" in merge_cols(row, ["4)assaytype", "5)antibody"]):
-		return "input", "keyword (1)"	
-	input_word_list = ['chromatin input', 'input dna', 'input sonicated dna', 'wce fraction used for the nomalization', 'wce fraction used for normalization' ]
+
+	input_word_list = ['chromatin input', 'input sonicated dna', 'wce fraction used for the nomalization', 'wce fraction used for normalization', 'input lane', 'input dataset', 'channel ch1 is input dna' ]
 	if any(input_word in merge_cols(row, ["11)description", 'cell_type', 'Material_type']) for input_word in input_word_list):
 		return "input", "keyword (1)"
-	elif 'input' in merge_cols(row, ["11)description"]):
-		return 'input', 'keyword (2)'
-	
+
+	elif 'input' in merge_cols(row, ["cell_type"]) and 'input control' not in merge_cols(row, ["11)description"]) and 'input dna' in merge_cols(row, ["11)description"]):
+		return 'input', 'keyword (2)'	
+	elif 'input dna' not in merge_cols(row, ["11)description"]) and 'input control' not in merge_cols(row, ["11)description"]) and 'input' in merge_cols(row, ["11)description"]):
+		return 'input', 'keyword (3)'
+	elif '[input dna]' not in merge_cols(row, ["11)description"]):
+		return 'input', 'keyword (3)'
+
 	#Assigne 'mock' à la colonne clean_target si un des mots-clés est trouvé
 	mock_list = ['mock', 'non antibody control', 'no epitope tag', 'no-epitope', 'untagged', 'un-tagged', 'no tag', 'notag', 'no tap tag', 'null-tap']
 	if any(mock in merge_cols(row, ["4)assaytype", "11)description", '9)genotype', '8)strain', "13)other"]) for mock in mock_list):
@@ -101,7 +110,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	control_list = ['control for', 'control_for', 'control replicate', 'degron']
 	if any(control in merge_cols(row, ["4)assaytype", "11)description","13)other"]) for control in control_list):
 		return "control", "keyword (1)"
-	elif 'control' in  merge_cols(row, ["Material_type", "11)description"]):
+	elif 'control' in  merge_cols(row, ["Material_type", "11)description"]) and 'input control' not in merge_cols(row, ["11)description"]) and 'mock' not in merge_cols(row, ["clean_target"]):
 		return "control", "keyword (2)"
 
 	elif "empty" in row["clean_target"]:
