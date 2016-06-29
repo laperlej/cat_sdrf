@@ -7,24 +7,30 @@ from collections import OrderedDict
 import saccer, pombe, celegans
 
 # Assign 'csvfile.name' as the value of row at the index 'filename' 
-PREPROCESS = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
+PREPROCESS_1 = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
 
 #gets the experiment description from each associated idf file
-def idf_extract(csvfile):
+def idf_extract(csvfile, keyword_list):
 	if "seq.sdrf.txt" in csvfile.name:
 		idf_file_path = csvfile.name.replace("seq.sdrf.txt", "idf.txt")
 	else:
 		idf_file_path = csvfile.name.replace("sdrf.txt", "idf.txt")
 	idf_file = open(idf_file_path)
 	for line in idf_file.readlines():
-		if "Experiment Description" in line:
-			expdescription = line.replace("Experiment Description	", "")
-			return expdescription
-		#else:
-			#return "No description available"
+		output = "N/A"
+		for keyword in keyword_list:
+			if keyword_list[0] in line:
+				output = line.replace(str(keyword_list[0]), "")
+				return output.replace('	', '')
+			elif len(keyword_list)== 2 and keyword_list[1] in line:	
+				output = line.replace(str(keyword_list[1]), "")
+				return output.replace('	', '')
 
-PREPROCESS2 = lambda csvfile, row: operator.setitem(row, "expdescription", idf_extract(csvfile))
- 
+PREPROCESS_2 = lambda csvfile, row: operator.setitem(row, "experiment_description_idf", idf_extract(csvfile, ['Experiment Description']))
+PREPROCESS_3 = lambda csvfile, row: operator.setitem(row, "pubmed_id_idf", idf_extract(csvfile, ['PubMed ID']))
+PREPROCESS_4 = lambda csvfile, row: operator.setitem(row, "author_list_idf", idf_extract(csvfile, ['Publication Author List','Person Last Name']))
+PREPROCESS_5 = lambda csvfile, row: operator.setitem(row, "date_experiment_idf", idf_extract(csvfile, ['Comment[ArrayExpressSubmissionDate]', 'Comment[SRASubmissionDate]' ]))
+PREPROCESS_6 = lambda csvfile, row: operator.setitem(row, "protocol_description_idf", idf_extract(csvfile, ["Protocol Description"]))
 
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
@@ -72,23 +78,27 @@ CELL_TYPE_DICT = {
 FIELDNAMES=OrderedDict([
 	('1)identifier', lambda title, row: re.search('sourcename', title)),
 	('2)filename', lambda title, row: re.search('filename', title)),
-	('3)organism', lambda title, row: re.search("organism", title)),
+	('3)organism', lambda title, row: re.search("\[organism\]", title)),
 	('clean_assay',lambda title, row: re.search('$a', title)),
 	('clean_target', lambda title, row: re.search('$a', title)),
 	('reliability', lambda title, row: re.search('$a', title)),
 	('4)assaytype', lambda title, row: re.search('(\[library.?selection\]|\[library.?strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\]|\[protocoltype\])',title)),
 	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno|vendor|\[label\|label$|antibodies)", title)),
 	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|histone|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\]|\[ip\])', title)),
-	('7)treatment', lambda title, row: re.search('(\[mnasedigestiontime\]|\[mnaseorexoiii\]|phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|variable|spikedna|\[time\])', title)),
-	('Material_type',lambda title, row: re.search('(\[library_source\]|sampletype|materialtype|samplecomposition|\[samplesubtype\]|\[fraction\]|tissue|cell\stype|organism\spart|organelle)', title)),
+	('7)treatment', lambda title, row: re.search('(\[mnasedigestiontime\]|\[mnaseorexoiii\]|phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|spikedna|\[time\])', title)),
+	('Material_type',lambda title, row: re.search('(\[library_source\]|sampletype|materialtype|samplecomposition|\[samplesubtype\]|\[fraction\]|tissue|cell\stype|organismpart|organelle)', title)),
 	('clean_celltype', lambda title, row: re.search('$a', title)),
 	('cell_type',lambda title, row: re.search('(comment\[sample_source_name\]|\[age\]|cellline|growth|stage|developmental)', title)),
 	('8)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
 	('9)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
 	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
-	('11)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\])', title)),
+	('11)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
-	('Experiment description', lambda title, row: re.search('expdescription', title)),
+	('Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
+	('Protocol', lambda title, row: re.search('protocol_description_idf', title)),
+	('Author(s)', lambda title, row: re.search('author_list_idf', title)),
+	('Date of experiment', lambda title, row: re.search('date_experiment_idf', title)),
+	('Pubmed ID', lambda title, row: re.search('pubmed_id_idf', title)),
 	('file_description', lambda title, row: re.search('(array\sdata\sfile|arrayexpress|\[submitted_file_name\])', title)),
 	('13)other', lambda title, row: re.search('.*', title))])
 
@@ -110,7 +120,7 @@ ASSAY_DICO = OrderedDict([
 	("unwanted", '.*')
 	])
 
-#Histone marks dictionnary
+#Histone marks and polymerase dictionnary
 HISTONES_MARKS_DICO = OrderedDict([
 	('RNAPII_ser5P', 's5\sphosphorylated\srna\spolii'),
 	("DNAPIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
@@ -200,16 +210,19 @@ TARGET_DICO=OrderedDict([
 	('RNAPII_ser2P','(ser2p|ser2-po4|ab24758|ab193468|ab5095|s2\sphosphorylated\srna\spolii)'),
 	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|ab193467|ab5131|s5\sphosphorylated\srna\spolii)'),
 	('RNAPII_ser7P','(ser7p|ab126537)'),
-	('RNAPII_CTD','(ctd|8wg16|ab817|mms-126r-200)'),
-	('RNAPII_RPB3','(wp012|1Y26|ab202893|rpb3)'),
+	('RNAPII_CTD','(ctd|8wg16|ab817|mms-126r-200|rpb1)'),
+	('RNAPII_B3','(wp012|1Y26|ab202893|rpb3)'),
 	('POL30','pcna'),
 	('RAD51','rad51'),
 	('ORC','orc'),
 	('TAF7','ptr6'),
 	('SIR2', '(sir2|dam1514081|07131|sirt1)'),
 	('Mcm2-7','(mcm2-7|um185)'),
-	('RNAPIII','(rpc1|53330002|rnapiii|pol.?3|pol.?i{3})'),
-	('RNAPII','(rnapii|pol.?2|pol.?i{2}|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
+	("DNAPIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
+	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
+	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
+	('RNAPIII','(rpc1|53330002|rnapiii|rnap3)'),
+	('RNAPII','(rnapii|rnap2|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
 	('tag_myc','(myc|05-419|9e10|9e11|ab56|dam1724025)'),
 	('tag_HA','(^ha|ha$|ha\s|anti.ha|ha11|12ca5|ab16918)'),
 	('tag_PK','(v5|sv5-pk1|pk|mca1360)'),
@@ -247,7 +260,7 @@ ANTIBODY_DICO = OrderedDict ([
 	('RNAPII_ser5P','(4h8|ab5408|ab55208|ab140748|ab5401|ab193467|ab5131)'),
 	('RNAPII_ser7P','(ab126537)'),
 	('RNAPII_CTD','(8wg16|ab817|mms-126r-200)'),
-	('RNAPII_RPB3','(wp012|1Y26|ab202893)') ])
+	('RNAPII_B3','(wp012|1Y26|ab202893)') ])
 
 #dictionnaire des tag et leur regex pour la cible taggée
 TAG_DICO_old=OrderedDict([

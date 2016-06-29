@@ -22,18 +22,18 @@ def main():
 	file_names= sys.argv[4:]
 
 	#species_name = config.species_dict[species]
-	#gene_dict est assigné au gene_dict de l'espèce appellée (sys.argv[3]) dans la commande
+	#gene_dict is assigned to the species's gene_dict
 	gene_dict = config.GENE_DICT[species]
 	gene_descrip_dict = config.GENE_DESCRIP_DICT[species]
 	CELL_TYPE = config.CELL_TYPE_DICT[species]
 
 	fieldnames = config.FIELDNAMES
-	#section read_csv
+	# read_csv section
 	csv_manager = CsvManager(fieldnames.keys(), fieldnames)
 	for file_name in file_names:
-		csv_manager.read_csv(open(file_name, 'r'), preprocess=config.PREPROCESS, preprocess2=config.PREPROCESS2)
+		csv_manager.read_csv(open(file_name, 'r'), preprocess_1=config.PREPROCESS_1, preprocess_2=config.PREPROCESS_2, preprocess_3=config.PREPROCESS_3, preprocess_4=config.PREPROCESS_4, preprocess_5=config.PREPROCESS_5, preprocess_6=config.PREPROCESS_6 )
 
-	#section filtre pour anticorps. Prend en argument le dictionnaire utilisé, les colonnes dans lesquelles on cherche, et la colone qu'on veux ensuite modifier
+	#sFilter section for antibody. Take in argument the dictionnary, the columns in which we search and the column to modify
 	csv_manager.rows = filter_rows(csv_manager.rows, config.TARGET_DICO, ["4)assaytype","5)antibody", "6)target"], "clean_target")
 	#section filtre pour le type d'essai. Prend en argument le dictionnaire utilisé, les colonnes dans lesquelles on cherche, et la colone qu'on veux ensuite modifier
 	csv_manager.rows = filter_rows(csv_manager.rows, config.ASSAY_DICO, ["4)assaytype", "Material_type", 'cell_type', "11)description"], "clean_assay")
