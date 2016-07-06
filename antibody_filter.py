@@ -7,15 +7,32 @@ analyser la colonne 8)strain, 9)genotype, 11)description pour déterminer la pro
 import re
 from collections import OrderedDict
 
+#Joint le contenu des colonnes (input_cols) avec '|' comme séparateur
+def merge_cols(row, input_cols):
+	return "|".join(row[input_col].lower() for input_col in input_cols)
+
+# Itère sur chaque ligne du dictionnaire rows
+def bam_sam_filter_rows(rows, filetypes, input_cols, output_col):
+	for row in rows:
+		row = bam_sam_filter_row(row, filetypes, input_cols, output_col) 
+	return rows
+
+def bam_sam_filter_row(row, filetypes, input_cols, output_col):
+	new_value = ""
+	for filetype in filetypes.keys():
+		searchtarget = merge_cols(row, input_cols)
+		match =  re.search(filetypes[filetype], searchtarget)
+		if match:
+			new_value = match.group(1)
+			break
+	row[output_col] = new_value
+	return row	
+
 # Itère sur chaque ligne du dictionnaire rows (contient les info des fichiers sdrf)
 def filter_rows(rows, target_dico, input_cols, output_col):
 	for row in rows:
 		row = filter_row(row, target_dico, input_cols, output_col) 
 	return rows
-
-#Joint le contenu des colonnes (input_cols) sans séparateur
-def merge_cols(row, input_cols):
-	return "|".join(row[input_col].lower() for input_col in input_cols)
 
 def filter_row(row, target_dico, input_cols, output_col):
 	"""
@@ -39,6 +56,7 @@ def filter_row(row, target_dico, input_cols, output_col):
 		if re.search(target_dico[info], searchtarget):
 			new_value = info
 			break
+
 	 
 	row[output_col] = new_value
 	return row
@@ -62,6 +80,7 @@ def assign_tag_multiple(rows, tag_dico, histones_dico, gene_dico, gene_descrip_d
 		p = multiprocessing.Pool(num_cpu)
 		arguments = ((row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico, antibody_dico) for row in rows)
 		results = p.map(assign_tag_parallel, arguments)
+		#zip returns a list of tuples
 		for row, result in zip(rows, results):		
 			row["clean_target"], row["reliability"] = result
 		return rows	 		
@@ -83,8 +102,8 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	if any(assay in merge_cols(row,["clean_assay", "13)other", "11)description"]) for assay in assays_list):
 		return "N/A", "assay type (1)"	
 
-	if 'none' in merge_cols(row,["clean_target", "5)antibody"]) and 'input' in merge_cols(row,["clean_assay", "11)description", "13)other"]):
-		return 'input', 'keyword (1)'
+	#if 'none' in merge_cols(row,["clean_target", "5)antibody"]) and 'input' in merge_cols(row,["clean_assay", "11)description", "13)other"]):
+	#	return 'input', 'keyword (1)'
 	elif 'not specified' in merge_cols(row,["5)antibody"])  and 'input' in merge_cols(row,["cell_type","11)description"]):
 		return 'input', 'keyword (1)'
 	#Assigne 'input' à la colonne clean_target si le mot-clé input est trouvé dans la ligne
@@ -99,7 +118,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 		return 'input', 'keyword (2)'	
 	elif 'input dna' not in merge_cols(row, ["11)description"]) and 'input control' not in merge_cols(row, ["11)description"]) and 'input' in merge_cols(row, ["11)description"]):
 		return 'input', 'keyword (3)'
-	elif '[input dna]' not in merge_cols(row, ["11)description"]):
+	elif '[input dna]' in merge_cols(row, ["11)description"]):
 		return 'input', 'keyword (3)'
 
 	#Assigne 'mock' à la colonne clean_target si un des mots-clés est trouvé
