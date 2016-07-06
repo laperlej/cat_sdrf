@@ -6,10 +6,10 @@ import re
 from collections import OrderedDict
 import saccer, pombe, celegans
 
-# Assign 'csvfile.name' as the value of row at the index 'filename' 
+# Assign 'csvfile.name' as the value of 'row' at the index 'filename' 
 PREPROCESS_1 = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
 
-#gets the experiment description from each associated idf file
+#gets information from each associated idf file
 def idf_extract(csvfile, keyword_list):
 	if "seq.sdrf.txt" in csvfile.name:
 		idf_file_path = csvfile.name.replace("seq.sdrf.txt", "idf.txt")
@@ -17,26 +17,45 @@ def idf_extract(csvfile, keyword_list):
 		idf_file_path = csvfile.name.replace("sdrf.txt", "idf.txt")
 	idf_file = open(idf_file_path)
 	for line in idf_file.readlines():
-		output = "N/A"
-		for keyword in keyword_list:
-			if keyword_list[0] in line:
-				output = line.replace(str(keyword_list[0]), "")
-				return output.replace('	', '')
-			elif len(keyword_list)== 2 and keyword_list[1] in line:	
-				output = line.replace(str(keyword_list[1]), "")
-				return output.replace('	', '')
-
+		output1 = ""
+		#Search first keyword in the lines. Priority on first keyword, most specific
+		if keyword_list[0] in line:
+			output1 = line.replace(str(keyword_list[0]), "")
+			#returns output1 providing that it is not an empty string
+			if output1.strip() is not "" and output1.strip() is not None:
+				return output1.replace('\t', ' ')
+				break
+	#if first keyword not in any lines, use second keyword, providing that there is a second one
+	else:
+		for line in idf_file.readlines():
+			output2 = ""
+			if len(keyword_list)== 2 and keyword_list[1] in line:	
+				output2 = line.replace(str(keyword_list[1]), "")
+				return output2.replace('\t', ' ')
+		
+#Assign the info from the 'experiment description' line in associated idf file as the value of 'row' at the index 'experiment_description_idf'
 PREPROCESS_2 = lambda csvfile, row: operator.setitem(row, "experiment_description_idf", idf_extract(csvfile, ['Experiment Description']))
+#Assign the info from the 'PubMed ID' line in associated idf file as the value of 'row' at the index 'pubmed_id_idf'
 PREPROCESS_3 = lambda csvfile, row: operator.setitem(row, "pubmed_id_idf", idf_extract(csvfile, ['PubMed ID']))
+#Assign the info from the 'Publication Author list' line in associated idf file as the value of 'row' at the index 'author_list_idf'
 PREPROCESS_4 = lambda csvfile, row: operator.setitem(row, "author_list_idf", idf_extract(csvfile, ['Publication Author List','Person Last Name']))
-PREPROCESS_5 = lambda csvfile, row: operator.setitem(row, "date_experiment_idf", idf_extract(csvfile, ['Comment[ArrayExpressSubmissionDate]', 'Comment[SRASubmissionDate]' ]))
-PREPROCESS_6 = lambda csvfile, row: operator.setitem(row, "protocol_description_idf", idf_extract(csvfile, ["Protocol Description"]))
+#Assign the info from the 'submission date' line in associated idf file as the value of 'row' at the index 'submission_date_idf'
+PREPROCESS_5 = lambda csvfile, row: operator.setitem(row, "submission_date_idf", idf_extract(csvfile, ['Comment[ArrayExpressSubmissionDate]', 'Comment[SRASubmissionDate]' ]))
+#Assign the info from the 'Public release date' line in associated idf file as the value of 'row' at the index 'release_date_idf'
+PREPROCESS_6 = lambda csvfile, row: operator.setitem(row, "release_date_idf", idf_extract(csvfile, ['Public Release Date']))
+#Assign the info from the 'Protocol description' line in associated idf file as the value of 'row' at the index 'protocol_description_idf'
+PREPROCESS_7 = lambda csvfile, row: operator.setitem(row, "protocol_description_idf", idf_extract(csvfile, ["Protocol Description"]))
+
+#Joint le contenu des colonnes (input_cols) avec '|' comme séparateur
+def merge_cols(row, input_cols):
+	return "|".join(row[input_col].lower() for input_col in input_cols)
 
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
-	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic']
-	
+	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs']
+	#file types needed
+	file_types = ['.fastq.gz', '.bam', '.sam']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
@@ -46,7 +65,7 @@ def split_condition_aux(row, species):
 	
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
-		   "fastq" in row["12)fastq"] and
+		   any(file_type in merge_cols(row, ["12)fastq", "BAM-SAM"]) for file_type in file_types) and
 			#not "non-genomic" in row["Material_type"] and
 	 	   	not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
 
@@ -94,18 +113,20 @@ FIELDNAMES=OrderedDict([
 	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
 	('11)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
+	('BAM-SAM', lambda title, row: re.search('$a', title)),
 	('Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
 	('Protocol', lambda title, row: re.search('protocol_description_idf', title)),
 	('Author(s)', lambda title, row: re.search('author_list_idf', title)),
-	('Date of experiment', lambda title, row: re.search('date_experiment_idf', title)),
+	('Submission date', lambda title, row: re.search('submission_date_idf', title)),
+	('Release Date', lambda title, row: re.search('release_date_idf', title)),
 	('Pubmed ID', lambda title, row: re.search('pubmed_id_idf', title)),
-	('file_description', lambda title, row: re.search('(array\sdata\sfile|arrayexpress|\[submitted_file_name\])', title)),
 	('13)other', lambda title, row: re.search('.*', title))])
 
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
 	('Non-genomic', 'non.genomic'),
-	('BrdU chip', 'brdu'),
+	('BrdU-ChIP', 'brdu\sip'),
+	('BrdU', 'brdu'),
 	("WGS", 'wgs'),
 	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|mononucleosomal\sdna)'),
 	("DNase-Seq",'dnase'),
@@ -116,17 +137,20 @@ ASSAY_DICO = OrderedDict([
 	("Bisulfite-Seq", "bisulfite"),
 	("Rip-Seq", 'rip-seq'),
 	("RNA-Seq", 'rna-seq'),
+	('Okazaki fragment', 'okazaki\sfragment'),
 	("other",'(other|genomic\sdna)'),
 	("unwanted", '.*')
 	])
 
+FILETYPES = {'BAM':'(\S+\.bam|\S+\.bam.wig)', 'SAM':'(\S+\.sam)', 'supplementary file':'(supplementary\sfile\s\S*\.sam)'}
+
 #Histone marks and polymerase dictionnary
 HISTONES_MARKS_DICO = OrderedDict([
 	('RNAPII_ser5P', 's5\sphosphorylated\srna\spolii'),
-	("DNAPIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
-	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
-	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
-	("DNAP31",'(pol31|pol\sδ)'),
+	("POLIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
+	("POLII",'(pol2|pol\sɛ|pol\s?ii)'),
+	("POLI",'(pol1|pol\sα|pol\s?i)'),
+	("POL31",'(pol31|pol\sδ)'),
 	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sK4)'),
 	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sK4)'),
 	('H3K4me3', '(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sK4)'),
@@ -141,8 +165,8 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H3K79me3', 'h3k79me3'),
 	('H3K79', 'h3k79'),
 	('H3K9ac','(h3k9ac)'),
-	('H3K9me3','(h3k9me3|h3.?k9.?me3)'),
-	('H3K9me2','(h3k9me2|h3.?k9.?me2)'),
+	('H3K9me3','(h3k9me3|h3.?k9\s?me3)'),
+	('H3K9me2','(h3k9me2|h3.?k9\s?me2)'),
 	('H3K9','h3k9'),
 	('H3K4me3', '(h3.?k4.?me3)'),
 	('H3K4','h3k4'),
@@ -164,7 +188,7 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H2B', '(htb1|htb2|h2b)')])
 #Target and antibody dictionnary
 TARGET_DICO=OrderedDict([
-	('input','(input|input_dna|whole\scell\sextract)'),
+	('input','(input|input_dna|whole\scell\sextract|none|n/a)'),
 	('Negative control', '(negative\scontrol)'),
 	('Mock', '(mock|no.?antibody)'),
 	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sk4|ab8895)'),
@@ -181,8 +205,8 @@ TARGET_DICO=OrderedDict([
 	('H3K79me3', '(h3k79me3)'),
 	('H3K79', '(h3k79)'),
 	('H3K9ac','(h3k9ac|06-942)'),
-	('H3K9me3','(h3k9me3|h3.?k9.?me3|ab8898)'),
-	('H3K9me2','(h3k9me2|h3.?k9.?me2)'),
+	('H3K9me3','(h3k9me3|h3.?k\s?me3|ab8898)'),
+	('H3K9me2','(h3k9me2|h3.?k9\s?me2)'),
 	('H3K9-14ac','(ach3\sk9,14|h3k9-14ac)'),
 	('H3K9','(h3k9)'),
 	('H4K16ac','(h4k16ac|07-329)'),
@@ -203,7 +227,7 @@ TARGET_DICO=OrderedDict([
 	('H2A', '(h2a|ab13923)'),
 	('H2B', '(htb1|htb2|h2b|ab1790)'),
 	('ESA1','(esa1)'),
-	('Q105me1','(q105me1)'),
+	('H2AQ105me1','(q105me1)'),
 	('AAR','(aar|o-acetyl-adp-ribose)'),
 	('DNMT3b','(dnmt3b|ab2851)'),
 	('RNAPII_tyr1P','(tyr1|61383|mabe350)'),
@@ -211,16 +235,16 @@ TARGET_DICO=OrderedDict([
 	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|ab193467|ab5131|s5\sphosphorylated\srna\spolii)'),
 	('RNAPII_ser7P','(ser7p|ab126537)'),
 	('RNAPII_CTD','(ctd|8wg16|ab817|mms-126r-200|rpb1)'),
-	('RNAPII_B3','(wp012|1Y26|ab202893|rpb3)'),
+	('RNAPII_RPB3','(wp012|1Y26|ab202893|rpb3)'),
 	('POL30','pcna'),
 	('RAD51','rad51'),
 	('ORC','orc'),
 	('TAF7','ptr6'),
 	('SIR2', '(sir2|dam1514081|07131|sirt1)'),
 	('Mcm2-7','(mcm2-7|um185)'),
-	("DNAPIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
-	("DNAPII",'(pol2|pol\sɛ|pol\s?ii)'),
-	("DNAPI",'(pol1|pol\sα|pol\s?i)'),
+	("POLIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
+	("POLII",'(pol2|pol\sɛ|pol\s?ii)'),
+	("POLI",'(pol1|pol\sα|pol\s?i)'),
 	('RNAPIII','(rpc1|53330002|rnapiii|rnap3)'),
 	('RNAPII','(rnapii|rnap2|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
 	('tag_myc','(myc|05-419|9e10|9e11|ab56|dam1724025)'),
@@ -232,7 +256,6 @@ TARGET_DICO=OrderedDict([
 	('tag_tap','(tap|igg\ssepharose|cab1001)'),
 	('Mock_IgG','igg'),
 	("RNA/DNA hybrid",'(rna/dna\shybrid)'),
-	('none','(none|n/a)'),
 	('empty', '.*') ])
 #catalog number dictionnary
 ANTIBODY_DICO = OrderedDict ([
@@ -260,7 +283,7 @@ ANTIBODY_DICO = OrderedDict ([
 	('RNAPII_ser5P','(4h8|ab5408|ab55208|ab140748|ab5401|ab193467|ab5131)'),
 	('RNAPII_ser7P','(ab126537)'),
 	('RNAPII_CTD','(8wg16|ab817|mms-126r-200)'),
-	('RNAPII_B3','(wp012|1Y26|ab202893)') ])
+	('RNAPII_RPB3','(wp012|1Y26|ab202893)') ])
 
 #dictionnaire des tag et leur regex pour la cible taggée
 TAG_DICO_old=OrderedDict([
