@@ -40,26 +40,35 @@ class CsvManager(object):
 			self.rows.append(self.translate_row(row))
 
 	def fixduplicates(self,csvcontent):
+		"""Checks all the headers and numerates the headers that have the same name"""
+		#Splits the first line from the rest (separated by a newline) and then in a list of string (tab-separated)
 		headers = csvcontent.split('\n')[0].split("\t")
+		#Splits the other lines (which are newline-separated)
 		content = csvcontent.split('\n')[1:]
 		new_headers = []
 		count = 1
+		#Iterate on the headers
 		for title in headers:
 			if title not in new_headers:
 				new_headers.append(title)
 			else:
+				#Modifies the header if it is a duplicate (adds a number equivalent to the count)
 				new_title = title + str(count)
 				new_headers.append(new_title)
 				count += 1
+		#Joins the headers (tab-separated) and then joins the content of the file (newline-separated) and returns the result	
 		return "\n".join(["\t".join(new_headers)]+ content)   
 
 	def fix_dup_gsm(self, uniq_titles):
+		""" Reunites lines that are identical for the information in the columns listed (uniq titles) and concatenate their informations if it is not the same"""
 		uniq_lines = {}
 		for row in self.rows:
+			#if the key (information) is in uniq_titles, then it is added  to the dictionnary uniq_cols
 			uniq_cols = {key:value for key, value in row.iteritems() if key in uniq_titles}
 			non_uniq_cols = {key:value for key, value in row.iteritems() if key not in uniq_titles}
-			#json.dumps returns a string
+			#json.dumps returns a string for uniq_cols
 			string_dict = json.dumps(uniq_cols, sort_keys=True, ensure_ascii=False)
+			#if string_dict is not in uniq_lines
 			if uniq_lines.get(string_dict, False):
 				for key in non_uniq_cols.iterkeys():
 					cell1 = uniq_lines[string_dict][key]
