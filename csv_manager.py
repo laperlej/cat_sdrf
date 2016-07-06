@@ -11,6 +11,9 @@ import csv
 import os.path
 import utils
 import copy
+import StringIO
+import json
+import itertools
 
 class CsvManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
@@ -19,16 +22,56 @@ class CsvManager(object):
 		self.sep = sep
 		self.rows = []
 
-	def read_csv(self, csvfile, preprocess_1=lambda csvfile, row: None, preprocess_2=lambda csvfile, row: None, preprocess_3=lambda csvfile, row: None, preprocess_4=lambda csvfile, row: None, preprocess_5=lambda csvfile, row: None, preprocess_6=lambda csvfile, row: None ):
-		reader = csv.DictReader(csvfile, dialect='excel-tab')
+	def read_csv(self, csvfile, preprocess_1=lambda csvfile, row: None, preprocess_2=lambda csvfile, row: None, preprocess_3=lambda csvfile, row: None, preprocess_4=lambda csvfile, row: None, preprocess_5=lambda csvfile, row: None, preprocess_6=lambda csvfile, row: None, preprocess_7=lambda csvfile, row: None ):
+		csvcontent = csvfile.read()
+		csvcontent = self.fixduplicates(csvcontent)
+		#StringIO permits to read a string as a file
+		reader = csv.DictReader(StringIO.StringIO(csvcontent), dialect='excel-tab')
+		#reader = csv.DictReader(csvfile, dialect='excel-tab')
 		for row in reader:
+			#preprocess gets information from idf files (see config)
 			preprocess_1(csvfile, row)
 			preprocess_2(csvfile, row)
 			preprocess_3(csvfile, row)
 			preprocess_4(csvfile, row)
 			preprocess_5(csvfile, row)
 			preprocess_6(csvfile, row)
+			preprocess_7(csvfile, row)
 			self.rows.append(self.translate_row(row))
+
+	def fixduplicates(self,csvcontent):
+		headers = csvcontent.split('\n')[0].split("\t")
+		content = csvcontent.split('\n')[1:]
+		new_headers = []
+		count = 1
+		for title in headers:
+			if title not in new_headers:
+				new_headers.append(title)
+			else:
+				new_title = title + str(count)
+				new_headers.append(new_title)
+				count += 1
+		return "\n".join(["\t".join(new_headers)]+ content)   
+
+	def fix_dup_gsm(self, uniq_titles):
+		uniq_lines = {}
+		for row in self.rows:
+			uniq_cols = {key:value for key, value in row.iteritems() if key in uniq_titles}
+			non_uniq_cols = {key:value for key, value in row.iteritems() if key not in uniq_titles}
+			#json.dumps returns a string
+			string_dict = json.dumps(uniq_cols, sort_keys=True, ensure_ascii=False)
+			if uniq_lines.get(string_dict, False):
+				for key in non_uniq_cols.iterkeys():
+					cell1 = uniq_lines[string_dict][key]
+					cell2 = non_uniq_cols[key]	
+					cell1 = cell1.split(' | ')
+					cell2 =  cell2.split(' | ')
+					new_cell = set(cell1)|set(cell2)
+					non_uniq_cols[key]= ' | '.join(new_cell)
+				uniq_lines[string_dict]= non_uniq_cols	
+			else:
+				uniq_lines[string_dict]= non_uniq_cols
+		self.rows = [dict(itertools.chain({key.encode('utf-8'):value.encode('utf-8') for key, value in json.loads(key).iteritems()}.iteritems(), value.iteritems())) for key,value in uniq_lines.iteritems()]
 
 	def empty_row(self):
 		return {column_name:set() for column_name in self.column_names}
