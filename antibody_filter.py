@@ -7,26 +7,72 @@ analyser la colonne 8)strain, 9)genotype, 11)description pour déterminer la pro
 import re
 from collections import OrderedDict
 
-#Joint le contenu des colonnes (input_cols) avec '|' comme séparateur
+#Joins the content of columns (input_cols) with '|' as separator
 def merge_cols(row, input_cols):
 	return "|".join(row[input_col].lower() for input_col in input_cols)
 
-# Itère sur chaque ligne du dictionnaire rows
-def bam_sam_filter_rows(rows, filetypes, input_cols, output_col):
+def raw_files_filter_rows(rows, output_col):
 	for row in rows:
-		row = bam_sam_filter_row(row, filetypes, input_cols, output_col) 
+		row = raw_files_filter_row(row, output_col)
 	return rows
 
-def bam_sam_filter_row(row, filetypes, input_cols, output_col):
+def raw_files_filter_row(row, output_col):
+	""" Fills the 'raw_files column with preferencially fastq, else with .sra or finally with .bam or .sam files"""
+	if 'fastq.gz' in row['12)fastq']:
+		row[output_col] = row['12)fastq']
+		return row
+	else:
+		SRX_SRR_combination = sra_files(row, output_col)
+		if SRX_SRR_combination is not None:
+			return SRX_SRR_combination
+		else:
+			return bam_sam_filter_row(row, output_col)
+
+def sra_files(row, output_col):
+	""" Makes the combination of SRX and SRR to compose the url to get the .sra files"""
+	sep = "/"
+	url = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra"
+	if 'SRX' in row['SRA_file'] and 'SRR' in row['SRA_file']:
+		match1 = re.search('(SRX\S{6,7})', row['SRA_file'])
+		match2 = re.search('(SRR\S{6,7})', row['SRA_file'])
+		if match1 and match2:
+			if len(match1.group(1))==9:
+				# Forms SRX part as in SRX/SRX123/SRX123456
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:9]])
+			if len(match1.group(1))==10:
+				# Forms SRX part as in SRX/SRX1234/SRX1234567
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:7], match1.group(1)[:10]])
+				# Add the long part of the url and joins the different parts
+			new_value = sep.join([url, SRXpart, match2.group(1), match2.group(1)])
+			row[output_col] = new_value+".sra"
+			return row		
+	elif 'SRX' in row['SRA_file']:
+		match1 = re.search('(SRX\S{6,7})', row['SRA_file'])
+		if match1:
+			if len(match1.group(1))==9:
+				# Forms SRX part as in SRX/SRX123/SRX123456
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:9]])
+			if len(match1.group(1))==10:
+				# Forms SRX part as in SRX/SRX1234/SRX1234567
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:7], match1.group(1)[:10]])
+				# Add the long part of the url to the rest
+			new_value = sep.join([url, SRXpart])
+			row[output_col] = new_value
+			return row
+
+	# Searches for specific file type and returns the complete file name if the file type is found
+def bam_sam_filter_row(row, output_col):
+	filetypes = {'BAM':'(\S+\.bam|\S+\.bam.wig)', 'SAM':'(\S+\.sam)', 'supplementary file':'(supplementary\sfile\s\S+\.sam)'}
 	new_value = ""
 	for filetype in filetypes.keys():
-		searchtarget = merge_cols(row, input_cols)
+		searchtarget = merge_cols(row, ["13)other", "Protocol"])
 		match =  re.search(filetypes[filetype], searchtarget)
 		if match:
 			new_value = match.group(1)
 			break
 	row[output_col] = new_value
-	return row	
+	return row
+
 
 # Itère sur chaque ligne du dictionnaire rows (contient les info des fichiers sdrf)
 def filter_rows(rows, target_dico, input_cols, output_col):

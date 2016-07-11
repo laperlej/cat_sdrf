@@ -5,6 +5,7 @@ import operator
 import re
 from collections import OrderedDict
 import saccer, pombe, celegans
+from antibody_filter import merge_cols
 
 # Assign 'csvfile.name' as the value of 'row' at the index 'filename' 
 PREPROCESS_1 = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
@@ -46,16 +47,12 @@ PREPROCESS_6 = lambda csvfile, row: operator.setitem(row, "release_date_idf", id
 #Assign the info from the 'Protocol description' line in associated idf file as the value of 'row' at the index 'protocol_description_idf'
 PREPROCESS_7 = lambda csvfile, row: operator.setitem(row, "protocol_description_idf", idf_extract(csvfile, ["Protocol Description"]))
 
-#Joint le contenu des colonnes (input_cols) avec '|' comme séparateur
-def merge_cols(row, input_cols):
-	return "|".join(row[input_col].lower() for input_col in input_cols)
-
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
 	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs']
 	#file types needed
-	file_types = ['.fastq.gz', '.bam', '.sam']
+	file_types = ['.fastq.gz', '.bam', '.sam', 'srx']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
@@ -65,7 +62,7 @@ def split_condition_aux(row, species):
 	
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
-		   any(file_type in merge_cols(row, ["12)fastq", "BAM-SAM"]) for file_type in file_types) and
+		   any(file_type in merge_cols(row, ["12)fastq", "BAM-SAM", 'SRA_file', 'raw_files']) for file_type in file_types) and
 			#not "non-genomic" in row["Material_type"] and
 	 	   	not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
 
@@ -112,8 +109,10 @@ FIELDNAMES=OrderedDict([
 	('9)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
 	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
 	('11)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
+	('raw_files', lambda title, row: re.search('$a', title)),
 	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
 	('BAM-SAM', lambda title, row: re.search('$a', title)),
+	('SRA_file', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
 	('Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
 	('Protocol', lambda title, row: re.search('protocol_description_idf', title)),
 	('Author(s)', lambda title, row: re.search('author_list_idf', title)),
@@ -141,8 +140,6 @@ ASSAY_DICO = OrderedDict([
 	("other",'(other|genomic\sdna)'),
 	("unwanted", '.*')
 	])
-
-FILETYPES = {'BAM':'(\S+\.bam|\S+\.bam.wig)', 'SAM':'(\S+\.sam)', 'supplementary file':'(supplementary\sfile\s\S*\.sam)'}
 
 #Histone marks and polymerase dictionnary
 HISTONES_MARKS_DICO = OrderedDict([

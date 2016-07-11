@@ -72,15 +72,20 @@ class CsvManager(object):
 			if uniq_lines.get(string_dict, False):
 				for key in non_uniq_cols.iterkeys():
 					cell1 = uniq_lines[string_dict][key]
-					cell2 = non_uniq_cols[key]	
-					cell1 = cell1.split(' | ')
+					cell2 = non_uniq_cols[key]
+					#splits the content of cell 1 and 2 
+					cell1 =  cell1.split(' | ')
+					cell1 = [x for x in cell1 if x not in ["", " "]]
 					cell2 =  cell2.split(' | ')
+					cell2 = [x for x in cell2 if x not in ["", " "]]
+					#Joins the content of cell 1 and 2 without repetition of content
 					new_cell = set(cell1)|set(cell2)
 					non_uniq_cols[key]= ' | '.join(new_cell)
 				uniq_lines[string_dict]= non_uniq_cols	
 			else:
 				uniq_lines[string_dict]= non_uniq_cols
 		self.rows = [dict(itertools.chain({key.encode('utf-8'):value.encode('utf-8') for key, value in json.loads(key).iteritems()}.iteritems(), value.iteritems())) for key,value in uniq_lines.iteritems()]
+
 
 	def empty_row(self):
 		return {column_name:set() for column_name in self.column_names}
