@@ -29,9 +29,45 @@ def raw_files_filter_row(row, output_col):
 			return bam_sam_filter_row(row, output_col)
 
 def sra_files(row, output_col):
-	""" Makes the combination of SRX and SRR to compose the url to get the .sra files"""
+	""" Makes the combination of SRX and SRR to compose the url for the .sra files"""
 	sep = "/"
 	url = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra"
+	URL_list = []
+	if 'SRX' in row['SRA_file'] and 'SRR' in row['SRA_file']:
+		match1 = re.search('(SRX\S{6,7})', row['SRA_file'])
+		#Finds all the occurences and returns them as a list
+		match2 = re.findall('(SRR\S{6,7})', row['SRA_file'])
+		if match1 and match2:
+			if len(match1.group(1))==9:
+				# Forms SRX part as in SRX/SRX123/SRX123456
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:9]])
+			if len(match1.group(1))==10:
+				# Forms SRX part as in SRX/SRX1234/SRX1234567
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:10]])
+			for SRR in match2:
+				end_part = SRR + '.sra'
+				# Adds the long part of the url and joins the different parts
+				new_url = sep.join([url, SRXpart, SRR, end_part])
+				URL_list.append(new_url) 
+			new_value = " | ".join(URL_list)
+			row[output_col] = new_value
+			return row
+	elif 'SRX' in row['SRA_file']:
+		match1 = re.search('(SRX\S{6,7})', row['SRA_file'])
+		if match1:
+			if len(match1.group(1))==9:
+				# Forms SRX part as in SRX/SRX123/SRX123456
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:9]])
+			if len(match1.group(1))==10:
+				# Forms SRX part as in SRX/SRX1234/SRX1234567
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:10]])
+				# Add the long part of the url to the rest
+			new_value = sep.join([url, SRXpart])
+			row[output_col] = new_value
+			return row
+
+
+"""
 	if 'SRX' in row['SRA_file'] and 'SRR' in row['SRA_file']:
 		match1 = re.search('(SRX\S{6,7})', row['SRA_file'])
 		match2 = re.search('(SRR\S{6,7})', row['SRA_file'])
@@ -41,24 +77,12 @@ def sra_files(row, output_col):
 				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:9]])
 			if len(match1.group(1))==10:
 				# Forms SRX part as in SRX/SRX1234/SRX1234567
-				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:7], match1.group(1)[:10]])
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:10]])
 				# Add the long part of the url and joins the different parts
 			new_value = sep.join([url, SRXpart, match2.group(1), match2.group(1)])
 			row[output_col] = new_value+".sra"
 			return row		
-	elif 'SRX' in row['SRA_file']:
-		match1 = re.search('(SRX\S{6,7})', row['SRA_file'])
-		if match1:
-			if len(match1.group(1))==9:
-				# Forms SRX part as in SRX/SRX123/SRX123456
-				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:9]])
-			if len(match1.group(1))==10:
-				# Forms SRX part as in SRX/SRX1234/SRX1234567
-				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:7], match1.group(1)[:10]])
-				# Add the long part of the url to the rest
-			new_value = sep.join([url, SRXpart])
-			row[output_col] = new_value
-			return row
+"""
 
 	# Searches for specific file type and returns the complete file name if the file type is found
 def bam_sam_filter_row(row, output_col):

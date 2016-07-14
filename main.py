@@ -37,6 +37,7 @@ def main():
 	csv_manager.fix_dup_gsm(['1)identifier'])
 	# Fills a 'raw_files' column with fastq ou sra or bam/sam files
 	csv_manager.rows = raw_files_filter_rows(csv_manager.rows, 'raw_files')
+	
 	# Filter section for antibody. Take in argument the dictionnary, the columns in which we search and the column to modify
 	csv_manager.rows = filter_rows(csv_manager.rows, config.TARGET_DICO, ["4)assaytype","5)antibody", "6)target"], "clean_target")
 	# Filter section for the assay type. Take in argument the dictionnary, the columns in which we search and the column to modify
