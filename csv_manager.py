@@ -14,6 +14,7 @@ import copy
 import StringIO
 import json
 import itertools
+from xml.etree import ElementTree
 
 class CsvManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
@@ -102,7 +103,7 @@ class CsvManager(object):
 					break
 		return {key:self.sep.join(content) for key, content in new_row.iteritems()}
 
-	#crée une copie de l'objet rows; result[0] conserve les lignes qui retournent vrai à la condition, les autres lignes vont dans result[1]
+	#Create a copy of rows; result[0] gets the lines returning True to the condition, the other lines go into result[1]
 	def split(self,condition=lambda row:True):
 		result=[self, copy.deepcopy(self)]
 		result[1].rows=[row for row in self.rows if not condition(row)]

@@ -62,9 +62,9 @@ def split_condition_aux(row, species):
 	
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
-		   any(file_type in merge_cols(row, ["12)fastq", "BAM-SAM", 'SRA_file', 'raw_files']) for file_type in file_types) and
+		   any(file_type in merge_cols(row, ["19)fastq", '20)SRA_file', '18)raw_files']) for file_type in file_types) and
 			#not "non-genomic" in row["Material_type"] and
-	 	   	not [False for discard_assay in discard_assays if discard_assay in row["clean_assay"].lower()])
+	 	   	not [False for discard_assay in discard_assays if discard_assay in row["4)clean_assay"].lower()])
 
 #Depending on species requested (sys.argv[3]), calls split_condition with the right species
 split_condition = {
@@ -95,31 +95,30 @@ FIELDNAMES=OrderedDict([
 	('1)identifier', lambda title, row: re.search('sourcename', title)),
 	('2)filename', lambda title, row: re.search('filename', title)),
 	('3)organism', lambda title, row: re.search("\[organism\]", title)),
-	('clean_assay',lambda title, row: re.search('$a', title)),
-	('clean_target', lambda title, row: re.search('$a', title)),
-	('reliability', lambda title, row: re.search('$a', title)),
-	('4)assaytype', lambda title, row: re.search('(\[library.?selection\]|\[library.?strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\]|\[protocoltype\])',title)),
-	('5)antibody', lambda title, row: re.search("(antibody|milliporecatno|vendor|\[label\|label$|antibodies)", title)),
-	('6)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|histone|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\]|\[ip\])', title)),
-	('7)treatment', lambda title, row: re.search('(\[mnasedigestiontime\]|\[mnaseorexoiii\]|phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|spikedna|\[time\])', title)),
-	('Material_type',lambda title, row: re.search('(\[library_source\]|sampletype|materialtype|samplecomposition|\[samplesubtype\]|\[fraction\]|tissue|cell\stype|organismpart|organelle)', title)),
-	('clean_celltype', lambda title, row: re.search('$a', title)),
-	('cell_type',lambda title, row: re.search('(comment\[sample_source_name\]|\[age\]|cellline|growth|stage|developmental)', title)),
-	('8)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
-	('9)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
-	('10)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
-	('11)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
-	('raw_files', lambda title, row: re.search('$a', title)),
-	('12)fastq', lambda title, row: re.search('fastq_uri', title)),
-	('BAM-SAM', lambda title, row: re.search('$a', title)),
-	('SRA_file', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
-	('Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
-	('Protocol', lambda title, row: re.search('protocol_description_idf', title)),
-	('Author(s)', lambda title, row: re.search('author_list_idf', title)),
-	('Submission date', lambda title, row: re.search('submission_date_idf', title)),
-	('Release Date', lambda title, row: re.search('release_date_idf', title)),
-	('Pubmed ID', lambda title, row: re.search('pubmed_id_idf', title)),
-	('13)other', lambda title, row: re.search('.*', title))])
+	('4)clean_assay',lambda title, row: re.search('$a', title)),
+	('5)clean_target', lambda title, row: re.search('$a', title)),
+	('6)reliability', lambda title, row: re.search('$a', title)),
+	('7)assaytype', lambda title, row: re.search('(\[library.?selection\]|\[library.?strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\]|\[protocoltype\])',title)),
+	('8)antibody', lambda title, row: re.search("(antibody|milliporecatno|vendor|\[label\|label$|antibodies)", title)),
+	('9)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|histone|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\]|\[ip\])', title)),
+	('10)treatment', lambda title, row: re.search('(\[mnasedigestiontime\]|\[mnaseorexoiii\]|phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|spikedna|\[time\])', title)),
+	('11)Material_type',lambda title, row: re.search('(\[library_source\]|sampletype|materialtype|samplecomposition|\[samplesubtype\]|\[fraction\]|tissue|cell\stype|organismpart|organelle)', title)),
+	('12)clean_celltype', lambda title, row: re.search('$a', title)),
+	('13)cell_type',lambda title, row: re.search('(comment\[sample_source_name\]|\[age\]|cellline|growth|stage|developmental)', title)),
+	('14)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
+	('15)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
+	('16)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
+	('17)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
+	('18)raw_files', lambda title, row: re.search('$a', title)),
+	('19)fastq', lambda title, row: re.search('fastq_uri', title)),
+	('20)SRA_file', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
+	('21)Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
+	('22)Protocol', lambda title, row: re.search('protocol_description_idf', title)),
+	('23)Author(s)', lambda title, row: re.search('author_list_idf', title)),
+	('24)Submission date', lambda title, row: re.search('submission_date_idf', title)),
+	('25)Release Date', lambda title, row: re.search('release_date_idf', title)),
+	('26)Pubmed ID', lambda title, row: re.search('pubmed_id_idf', title)),
+	('Other', lambda title, row: re.search('.*', title))])
 
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
