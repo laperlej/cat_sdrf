@@ -119,26 +119,7 @@ class XmlManager(object):
 				row['22)Protocol'] = sep.join(self.protocol_list)
 				#row['23)Authors'], row['24)Submission Date'] and row['25)Release Date'] done earlier
 				row['Other'] = sep.join(self.other_list)
-				
-#				print 'identifier -----------------', row['1)identifier'], '--------------'
-#				print row['3)organism']
-#				print row['7)assaytype']
-#				print 'antibody-', row['8)antibody'] #empty
-#				print ' row treatment', row['10)treatment'] #empty
-#				print row['11)material_type'] 
-#				print row['14)strain'] #empty
-#				print row['15)genotype']
-#				print row['16)platform']
-#				print row['17)description']
-#				print row['19)all_supp_files']
-#				print row['22)Protocol']
-#				print row['23)Author(s)']
-#				print row['24)Submission Date']
-#				print row['25)Release Date']
-#				print 'row other-',row['Other']
 				self.rows.append(row)
-		print self.rows
-		return self.rows
 	
 
 	def general_sample(self, my_list, section):
@@ -222,23 +203,8 @@ class XmlManager(object):
 		else:	
 			self.other_list.append(section)
 
-				
 
-#	csvcontent = self.rows
-		#StringIO permits to read a string as a file
-#	reader = csv.DictReader(StringIO.StringIO(csvcontent), dialect='excel-tab')
-		#reader = csv.DictReader(csvfile, dialect='excel-tab')
-#		for row in reader:
-			#preprocess gets information from idf files (see config)
-#			preprocess_1(csvfile, row)
-#			preprocess_2(csvfile, row)
-#			preprocess_3(csvfile, row)
-#			preprocess_4(csvfile, row)
-#			preprocess_5(csvfile, row)
-#			preprocess_6(csvfile, row)
-#			preprocess_7(csvfile, row)
-#			self.rows.append(self.translate_row(row))
-
+	#Not needed with the xml files
 	def fixduplicates(self,csvcontent):
 		"""Checks all the headers and numerates the headers that have the same name"""
 		#Splits the first line from the rest (separated by a newline) and then in a list of string (tab-separated)
@@ -286,10 +252,10 @@ class XmlManager(object):
 				uniq_lines[string_dict]= non_uniq_cols
 		self.rows = [dict(itertools.chain({key.encode('utf-8'):value.encode('utf-8') for key, value in json.loads(key).iteritems()}.iteritems(), value.iteritems())) for key,value in uniq_lines.iteritems()]
 
-
+	#not needed with xml files
 	def empty_row(self):
 		return {column_name:set() for column_name in self.column_names}
-
+	#not needed with xml files
 	def translate_row(self, row):
 		new_row = self.empty_row()
 		norm_row = utils.norm_keys(row)
@@ -309,8 +275,8 @@ class XmlManager(object):
 		result[0].rows=[row for row in self.rows if condition(row)]
 		return result
 
-	def write_xml(self, outfile):
-		writer = xml.DictWriter(outfile,
+	def write_csv(self, outfile):
+		writer = csv.DictWriter(outfile,
 			                    fieldnames=self.column_names,
 			                    dialect='excel-tab')
 		writer.writeheader()
