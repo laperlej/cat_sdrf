@@ -5,7 +5,7 @@ input:
 output:
 	tab delimited file, contains lines from each sdrf file	
 """
-
+import codecs
 import config
 from xml_manager import XmlManager
 import sys
@@ -33,7 +33,7 @@ def main():
 	# read_xml section	
 	for file_name in file_names:
 		# Preprocesses get information from idf files (see config)
-		xml_manager.read_xml(open(file_name, 'r')) #, preprocess_1=config.PREPROCESS_1, preprocess_2=config.PREPROCESS_2, preprocess_3=config.PREPROCESS_3, preprocess_4=config.PREPROCESS_4, preprocess_5=config.PREPROCESS_5, preprocess_6=config.PREPROCESS_6, preprocess_7=config.PREPROCESS_7 )
+		xml_manager.read_xml(codecs.open(file_name, 'r', encoding='utf-8')) #, preprocess_1=config.PREPROCESS_1, preprocess_2=config.PREPROCESS_2, preprocess_3=config.PREPROCESS_3, preprocess_4=config.PREPROCESS_4, preprocess_5=config.PREPROCESS_5, preprocess_6=config.PREPROCESS_6, preprocess_7=config.PREPROCESS_7 )
 	# Reunites lines that are identical for the information in the columns listed and concatenate their informations if it is not the same
 	xml_manager.fix_dup_gsm(['1)identifier'])
 	# Fills a 'raw_files' column with fastq ou sra or bam/sam files
@@ -51,8 +51,8 @@ def main():
 	xml_managers=xml_manager.split(config.split_condition[species])	
 	
 	# Output section
-	xml_managers[0].write_csv(open(output_clean,'w'))
-	xml_managers[1].write_csv(open(output_discard, 'w'))
+	xml_managers[0].write_csv(codecs.open(output_clean,'w', encoding='utf-8'))
+	xml_managers[1].write_csv(codecs.open(output_discard,'w', encoding='utf-8'))
 	
 
 if __name__ == "__main__":

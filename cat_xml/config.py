@@ -52,7 +52,7 @@ def split_condition_aux(row, species):
 	#Assays type to discard
 	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs']
 	#file types needed
-	file_types = ['.fastq.gz', '.bam', '.sam', 'srx']
+	file_types = ['.fastq.gz', '.bam', '.sam', 'SRX']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
@@ -62,7 +62,7 @@ def split_condition_aux(row, species):
 	
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
-		   any(file_type in row["19)all_supp_files"] for file_type in file_types) and
+		   any(file_type in row["18)raw_files"] for file_type in file_types) and
 			#not "non-genomic" in row["Material_type"] and
 	 	   	not [False for discard_assay in discard_assays if discard_assay in row["4)clean_assay"].lower()])
 
@@ -90,7 +90,7 @@ CELL_TYPE_DICT = {
 	"pombe": pombe.CELL_TYPE,
 	"celegans": celegans.CELL_TYPE
 	}
-
+#only keys are useful in this dictionnary, the rest won't serve
 FIELDNAMES=OrderedDict([
 	('1)identifier', lambda title, row: re.search('sourcename', title)),
 	('2)filename', lambda title, row: re.search('filename', title)),
@@ -122,7 +122,7 @@ FIELDNAMES=OrderedDict([
 
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
-	('Non-genomic', 'non.genomic'),
+	('Non-genomic', '(non.genomic|transcriptomic,total\srna)'),
 	('BrdU-ChIP', 'brdu\sip'),
 	('BrdU', 'brdu'),
 	("WGS", 'wgs'),
