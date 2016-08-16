@@ -28,6 +28,7 @@ modifications:
 	RPO21 est renommé RNAPII_RPB1 (consistance avec target_dico)
 	UBI4 déplacé avant BI2-3-4
 	Ho: (ho\s|ho$ ...) modification du regex pour être plus spécifique
+	Scc1 est un synonyme de MCD1; doit ajouter Scc1 dans le dict de gène sous MCD1
 """
 #dictionnaire des genes de s. cerevisiae seulement
 GENE_DICT = OrderedDict ([
@@ -2198,7 +2199,7 @@ GENE_DICT = OrderedDict ([
 	("MBP1","(mbp1|ydl056w)"),
 	("MBR1","(mbr1|ykl093w)"),
 	("MCA1","(mca1\s|mca1$|yor197w)"),
-	("MCD1","(mcd1|ydl003w)"),
+	("MCD1","(mcd1|scc1|ydl003w)"),
 	("MCD4","(mcd4|ykl165c)"),
 	("MCH1","(mch1|ydl054c)"),
 	("MCH2","(mch2|ykl221w)"),

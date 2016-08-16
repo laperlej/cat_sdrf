@@ -102,6 +102,7 @@ class XmlManager(object):
 										elif 'Extract-Protocol' in key:
 											self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel']['Extract-Protocol'])
 										else:
+				#							print mon_dict['MINiML']['Sample'][x]['Channel'][key]
 											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][key])
 								elif type(mon_dict['MINiML']['Sample'][x]['Channel']) is list:
 									for num in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
@@ -117,6 +118,7 @@ class XmlManager(object):
 											elif 'Protocol' in key:
 												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][num][key])
 											else:
+				#								print mon_dict['MINiML']['Sample'][x]['Channel'][num][key]
 												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num][key])		
 
 							elif section == 'Characteristics':
@@ -245,7 +247,7 @@ class XmlManager(object):
 			if 'strain' in section:
 				self.strain_list.append(section)
 			else:	
-				self.descrip_sample(section)
+				self.other_stuff_sample(section)
 
 	def descrip_sample(self, section):
 		if type(section) is OrderedDict:

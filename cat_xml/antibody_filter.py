@@ -186,7 +186,8 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 		return 'input', 'keyword (2)'	
 	elif 'input dna' not in merge_cols(row, ["17)description"]) and 'input control' not in merge_cols(row, ["17)description"]) and 'input' in merge_cols(row, ["17)description"]):
 		return 'input', 'keyword (3)'
-	elif '[input dna]' in merge_cols(row, ["17)description"]):
+#	elif '[input dna]' in merge_cols(row, ["17)description"]):
+	elif 'input dna' in merge_cols(row, ["17)description"]):
 		return 'input', 'keyword (3)'
 
 	#Assign 'mock' to column 'clean_target' if one of the following keyword is found
