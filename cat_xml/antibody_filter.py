@@ -87,18 +87,23 @@ def bam_sam_filter_row(row, output_col):
 
 
 # Iterate on each line of the dictionnary that is rows (contains info from the sdrf files)
-def filter_rows(rows, target_dico, input_cols, output_col):
+def filter_rows(rows, target_dico, histones_dico, input_cols, output_col):
+	""" Concatenate the content of 2 dictionnaries (necessary when filtering for the antibody target; otherwise use an empty dictionnary plus the one needed"""
+	all_targets = OrderedDict ([])
+	all_targets.update(histones_dico)
+	#this dict comes last since it ends with a regex catching anything (when not using an empty dict)
+	all_targets.update(target_dico)
 	for row in rows:
-		row = filter_row(row, target_dico, input_cols, output_col) 
+		row = filter_row(row, all_targets, input_cols, output_col) 
 	return rows
 
-def filter_row(row, target_dico, input_cols, output_col):
+def filter_row(row, all_targets, input_cols, output_col):
 	"""
 	iterate on the regex of target-dico and compares it to the information in input_col until a match is found.
 	Multi-task function, can be used to filter the 'antibody' column and the 'assaytype' column (each with their own arguments) 
 	input: 
 		row: dictionnary where the key is the column's title and the value is the content of said column
-		target_dico: target-regex dictionnary
+		all_targets: target-regex dictionnary (concatenation of 2 dict)
 		input_cols: list of the concatenated columns in which we search.
 		output_col: clumn changed if there was a match
 	output:
@@ -107,11 +112,11 @@ def filter_row(row, target_dico, input_cols, output_col):
 	
 	#Iterates on a target-regex dictionnary	
 	new_value = ""
-	for info in target_dico.keys():
+	for info in all_targets.keys():
 		# Defines the search target as the concatenation of some columns (by merge_cols; also converts to lowercase)
 		searchtarget = merge_cols(row, input_cols)
 		#If there is a match between the regex of the target and the concatenated columns	
-		if re.search(target_dico[info], searchtarget):
+		if re.search(all_targets[info], searchtarget):
 			#
 			new_value = info
 			break
@@ -161,7 +166,8 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	"""
 	#Assign 'N/A' to 5)clean_target column if the assay type is mnase, dnase, with ssDNA, bisulfite or FAIRE-Seq
 	assays_list = ['mnase', 'dnase', 'faire', 'ssdna', 'bisulfite-seq']
-	if any(assay in merge_cols(row,["4)clean_assay", "Other", "17)description"]) for assay in assays_list):
+#	if any(assay in merge_cols(row,["4)clean_assay", "Other", "17)description"]) for assay in assays_list):
+	if any(assay in merge_cols(row,["4)clean_assay"]) for assay in assays_list):
 		return "N/A", "assay type (1)"	
 
 	#if 'none' in merge_cols(row,["clean_target", "5)antibody"]) and 'input' in merge_cols(row,["clean_assay", "11)description", "13)other"]):
@@ -185,10 +191,11 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 
 	#Assign 'mock' to column 'clean_target' if one of the following keyword is found
 	mock_list = ['mock', 'non antibody control', 'no epitope tag', 'no-epitope', 'untagged', 'un-tagged', 'no tag', 'notag', 'no tap tag', 'null-tap']
-	if any(mock in merge_cols(row, ["7)assaytype", "17)description", '15)genotype', '14)strain', "Other"]) for mock in mock_list):
+	#removed the column Other, was not enough specific
+	if any(mock in merge_cols(row, ["7)assaytype", "17)description", '15)genotype', '14)strain']) for mock in mock_list):
 		return "Mock", "keyword (1)"
 	#Assign 'control' to column 'clean_target' if one of the following keyword is found
-	control_list = ['control for', 'control_for', 'control replicate', 'degron']
+	control_list = ['control for', 'control_for', 'control replicate', 'degron', 'wild type control']
 	if any(control in merge_cols(row, ["7)assaytype", "17)description","Other"]) for control in control_list):
 		return "control", "keyword (1)"
 	elif 'control' in  merge_cols(row, ["11)Material_type", "17)description"]) and 'input control' not in merge_cols(row, ["17)description"]) and 'mock' not in merge_cols(row, ["5)clean_target"]):
