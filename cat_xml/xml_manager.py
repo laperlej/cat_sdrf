@@ -102,7 +102,7 @@ class XmlManager(object):
 										elif 'Extract-Protocol' in key:
 											self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel']['Extract-Protocol'])
 										else:
-											self.other_stuff_sample(mon_dict['MINiML']['Sample'][x]['Channel'][key])
+											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][key])
 								elif type(mon_dict['MINiML']['Sample'][x]['Channel']) is list:
 									for num in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
 										for key in mon_dict['MINiML']['Sample'][x]['Channel'][num]:
@@ -111,17 +111,13 @@ class XmlManager(object):
 											elif 'Source' in key:
 												self.gene_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Source'])
 											elif 'Molecule' in key:
-												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][num]['Molecule'])	
+												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][num][key])	
 											elif 'Characteristics' in key:
 												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Characteristics'])
-											elif 'Treatment-Protocol' in key:
-												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][num]['Treatment-Protocol'])
-											elif 'Growth-Protocol' in key:
-												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][num]['Growth-Protocol'])
-											elif 'Extract-Protocol' in key:
-												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][num]['Extract-Protocol'])
+											elif 'Protocol' in key:
+												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][num][key])
 											else:
-												self.other_stuff_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num][key])		
+												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num][key])		
 
 							elif section == 'Characteristics':
 								self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
@@ -162,7 +158,10 @@ class XmlManager(object):
 						Exp_descrip = self.series_dict['Title'] + ' : ' + self.series_dict['Summary']
 						#row['20)SRA_files'] not very useful now
 						row['21)Experiment description'] = Exp_descrip
-						row['22)Protocol'] = sep.join(self.protocol_list)
+						raw_protocol1 = sep.join(self.protocol_list)
+						raw_protocol2 = raw_protocol1.replace(']', ')')
+						row['22)Protocol'] = raw_protocol2.replace('[', '(')
+						#The main contributor's name goes in the section 'Author'; Could be possible to make an author list
 						row['23)Author(s)'] = self.contributor_dict[contact]
 						#row['24)Submission Date'] and row['25)Release Date'] done earlier
 						row['26)Pubmed ID'] = self.series_dict['Pubmed']
@@ -183,11 +182,13 @@ class XmlManager(object):
 		else:
 			self.org_list.append(section['#text'])		
 	def characteristics_sample(self, section):
+		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'selection', 'plasmid', 'vector', 'drug', 'stress', 'concentration', 'mnase', 'agent', 'age', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc']
+		material = ['molecule', 'tissue', 'organelle', 'sample type', 'rna', 'material', 'genomic dna']
+		strain = ['strain', 'Strain', 'variant', 'resistance', 'mutant', 'yeast', 'parents']
+		gene = ['genetic', 'genotype', 'background', 'allele', 'phenotype', 'gene deletion', 'modification', 'bearing', 'genome']
+		target = ['protein', 'epitope', 'target', 'tag', 'flag', 'ChIP', 'h2b', 'histone', 'IP against']
+		junk = ['hotspot', 'facs-sorted', 'construct', 'batch', 'repetition', 'replicate', 'repeat', 'experiment', 'immunodepletion', 'depleted factor', 'isolate number', 'index pair', 'grna libraries', 'fluorescence', 'matched wild type sample', 'barcode', 'sample identifier', 'tandem repeat', 'rna purification', 'transformed with', 'transformation', 'guiderna', 'chd1-ume6 fusion', 'immunodepletion', 'primer', 'index', 'strategy', 'break induction', 'sort', 'capture', 'lentivirally', 'knock', 'equivalents of ercc spike', 'rnai deletion', 'sequencing chip', 'crosslink', 'transposon', 'transcription', 'factor', 'triton', 'cmc use', 'ID', 'sucrose', 'addition', 'sex', 'h2o2', 'fragment size', 'application', 'hours at 37', 'paired-end', 'transfection', 'vendor', 'oligonucleotide', 'od']
 		if type(section) is list:
-			conditions = ['treatment', 'condition', 'growth', 'time', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized']
-			strain = ['strain', 'variant']
-			gene = ['genetic', 'genotype', 'background']
-			target = ['protein', 'epitope', 'target']
 			#Iteration on the list, which is often composed of orderedDict ([('@tag', '...') , ('#text', '...')])
 			for list_index in range(len(section)):
 				#when some part of the list is just text
@@ -197,48 +198,79 @@ class XmlManager(object):
 				elif any(condition in section[list_index]['@tag'] for condition in conditions):
 					self.treatment_list.append(section[list_index]['#text'])
 				elif any(item in section[list_index]['@tag'] for item in target):
-					self.target_list.append(section[list_index]['#text'])	
+					self.target_list.append(section[list_index]['#text'])
+				elif any(item in section[list_index]['#text'] for item in target):
+					self.target_list.append(section[list_index]['#text'])		
 				elif 'antibody' in section[list_index]['#text'] or 'antibody' in section[list_index]['@tag']:
 					self.antibody_list.append(section[list_index]['#text'])
+				elif 'catalog' in section[list_index]['@tag']:
+					self.antibody_list.append(section[list_index]['#text'])	
 				elif any(item in section[list_index]['@tag'] for item in strain):
 					self.strain_list.append(section[list_index]['#text'])
 				elif any(item in section[list_index]['@tag'] for item in gene):	
 					self.gene_list.append(section[list_index]['#text'])
-				elif 'molecule' in section[list_index]['@tag']:	
-					self.material_list.append(section[list_index]['#text'])
-				elif 'library selection' in section[list_index]['@tag']:
+				elif any(item in section[list_index]['@tag'] for item in material):	
+					self.material_list.append(section[list_index]['#text'])	
+				elif 'library' in section[list_index]['@tag']:
 					self.assay_list.append(section[list_index]['#text'])
+				elif 'assay' in section[list_index]['@tag']:
+					self.assay_list.append(section[list_index]['#text'])	
+				elif  'protocol' in section[list_index]['@tag'] or 'harvest' in section[list_index]['@tag']:	
+					self.protocol_list.append(section[list_index]['#text'])	
+				elif any(item in section[list_index]['@tag'] for item in junk):
+					self.other_list.append(section[list_index]['#text'])		
 				else:
+	#				print '1', section[list_index]['@tag'], '***', section[list_index]['#text']
 					self.other_stuff_sample(section[list_index]['#text'])
-		#probably a useless section 			
+				
 		elif type(section) is OrderedDict:
 			for key in section.keys():
-				if 'treatment' in section[key]:
+				if any(condition in section['@tag'] for condition in conditions):
 					self.treatment_list.append(section['#text'])
-				elif 'antibody' in key:
+				elif 'antibody' in section['@tag']:
 					self.antibody_list.append(section['#text'])
-				elif 'strain' in key:
+				elif any(item in section['@tag'] for item in target):
+					self.target_list.append(section['#text'])	
+				elif any(item in section['@tag'] for item in strain):
 					self.strain_list.append(section['#text'])
-				elif 'genotype' in key:	
+				elif any(item in section['@tag']for item in gene):	
 					self.gene_list.append(section['#text'])
+				elif any(item in section['@tag'] for item in material):	
+					self.material_list.append(section['#text'])	
 				else:
-					self.other_stuff_sample(section)	
+	#				print '2', section['@tag'], '***', section['#text']
+					# The leftover goes in the 'Other' section 
+					self.other_stuff_sample(section['#text'])	
 		else:
-			if type(section) is OrderedDict:
-				self.descrip_sample(section['#text'])
-			else:
-				if 'strain' in section:
-					self.strain_list.append(section)
-				else:	
-					self.descrip_sample(section)
+			if 'strain' in section:
+				self.strain_list.append(section)
+			else:	
+				self.descrip_sample(section)
 
 	def descrip_sample(self, section):
 		if type(section) is OrderedDict:
 			for key in section.keys():
 				self.descrip_list.append(section['#text'])
-		else:
+		
+		if type(section) is list:
+			for list_index in range(len(section)):
+				if type(section[list_index]) is list:
+					for num in range(len(section[list_index])):
+						self.descrip_list.append(section[list_index][num])
+				elif type(section[list_index]) is OrderedDict:
+					for key in section[list_index]:
+						self.descrip_list.append(section[list_index][key])
+				else:
+					self.descrip_list.append(section[list_index])
+		elif type(section) is OrderedDict:
+			for key in section.keys():
+				if type(key) is OrderedDict:
+					for key2 in section[key]:
+						self.descrip_list.append(section[key][key2])
+				else:
+					self.descrip_list.append(section[key])
+		else:	
 			self.descrip_list.append(section)
-
 	def supp_data_sample(self, section):
 		if type(section) is list:
 			for list_index in range(len(section)):
@@ -276,9 +308,9 @@ class XmlManager(object):
 					if 'Organization' in section[num]:
 						if type(section[num]['Organization']) is list:
 							org_name = " , ".join(item for item in section[num]['Organization'] if item is not None)
-							#names.append(org_name)
+							names.append(org_name)
 						else:
-							names.append(section[num]['Organization'])
+							names.append(section[num]['Organization'])	
 				elif 'Person' in section[num]:
 					names = []
 					#Iteration on the First, middle and Last name of each contributor
@@ -305,7 +337,13 @@ class XmlManager(object):
 				elif 'Title' in key:
 					self.series_dict['Title'] = section[key]	
 				elif 'Pubmed' in key:
-					self.series_dict['Pubmed'] = section[key]
+					if type(section[key]) is list:
+						for i in range(len(section[key])):
+							Ids = []
+							Ids.append(section[key][i])
+						self.series_dict['Pubmed'] = "|".join(Ids)
+					else:
+						self.series_dict['Pubmed'] = section[key]
 				elif 'Summary' in key:
 					self.series_dict['Summary'] = section[key]									
 
@@ -335,6 +373,7 @@ class XmlManager(object):
 		""" Reunites lines that are identical for the information in the columns listed (uniq titles) and concatenate their informations if it is not the same"""
 		uniq_lines = {}
 		for row in self.rows:
+		#	print row
 			#if the key (information) is in uniq_titles, then it is added  to the dictionnary uniq_cols
 			uniq_cols = {key:value for key, value in row.iteritems() if key in uniq_titles}
 			non_uniq_cols = {key:value for key, value in row.iteritems() if key not in uniq_titles}
@@ -344,6 +383,7 @@ class XmlManager(object):
 			if uniq_lines.get(string_dict, False):
 				for key in non_uniq_cols.iterkeys():
 					cell1 = uniq_lines[string_dict][key]
+				#	print cell1
 					cell2 = non_uniq_cols[key]
 					#splits the content of cell 1 and 2 
 					cell1 =  cell1.split(' | ')
