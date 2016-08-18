@@ -42,7 +42,7 @@ def main():
 	# Filter section for antibody. Take in argument the dictionnary, the columns in which we search and the column to modify
 	xml_manager.rows = filter_rows(xml_manager.rows, config.TARGET2, config.HISTONES_MARKS_DICO, ["7)assaytype","8)antibody", "9)target"], "5)clean_target")
 	# Filter section for the assay type. Take in argument the dictionnary, the columns in which we search and the column to modify
-	xml_manager.rows = filter_rows(xml_manager.rows, config.ASSAY_DICO, {}, ["7)assaytype", "11)Material_type", '13)cell_type', "17)description"], "4)clean_assay")
+	xml_manager.rows = filter_rows(xml_manager.rows, config.ASSAY_DICO, {}, ["7)assaytype", "11)Material_type", '13)cell_type', "17)Sample_description", "22)Protocol"], "4)clean_assay")
 	# Filter section for the cell type. Take in argument the dictionnary, the columns in which we search and the column to modify
 #	xml_manager.rows = filter_rows(xml_manager.rows, CELL_TYPE, {}, ["13)cell_type"], "12)clean_celltype")
 	# Filter section for tags and 'empty' lines in 'clean_target'. Takes in argument all the dictionnaries used

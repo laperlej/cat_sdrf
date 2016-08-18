@@ -93,6 +93,7 @@ CELL_TYPE_DICT = {
 #only keys are useful in this dictionnary, the rest won't serve
 FIELDNAMES=OrderedDict([
 	('1)identifier', lambda title, row: re.search('sourcename', title)),
+	('1,1)Sample_title', lambda title, row: re.search('$a', title)),
 	('2)filename', lambda title, row: re.search('filename', title)),
 	('3)organism', lambda title, row: re.search("\[organism\]", title)),
 	('4)clean_assay',lambda title, row: re.search('$a', title)),
@@ -108,7 +109,7 @@ FIELDNAMES=OrderedDict([
 	('14)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
 	('15)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
 	('16)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
-	('17)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
+	('17)Sample_description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
 	('18)raw_files', lambda title, row: re.search('$a', title)),
 	('19)all_supp_files', lambda title, row: re.search('fastq_uri', title)),
 	('20)SRA_files', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
@@ -124,6 +125,7 @@ FIELDNAMES=OrderedDict([
 ASSAY_DICO = OrderedDict([
 	('Non-genomic', '(non.genomic|transcriptomic|total\srna|nascent\srna|polya\srna)'),
 	('BrdU-ChIP', 'brdu\sip'),
+	('ATAC-Seq', 'atac-seq'),
 	('BrdU', 'brdu'),
 	("WGS", 'wgs'),
 	('ChIP-exo', 'chip-exo'),
@@ -152,6 +154,7 @@ HISTONES_MARKS_DICO = OrderedDict([
 	("POLII",'(pol2|pol\sɛ|\\u025b|pol\s?ii)'),
 	("POLI",'(pol1|pol\sα|pol\s?i|\\u03b1)'),
 	("POL31",'(pol31|pol\sδ|\\u03b4)'),
+	('POL', 'pol'),
 	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sk4|ab8895)'),
 	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sk4)'),
 	('H3K4me3', "(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sk4|ab8580|39159|305-34819|h3.?k4.?me3|ab8678)"),
@@ -174,6 +177,7 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H3K56ac','(h3k56ac|07-677)'),
 	('H3K56','(h3k56)'),
 	('H3K79me3', '(h3k79me3|trimethylated\sh3k79|ab2621)'),
+	('H3K79me', '(h3k79me|ab2886)'),
 	('H3K79', 'h3k79'),
 	('H3R2me2', '(h3r2me2)'),
 	('H3K9-14ac','(ach3\sk9,14|h3k9-14ac)'),
@@ -290,6 +294,7 @@ TARGET2 = OrderedDict ([
 	('Mcm2-7','(mcm2-7|um185)'),
 	('RNAPIII','(rpc1|53330002|rnapiii|rnap3)'),
 	('RNAPII','(rnapii|rnap2|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
+	('POL', 'pol'),
 	('tag_myc','(myc|05-419|9e10|9e11|ab56|dam1724025)'),
 	('tag_HA','(^ha|ha$|ha\s|anti.ha|ha11|12ca5|ab16918)'),
 	('tag_PK','(v5|sv5-pk1|pk|mca1360)'),
