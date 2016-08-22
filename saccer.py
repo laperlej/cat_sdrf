@@ -9,7 +9,7 @@ CELL_TYPE = OrderedDict ([
 modifications:
 	($a): regex visant à ne rien reconnaitre 
 	BDP1, dans les alias, enlevé 'B"' car problématique avec regex
-	Q0010,Q0017,Q0032,Q0092,Q0142,Q0143,Q0144,Q0182,Q0297: enlevés du dict d'alias, contenait regex non spécifique
+	Q0010,Q0017,Q0032,Q0092,Q0142,Q0143,Q0144,Q0182,Q0297: enlevés du dict d'alias, contenaient regex non spécifique
 	Q0255, dans les alias, enlevé ' "1 ',
 	Rpb3 est renommé RNAPII_RPB3 (consistance avec target dico)
 	Ndc10 est un synonyme de CBF2 (doit l'ajouter au dict de gène, sinon reconnu par Ndc1 avant de passer au 2e dict)
@@ -24,10 +24,12 @@ modifications:
 	Ajouté ORC dans gene_descr (souvent mentionné sans chiffre)
 	Ajouté FKH dans gene_descr (souvent mentionné sans chiffre)
 	DAM1 et CAB1: modification du regex, pour ne pas reconnaitre les numéros de série
-	REP1 et REP2: modificationd du regex pour ne pas reconnaitre rep(etition)1 et 2 
+	REP1 et REP2: modification du regex pour ne pas reconnaitre rep(etition)1 et 2 ; déplacés à la toute fin dans GENE_DICT
+	GSM1 : reconnait les GSM, placé à la toute fin de GENE_DICT
 	RPO21 est renommé RNAPII_RPB1 (consistance avec target_dico)
 	UBI4 déplacé avant BI2-3-4
 	Ho: (ho\s|ho$ ...) modification du regex pour être plus spécifique
+	Scc1 est un synonyme de MCD1; doit ajouter Scc1 dans le dict de gène sous MCD1
 """
 #dictionnaire des genes de s. cerevisiae seulement
 GENE_DICT = OrderedDict ([
@@ -1609,7 +1611,6 @@ GENE_DICT = OrderedDict ([
 	("GSF2","(gsf2|yml048w)"),
 	("GSH1","(gsh1|yjl101c)"),
 	("GSH2","(gsh2|yol049w)"),
-	("GSM1","(gsm1|yjl103c)"),
 	("GSP1","(gsp1|ylr293c)"),
 	("GSP2","(gsp2|yor185c)"),
 	("GSY1","(gsy1|yfr015c)"),
@@ -2198,7 +2199,7 @@ GENE_DICT = OrderedDict ([
 	("MBP1","(mbp1|ydl056w)"),
 	("MBR1","(mbr1|ykl093w)"),
 	("MCA1","(mca1\s|mca1$|yor197w)"),
-	("MCD1","(mcd1|ydl003w)"),
+	("MCD1","(mcd1|scc1|ydl003w)"),
 	("MCD4","(mcd4|ykl165c)"),
 	("MCH1","(mch1|ydl054c)"),
 	("MCH2","(mch2|ykl221w)"),
@@ -3405,8 +3406,6 @@ GENE_DICT = OrderedDict ([
 	("REG2","(reg2|ybr050c)"),
 	("REH1","(reh1|ylr387c)"),
 	("REI1","(rei1|ybr267w)"),
-	("REP1","(rep1\s|rep1$|r0020c)"),
-	("REP2","(rep2\s|rep2$|r0040c)"),
 	("RER1","(rer1|ycl001w)"),
 	("RER2","(rer2|ybr002c)"),
 	("RET1","(ret1|yor207c)"),
@@ -6633,7 +6632,10 @@ GENE_DICT = OrderedDict ([
 	("ZRT3","(zrt3|ykl175w)"),
 	("ZTA1","(zta1|ybr046c)"),
 	("ZUO1","(zuo1|ygr285c)"),
-	("ZWF1","(zwf1|ynl241c)")
+	("ZWF1","(zwf1|ynl241c)"),
+	("GSM1","(gsm1|yjl103c)"),
+	("REP1","(rep1\s|rep1$|r0020c)"),
+	("REP2","(rep2\s|rep2$|r0040c)")
 	])
 
 

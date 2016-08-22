@@ -52,7 +52,7 @@ def split_condition_aux(row, species):
 	#Assays type to discard
 	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs']
 	#file types needed
-	file_types = ['.fastq.gz', '.bam', '.sam', 'srx']
+	file_types = ['.fastq.gz', '.bam', '.sam', 'SRX']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
@@ -62,7 +62,7 @@ def split_condition_aux(row, species):
 	
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
-		   any(file_type in merge_cols(row, ["19)fastq", '20)SRA_file', '18)raw_files']) for file_type in file_types) and
+		   any(file_type in row["18)raw_files"] for file_type in file_types) and
 			#not "non-genomic" in row["Material_type"] and
 	 	   	not [False for discard_assay in discard_assays if discard_assay in row["4)clean_assay"].lower()])
 
@@ -90,9 +90,10 @@ CELL_TYPE_DICT = {
 	"pombe": pombe.CELL_TYPE,
 	"celegans": celegans.CELL_TYPE
 	}
-
+#only keys are useful in this dictionnary, the rest won't serve
 FIELDNAMES=OrderedDict([
 	('1)identifier', lambda title, row: re.search('sourcename', title)),
+	('1,1)Sample_title', lambda title, row: re.search('$a', title)),
 	('2)filename', lambda title, row: re.search('filename', title)),
 	('3)organism', lambda title, row: re.search("\[organism\]", title)),
 	('4)clean_assay',lambda title, row: re.search('$a', title)),
@@ -108,30 +109,31 @@ FIELDNAMES=OrderedDict([
 	('14)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
 	('15)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
 	('16)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
-	('17)description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
+	('17)Sample_description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
 	('18)raw_files', lambda title, row: re.search('$a', title)),
-	('19)fastq', lambda title, row: re.search('fastq_uri', title)),
-	('20)SRA_file', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
+	('19)all_supp_files', lambda title, row: re.search('fastq_uri', title)),
+	('20)SRA_files', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
 	('21)Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
 	('22)Protocol', lambda title, row: re.search('protocol_description_idf', title)),
 	('23)Author(s)', lambda title, row: re.search('author_list_idf', title)),
-	('24)Submission date', lambda title, row: re.search('submission_date_idf', title)),
+	('24)Submission Date', lambda title, row: re.search('submission_date_idf', title)),
 	('25)Release Date', lambda title, row: re.search('release_date_idf', title)),
 	('26)Pubmed ID', lambda title, row: re.search('pubmed_id_idf', title)),
 	('Other', lambda title, row: re.search('.*', title))])
 
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
-	('Non-genomic', 'non.genomic'),
-	('BrdU-ChIP', 'brdu\sip'),
+	('Non-genomic', '(non.genomic|transcriptomic|total\srna|nascent\srna|polya\srna)'),
+	('BrdU-ChIP', '(brdu\sip|brdu-ip)'),
+	('ATAC-Seq', 'atac-seq'),
 	('BrdU', 'brdu'),
 	("WGS", 'wgs'),
-	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|mononucleosomal\sdna)'),
-	("DNase-Seq",'dnase'),
 	('ChIP-exo', 'chip-exo'),
 	("ChIP-eSPAN", "chip-espan"),
 	('FAIRE-Seq', 'faire'),
-	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation)'),
+	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin)'),
+	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|mononucleosomal\sdna|micro-c)'),
+	("DNase-Seq",'dnase'),
 	("Bisulfite-Seq", "bisulfite"),
 	("Rip-Seq", 'rip-seq'),
 	("RNA-Seq", 'rna-seq'),
@@ -149,29 +151,34 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('RNAPII_CTD','(8wg16|ab817|mms-126r-200|rpb1)'),
 	('RNAPII_RPB3','(wp012|1Y26|ab202893|rpb3)'),
 	("POLIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
-	("POLII",'(pol2|pol\sɛ|pol\s?ii)'),
-	("POLI",'(pol1|pol\sα|pol\s?i)'),
-	("POL31",'(pol31|pol\sδ)'),
+	("POLII",'(pol2|pol\sɛ|\\u025b|pol\s?ii)'),
+	("POLI",'(pol1|pol\sα|pol\s?i|\\u03b1)'),
+	("POL31",'(pol31|pol\sδ|\\u03b4)'),
+	('POL', '(pol$|pol\s)'),
 	('H3K4me1', '(h3k4me1|monomethylated\sh3k4|h3\s.?mono\smethyl\sk4|ab8895)'),
 	('H3K4me2', '(h3k4me2|dimethylated\sh3k4|h3\s.?di\smethyl\sk4)'),
 	('H3K4me3', "(h3k4me3|trimethylated\sh3k4|h3\s.?tri\smethyl\sk4|ab8580|39159|305-34819|h3.?k4.?me3|ab8678)"),
+	('H3K4ac', '(h3k4ac|07-539)'),
+	('H3K4','(h3k4)'),
+	('H3K9ac','(h3k9ac|06-942)'),
+	('H3K9me3','(h3k9me3|h3.?k9\s?me3|ab8898)'),
+	('H3K9me2','(h3k9me2|h3.?k9\s?me2)'),
+	('H3K9','(h3k9)'),
 	('H3K14ac', '(h3k14ac|07-353)'),
 	('H3K14', '(h3k14)'),
+	('H3K18ac', '(h3k18ac|ab1191)'),
+	('H3K23ac', '(h3k23ac|07-355)'),
+	('H3K27ac', '(h3k27ac|07-360)'),
+	('H3K27me3', '(h3k27me3)'),
 	('H3K36me3','(h3k36me3|ab9050|300-95289)'),
 	('H3K36me2','(h3k36me2)'),
 	('H3K36me','(h3k36me)'),
 	('H3K36','(h3k36)'),
 	('H3K56ac','(h3k56ac|07-677)'),
 	('H3K56','(h3k56)'),
-	('H3K79me3', '(h3k79me3)'),
+	('H3K79me3', '(h3k79me3|trimethylated\sh3k79|ab2621)'),
+	('H3K79me', '(h3k79me|ab2886)'),
 	('H3K79', 'h3k79'),
-	('H3K9ac','(h3k9ac|06-942)'),
-	('H3K9me3','(h3k9me3|h3.?k9\s?me3|ab8898)'),
-	('H3K9me2','(h3k9me2|h3.?k9\s?me2)'),
-	('H3K9','(h3k9)'),
-	('H3K4me3', '(h3.?k4.?me3)'),
-	('H3K4','(h3k4)'),
-	('H3K27me3', '(h3k27me3)'),
 	('H3R2me2', '(h3r2me2)'),
 	('H3K9-14ac','(ach3\sk9,14|h3k9-14ac)'),
 	('H3','(h3|ab12079|05-928|07-690|ab1791)'),
@@ -183,10 +190,14 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H4K44','(h4k44)'),
 	('H4K5ac','(h4k5ac|07-327)'),
 	('H4K5','(h4k5)'),
+	('H4K8ac', '(h4k8ac|07-328)'),
 	('H4K20me1','(h4k20me1|ab9051)'),
+	('H4R3me2s','(h4r3me2s|ab5823)'),
+	('H4R3me','(h4r3me|ab17339)'),
 	('H4ac','(h4ac|39177)'),
 	('H4','(h4|ab7311)'),
 	('H2A.Z','(htz1|h2a\.?z|pht1|ab4626)'),
+	('H2AK5ac', '(h2ak5ac|ab45152)'),
 	('H2A', '(h2a|ab13923)'),
 	('H2B', '(htb1|htb2|h2b|ab1790)')])
 #Target and antibody dictionnary (won't be needed anymore)
@@ -281,9 +292,6 @@ TARGET2 = OrderedDict ([
 	('TAF7','ptr6'),
 	('SIR2', '(sir2|dam1514081|07131|sirt1)'),
 	('Mcm2-7','(mcm2-7|um185)'),
-	("POLIII",'(pol3$|pol3\s|pol3-|pol\s?iii)'),
-	("POLII",'(pol2|pol\sɛ|pol\s?ii)'),
-	("POLI",'(pol1|pol\sα|pol\s?i)'),
 	('RNAPIII','(rpc1|53330002|rnapiii|rnap3)'),
 	('RNAPII','(rnapii|rnap2|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
 	('tag_myc','(myc|05-419|9e10|9e11|ab56|dam1724025)'),
