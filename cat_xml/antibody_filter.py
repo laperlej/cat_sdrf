@@ -9,36 +9,37 @@ from collections import OrderedDict
 
 #Joins the content of columns (input_cols) with '|' as separator
 def merge_cols(row, input_cols):
-	return "|".join(row[input_col].lower() for input_col in input_cols)
+	return "|".join(row[input_col].lower() for input_col in input_cols if row[input_col] is not None)
 
-def raw_files_filter_rows(rows, output_col):
+def raw_files_filter_rows(rows, output_col1, output_col2 ):
 	for row in rows:
-		row = raw_files_filter_row(row, output_col)
+		row = raw_files_filter_row(row, output_col1, output_col2)
 	return rows
 
-def raw_files_filter_row(row, output_col):
+def raw_files_filter_row(row, output_col1, output_col2):
 	""" Fills the 'raw_files column with preferencially fastq, else with .sra or finally with .bam or .sam files"""
 	#Probably won't find fastq in GEO
 	if 'fastq.gz' in row['19)all_supp_files']:
-		row[output_col] = row['19)all_supp_files']
+		row[output_col1] = row['19)all_supp_files']
 		return row
 	else:
-		SRX_SRR_combination = sra_files(row, output_col)
+		SRX_SRR_combination = sra_files(row, output_col1, output_col2)
 		if SRX_SRR_combination is not None:
 			return SRX_SRR_combination
 		else:
-			return bam_sam_filter_row(row, output_col)
+			return bam_sam_filter_row(row, output_col1)
 
-def sra_files(row, output_col):
-	""" Makes the combination of SRX and SRR to compose the url for the .sra files"""
+def sra_files(row, output_col1, output_col2):
+	""" Makes the combination of SRX and SRR to compose the url for the .sra files; fills the col '20)SRA_accessions' with the SRX and SRR accessions for xml files"""
 	sep = "/"
 	url = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra"
 	URL_list = []
 	if url in row['19)all_supp_files']:
 		match0 = re.search('(ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra/\S+)', row['19)all_supp_files'])
 		if match0:
-			row[output_col] = match0.group(1)
+			row[output_col1] = match0.group(1)
 		return row	
+	#Important part for sdrf files
 	elif 'SRX' in row['19)all_supp_files'] and 'SRR' in row['19)all_supp_files']:
 		match1 = re.search('(SRX\d{6,7})', row['19)all_supp_files'])
 		#Finds all the occurences and returns them as a list
@@ -49,14 +50,16 @@ def sra_files(row, output_col):
 				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:9]])
 			if len(match1.group(1))==10:
 				# Forms SRX part as in SRX/SRX1234/SRX1234567
-				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:10]])
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:7], match1.group(1)[:10]])
 			for SRR in match2:
 				end_part = SRR + '.sra'
 				# Adds the long part of the url and joins the different parts
 				new_url = sep.join([url, SRXpart, SRR, end_part])
 				URL_list.append(new_url) 
+				SRR_list.append(SRR)
 			new_value = " | ".join(URL_list)
-			row[output_col] = new_value
+			row[output_col1] = new_value
+			row[output_col2] = SRXpart + "|" + "|".join(SRR_list) 
 			return row
 	elif 'SRX' in row['19)all_supp_files']:
 		match1 = re.search('(SRX\d{6,7})', row['19)all_supp_files'])
@@ -66,23 +69,24 @@ def sra_files(row, output_col):
 				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:9]])
 			if len(match1.group(1))==10:
 				# Forms SRX part as in SRX/SRX1234/SRX1234567
-				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:6], match1.group(1)[:10]])
+				SRXpart= sep.join([match1.group(1)[:3], match1.group(1)[:7], match1.group(1)[:10]])
 				# Add the long part of the url to the rest
 			new_value = sep.join([url, SRXpart])
-			row[output_col] = new_value
+			row[output_col1] = new_value
+			row[output_col2] = SRXpart
 			return row
 
 # Searches for specific file type and returns the complete file name if the file type is found
-def bam_sam_filter_row(row, output_col):
+def bam_sam_filter_row(row, output_col1):
 	filetypes = {'BAM':'(\S+\.bam|\S+\.bam.wig)', 'SAM':'(\S+\.sam)', 'supplementary file':'(supplementary\sfile\s\S+\.sam)'}
 	new_value = ""
-	for filetype in filetypes.keys():
+	for filetype in filetypes:
 		searchtarget = merge_cols(row, ["Other", "22)Protocol", '19)all_supp_files'])
 		match =  re.search(filetypes[filetype], searchtarget)
 		if match:
 			new_value = match.group(1)
 			break
-	row[output_col] = new_value
+	row[output_col1] = new_value
 	return row
 
 
@@ -112,7 +116,7 @@ def filter_row(row, all_targets, input_cols, output_col):
 	
 	#Iterates on a target-regex dictionnary	
 	new_value = ""
-	for info in all_targets.keys():
+	for info in all_targets:
 		# Defines the search target as the concatenation of some columns (by merge_cols; also converts to lowercase)
 		searchtarget = merge_cols(row, input_cols)
 		#If there is a match between the regex of the target and the concatenated columns	
@@ -134,7 +138,7 @@ def assign_tag_multiple(rows, tag_dico, histones_dico, gene_dico, gene_descrip_d
 		gene_dico: gene dictionnary (with regex)
 		gene_descrip_dico: gene-alias dictionnary (not redundant with the gene dictionnary)
 		chip_dico: regex dictionnary matching the target of the ChIP (.... chip or chip of ...)
-		antibody_dico: antibodies' catalog number doctionnary
+		antibody_dico: antibodies' catalog number dictionnary
 	"""
 	#Function permiting the use of more CPU (accelerates the process)
 	import multiprocessing
@@ -255,14 +259,14 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 
 def search_target(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico):
 	""" This function searches for a target that is a gene by comparing the content of the gene dictionnary with the columns 'assaytype', 'antibody' and 'target'"""
-	for gene in gene_dico.keys():
+	for gene in gene_dico:
 		if re.search(gene_dico[gene],merge_cols(row,["7)assaytype", "8)antibody", "9)target"])):
 			return gene, "target (2)"
 	return None	
 
 def search_antibody(row, antibody_dico):
 	""" This function searches for antibodies' catalog number in columns 'cell_type' and 'description' """
-	for antibody in antibody_dico.keys():
+	for antibody in antibody_dico:
 		if re.search(antibody_dico[antibody],merge_cols(row,['13)cell_type', "17)Sample_description"])):
 			return antibody, "antibody no (2)"	
 		elif re.search(antibody_dico[antibody],merge_cols(row,[ "1,1)Sample_title"])):	
@@ -277,31 +281,31 @@ def compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 #	match2 = re.search(tag_dico[tagged],merge_cols(row,["1,1)Sample_title"]))
 	if match:
 		#compares tag's match with the histone dict
-		for hist in histones_dico.keys():
+		for hist in histones_dico:
 			if re.search(histones_dico[hist], match.group(1)):	
 				return hist, "tag to histone (2)"
 		#compares tag's match with the gene dict
-		for gene in gene_dico.keys():
+		for gene in gene_dico:
 			if re.search(gene_dico[gene], match.group(1)):
 				return gene, "tag to gene (3)"
 		
 		#compares tag's match with the alias dict
-		for gene in gene_descrip_dico.keys():
+		for gene in gene_descrip_dico:
 			if re.search(gene_descrip_dico[gene], match.group(1)):	
 				return gene, "tag to gene descr (4)"
 	return None			
 """	elif match2:
 		#compares tag's match with the histone dict
-		for hist in histones_dico.keys():
+		for hist in histones_dico:
 			if re.search(histones_dico[hist], match2.group(1)):	
 				return hist, "tag to histone (2)"
 		#compares tag's match with the gene dict
-		for gene in gene_dico.keys():
+		for gene in gene_dico:
 			if re.search(gene_dico[gene], match2.group(1)):
 				return gene, "tag to gene (3)"
 		
 		#compares tag's match with the alias dict
-		for gene in gene_descrip_dico.keys():
+		for gene in gene_descrip_dico:
 			if re.search(gene_descrip_dico[gene], match2.group(1)):	
 				return gene, "tag to gene descr (4)"
 	return None """
@@ -309,37 +313,37 @@ def compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 def compare_chip1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico): 
 	""" This function searches for the keyword 'ChIP' and compares what comes before 'ChIP' with the histone, gene and alias dictionnaries"""
 	#Iterates on the chip_dico regex (in order to find the target of the ChIP)
-	for regex in chip_dico.keys():
+	for regex in chip_dico:
 		match = re.search(chip_dico[regex], merge_cols(row,['13)cell_type', "17)Sample_description"]))
 	#	match2 = re.search(chip_dico[regex], merge_cols(row,[ "1,1)Sample_title"]))
 		if match:
-			for hist in histones_dico.keys():
+			for hist in histones_dico:
 				#compares regex's match with the histone dict
 				if re.search(histones_dico[hist], match.group(1)):
 					return hist, "chip to histone (3)"
 				
-			for gene in gene_dico.keys():
+			for gene in gene_dico:
 				#compares regex's match with the gene dict
 				if re.search(gene_dico[gene], match.group(1)):
 					return gene, "chip to gene (3)"	
 				
-			for gene in gene_descrip_dico.keys():
+			for gene in gene_descrip_dico:
 				#compares regex's match with the alias dict
 				if re.search(gene_descrip_dico[gene], match.group(1)):
 					return gene, "chip to gene descr (4)"
 	return None				
 	"""	if match2:
-			for hist in histones_dico.keys():
+			for hist in histones_dico:
 				#compares regex's match with the histone dict
 				if re.search(histones_dico[hist], match2.group(1)):
 					return hist, "chip to histone (3)"
 				
-			for gene in gene_dico.keys():
+			for gene in gene_dico:
 				#compares regex's match with the gene dict
 				if re.search(gene_dico[gene], match2.group(1)):
 					return gene, "chip to gene (3)"	
 				
-			for gene in gene_descrip_dico.keys():
+			for gene in gene_descrip_dico:
 				#compares regex's match with the alias dict
 				if re.search(gene_descrip_dico[gene], match2.group(1)):
 					return gene, "chip to gene descr (4)"
@@ -353,16 +357,16 @@ def compare_tag_larger1(row, tag_dico, histones_dico, gene_dico, gene_descrip_di
 	match = re.search(tag_dico[tagged],merge_cols(row,["14)strain", "15)genotype"]))
 	if match:
 		#compares tag's match with the histone dict
-		for hist in histones_dico.keys():
+		for hist in histones_dico:
 			if re.search(histones_dico[hist], match.group(1)):	
 				return hist, "tag to histone (3)"
 		#compares tag's match with the gene dict
-		for gene in gene_dico.keys():
+		for gene in gene_dico:
 			if re.search(gene_dico[gene], match.group(1)):
 				return gene, "tag to gene (4)"
 		
 		#compares tag's match with the alias dict
-		for gene in gene_descrip_dico.keys():
+		for gene in gene_descrip_dico:
 			if re.search(gene_descrip_dico[gene], match.group(1)):	
 				return gene, "tag to gene descr (4)"
 	return None
@@ -376,28 +380,28 @@ def compare_tag2(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 		match2 = re.search(tag_dico[tag],merge_cols(row,[ "1,1)Sample_title"]))
 		if match:
 			#compares tag's match with the histone dict
-			for hist in histones_dico.keys():
+			for hist in histones_dico:
 				if re.search(histones_dico[hist], match.group(1)):	
 					return hist, "search tag to histone (2)"
 			#compares tag's match with the gene dict
-			for gene in gene_dico.keys():
+			for gene in gene_dico:
 				if re.search(gene_dico[gene], match.group(1)):
 					return gene, "search tag to gene (4)"
 			#compares tag's match with the alias dict
-			for gene in gene_descrip_dico.keys():
+			for gene in gene_descrip_dico:
 				if re.search(gene_descrip_dico[gene], match.group(1)):	
 					return gene, "search tag to gene descr (4)"
 		if match2:
 			#compares tag's match with the histone dict
-			for hist in histones_dico.keys():
+			for hist in histones_dico:
 				if re.search(histones_dico[hist], match2.group(1)):	
 					return hist, "search tag to histone (2)"
 			#compares tag's match with the gene dict
-			for gene in gene_dico.keys():
+			for gene in gene_dico:
 				if re.search(gene_dico[gene], match2.group(1)):
 					return gene, "search tag to gene (4)"
 			#compares tag's match with the alias dict
-			for gene in gene_descrip_dico.keys():
+			for gene in gene_descrip_dico:
 				if re.search(gene_descrip_dico[gene], match2.group(1)):	
 					return gene, "search tag to gene descr (4)"			
 	return None
@@ -409,15 +413,15 @@ def compare_tag_larger2(row, tag_dico, histones_dico, gene_dico, gene_descrip_di
 		match = re.search(tag_dico[tag],merge_cols(row,[ "14)strain", "15)genotype"]))
 		if match:
 			#compares tag's match with the histone dict
-			for hist in histones_dico.keys():
+			for hist in histones_dico:
 				if re.search(histones_dico[hist], match.group(1)):	
 					return hist, "search tag to histone (2)"
 			#compares tag's match with the gene dict
-			for gene in gene_dico.keys():
+			for gene in gene_dico:
 				if re.search(gene_dico[gene], match.group(1)):
 					return gene, "search tag to gene (4)"
 			#compares tag's match with the alias dict
-			for gene in gene_descrip_dico.keys():
+			for gene in gene_descrip_dico:
 				if re.search(gene_descrip_dico[gene], match.group(1)):	
 					return gene, "search tag to gene descr (4)"				
 	return None		
@@ -425,20 +429,21 @@ def compare_tag_larger2(row, tag_dico, histones_dico, gene_dico, gene_descrip_di
 def compare_chip2(row, histones_dico, gene_dico, gene_descrip_dico, chip_dico):
 	""" This function searches for the keyword 'ChIP' and compares what comes before 'ChIP' with the histone, gene and alias dictionnaries"""
 	#Iterates on the chip_dico regex (in order to find the target of the ChIP)
-	for regex in chip_dico.keys():
-		match = re.search(chip_dico[regex], merge_cols(row,["1)identifier", "1,1)Sample_title", "14)strain", "15)genotype"]))
+	for regex in chip_dico:
+		#match = re.search(chip_dico[regex], merge_cols(row,["1)identifier", "1,1)Sample_title", "14)strain", "15)genotype"]))
+		match = re.search(chip_dico[regex], merge_cols(row,["1,1)Sample_title", "14)strain", "15)genotype"]))
 		if match:
-			for hist in histones_dico.keys():
+			for hist in histones_dico:
 				#compares the regex's match with the histone dictionnary
 				if re.search(histones_dico[hist], match.group(1)):
 					return hist, "chip to histone (4)"
 				
-			for gene in gene_dico.keys():
+			for gene in gene_dico:
 				#compares the regex's match with the gene dictionnary
 				if re.search(gene_dico[gene], match.group(1)):
 					return gene, "chip to gene (4)"	
 				
-			for gene in gene_descrip_dico.keys():
+			for gene in gene_descrip_dico:
 				#compares the regex's match with the alias dictionnary
 				if re.search(gene_descrip_dico[gene], match.group(1)):
 					return gene, "chip to gene descr (4)"
@@ -449,22 +454,23 @@ def compare_directly(row, histones_dico, gene_dico, gene_descrip_dico):
 	""" Compares the content of certain columns with dictionnaries in sequence (histone, gene, alias)"""
 	#1rst sweep, most specific (normally)
 	#iterate on the histone dictionnary and compares with specific column
-	for hist in histones_dico.keys():
-		if re.search(histones_dico[hist], merge_cols(row, ["1)identifier", "8)antibody", "9)target", "17)Sample_description"])):
+	for hist in histones_dico:
+		#if re.search(histones_dico[hist], merge_cols(row, ["1)identifier", "8)antibody", "9)target", "17)Sample_description"])):
+		if re.search(histones_dico[hist], merge_cols(row, ["8)antibody", "9)target", "17)Sample_description"])):
 			return hist, "histone mark (3)"
 		elif re.search(histones_dico[hist], row["15)genotype"].lower()):
 			return hist, "histone mark (4)"
 	#iterates on the gene dictionnary and compares with specific column
-	for gene in gene_dico.keys():
+	for gene in gene_dico:
 		if re.search(gene_dico[gene], merge_cols(row, ["8)antibody","9)target", "17)Sample_description"])):
 			return gene, "gene (4)"
 	#iterates on the alias dictionnary and compares with specific columns 
-	for gene in gene_descrip_dico.keys():
+	for gene in gene_descrip_dico:
 		if re.search(gene_descrip_dico[gene], merge_cols(row, ["8)antibody","9)target", "17)Sample_description"])):
 			return gene, "gene descr (5)"
 	#2nd sweep, less specific
 	#iterate on the gene dictionnary and compares with less specific columns
-	for gene in gene_dico.keys():
+	for gene in gene_dico:
 		if re.search(gene_dico[gene], row['1,1)Sample_title'].lower()):
 			return gene, "gene (5)"	
 		elif re.search(gene_dico[gene], merge_cols(row,[ "14)strain"])):
@@ -472,7 +478,7 @@ def compare_directly(row, histones_dico, gene_dico, gene_descrip_dico):
 		elif re.search(gene_dico[gene], row["15)genotype"].lower()):
 			return gene, "gene (5)"		
 	#iterate on the alias dictionnary and compares with less specific columns
-	for gene in gene_descrip_dico.keys():
+	for gene in gene_descrip_dico:
 		if re.search(gene_descrip_dico[gene], row['1,1)Sample_title'].lower()):
 			return gene, "gene descr (5)"
 		elif re.search(gene_descrip_dico[gene], merge_cols(row,[ "14)strain"])):
@@ -482,16 +488,18 @@ def compare_directly(row, histones_dico, gene_dico, gene_descrip_dico):
 
 	#3rd sweep, least specific
 	#iterate on the histone dictionnary
-	for hist in histones_dico.keys():
-		if re.search(histones_dico[hist], row["Other"]):
+	for hist in histones_dico:
+		if re.search(histones_dico[hist], row["Other"].lower()):
 			return hist, "histone mark (5)"
 	#iterate on the gene dictionnary and compares with least specific columns
-	for gene in gene_dico.keys():
-		if re.search(gene_dico[gene], merge_cols(row, ["1)identifier", "Other"])):
+	for gene in gene_dico:
+		#if re.search(gene_dico[gene], merge_cols(row, ["1)identifier", "Other"])):
+		if re.search(gene_dico[gene], merge_cols(row, ["Other"])):
 			return gene, "gene (6)"
 	#iterate on the alias dictionnary and compares with least specific columns
-	for gene in gene_descrip_dico.keys():
-		if re.search(gene_descrip_dico[gene], merge_cols(row, ["1)identifier", "Other"])):
+	for gene in gene_descrip_dico:
+		#if re.search(gene_descrip_dico[gene], merge_cols(row, ["1)identifier", "Other"])):
+		if re.search(gene_descrip_dico[gene], merge_cols(row, ["Other"])):
 			return gene, "gene descr (6)"		
 
 	return row["5)clean_target"], "target_dico (1)"

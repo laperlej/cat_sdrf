@@ -112,7 +112,7 @@ FIELDNAMES=OrderedDict([
 	('17)Sample_description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
 	('18)raw_files', lambda title, row: re.search('$a', title)),
 	('19)all_supp_files', lambda title, row: re.search('fastq_uri', title)),
-	('20)SRA_files', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
+	('20)SRA_accessions', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
 	('21)Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
 	('22)Protocol', lambda title, row: re.search('protocol_description_idf', title)),
 	('23)Author(s)', lambda title, row: re.search('author_list_idf', title)),
