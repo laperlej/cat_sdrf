@@ -59,6 +59,7 @@ class XmlManager(object):
 					self.target_list = []
 					self.assay_list = []
 					self.material_list = []
+					self.cell_list = []
 					self.gene_list = []
 					self.strain_list = []
 					self.platform_list = []
@@ -170,7 +171,8 @@ class XmlManager(object):
 						row['10)treatment'] = sep.join(self.treatment_list)
 						#Used tag: 'Library-Source', 'Molecule' in 'Channel' section
 						row['11)Material_type'] = sep.join(self.material_list)
-						#row 12)clean_celltype and 13)cell_type not very useful now
+						row ['12)clean_celltype'] = sep.join(self.cell_list)
+						#13)cell_type not very useful now
 						#Used tag:
 						row['14)strain'] = sep.join(self.strain_list)
 						#Used tag:
@@ -215,13 +217,16 @@ class XmlManager(object):
 			self.org_list.append(section['#text'])		
 	def characteristics_sample(self, section):
 		key_value = ''
-		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'DMSO', 'stress', 'concentration', 'mnase', 'agent', 'age', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'Sex' , 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'Cy3', 'Cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna']
+		cell_type = ['cell type', 'cell line']
+		#carefull that 'tag' is not specific but it is used as a tag
+		target = ['protein', 'epitope', 'target', 'tag', 'flag', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein']
+		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'dmso', 'stress', 'concentration', 'mnase', 'agent', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'cy3', 'cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna', 'mixed percentage', 'incubation', 'harvest', 'passage']
+		#removed : 'rna', 'dna'
+		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'Input', 'input', 'chromatin']
+		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
+		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation']
 		
-		material = ['molecule', 'tissue', 'organelle', 'rna', 'RNA', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'DNA', 'nucleosomal DNA', 'Input', 'input', 'chromatin']
-		strain = ['strain', 'Strain', 'variant', 'mutant', 'yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
-		gene = ['genetic', 'genotype', 'background', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation']
-		target = ['protein', 'epitope', 'target', 'tag', 'flag', 'ChIP', 'h2b', 'histone', 'IP against']
-		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'experiment', 'isolate number', 'index pair', 'grna libraries',  'matched wild type sample', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index', 'strategy',  'sort', 'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Biotin', 'biotin', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'Library', 'sequenced with', 'matched wild type sample']
+		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'experiment', 'isolate number', 'index pair', 'grna libraries',  'matched wild type sample', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index', 'strategy',  'sort', 'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Biotin', 'biotin', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
 		if type(section) is list:
 			#Iteration on the list, which is often composed of orderedDict ([('@tag', '...') , ('#text', '...')])
 			for list_index in range(len(section)):
@@ -229,50 +234,69 @@ class XmlManager(object):
 				if type(section[list_index]) is not OrderedDict:
 					self.other_stuff_sample(section[list_index])
 				#When the components of the list are OrderedDict 
-				#elif 'processed data file' in section[list_index]['#text']:
-				#	print (section[list_index]['#text'])
-				#	self.other_stuff_sample(section[list_index]['#text'])
-				elif any(condition in section[list_index]['@tag'] for condition in conditions):
-					# Assign to the string key_value both the key and the value (like 'Mnase concentration : 10 mM')
-					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
-					self.treatment_list.append(key_value)
+				#Used tags: 'cell type', 'cell line', 'tissue' (catches 'tissue/cell line')
+				elif any(item in section[list_index]['@tag'].lower() for item in cell_type):
+					self.cell_list.append(section[list_index]['#text'])
+				# Used tag: 'protocol', but does not contain much info; catches 'protocol', 'growth protocol' ,'treatment protocol', 'culture protocol', 'harvest method' and also 'growt protocol';
+				elif 'protocol' in section[list_index]['@tag'].lower() or 'harvest method' in section[list_index]['@tag'].lower():	
+					self.protocol_list.append(section[list_index]['#text'])	
+				#Used tag here catches 'Treatment', 'culture condition', 'growth condition' and 'growth protocol'; valid info
 				elif 'mg/l' in section[list_index]['#text'] or 'uM' in section[list_index]['#text']:
-					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					key_value = section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
 					self.treatment_list.append(section[list_index]['#text'])	
-				elif any(item in section[list_index]['@tag'] for item in target):
-					self.target_list.append(key_value)
+				#Some info; valid; catches tag 'ip' with a more specific keyword
 				elif 'IP against' in section[list_index]['#text']:
 					self.target_list.append(section[list_index]['#text'])		
+				# Used tag 'antibody' catches 'antibody', 'chip-antibody', 'chip antibody', 'chip antibody lot #', 'chip antibody cat. #', 'chip antibody vendor', 'chip antibody reference'
 				elif 'antibody' in section[list_index]['#text'] or 'antibody' in section[list_index]['@tag']:
 					self.antibody_list.append(section[list_index]['#text'])
+				#Some info; valid
 				elif 'catalog' in section[list_index]['@tag']:
 					self.antibody_list.append(section[list_index]['#text'])	
+				# Used tag: 'sample type'; Maybe should go in Material; some lines are descriptive
 				elif 'sample type' in section[list_index]['@tag']:
 					self.descrip_list.append(section[list_index]['#text'])
+				#Used tag: 'genotype', '' ; lots of info; valid
 				elif any(item in section[list_index]['@tag'] for item in gene):
 					self.gene_list.append(section[list_index]['#text'])
-				elif any(item in section[list_index]['@tag'] for item in strain):
+				#Lots of info; valid
+				elif any(item in section[list_index]['@tag'].lower() for item in strain):
 					self.strain_list.append(section[list_index]['#text'])
+				# Used tag : 'library selection'; keyword 'assay' catches 'assayed molecue' and 'assay'
+				elif 'assay' in section[list_index]['@tag'] or 'library selection' in section[list_index]['@tag']:
+					self.assay_list.append(section[list_index]['#text'])
+				# Used tag: 'library' catches 'library strategy' and 'library type'
+				elif 'library' in section[list_index]['@tag'].lower():
+					self.assay_list.append(section[list_index]['#text'])
+				#Lots of info; valid; many used tags: 'material type', 'molecule subtype', 'tissue', 'cell part', 'organelle', 'rna subtype', 'mrna type', 'stable expression of shrna'
 				elif any(item in section[list_index]['@tag'] for item in material):
+					#nothing here
 					if any(item in section[list_index]['@tag'] for item in junk):
 						key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
 						self.other_stuff_sample(key_value)
+					#nothing here
 					elif 'rna subset' in section[list_index]['@tag'].lower():
 						self.descrip_list.append(section[list_index]['#text'])
 					else:
-						self.material_list.append(section[list_index]['#text'])	
-				# Used tag: 'library' catches 'library strategy' and 'library type'
-				elif 'library' in section[list_index]['@tag']:
-					self.assay_list.append(section[list_index]['#text'])
-				# Used tag : 'assay' catches 'assayed molecue' and 'assay'
-				elif 'assay' in section[list_index]['@tag']:
-					self.assay_list.append(section[list_index]['#text'])	
-				# Used tag: 'protocol', but does not contain much info; catches also 'growt protocol'; 2nd used tag: 'harvest', catches 'harvest method'
-				elif 'protocol' in section[list_index]['@tag'] or 'harvest' in section[list_index]['@tag']:	
-					self.protocol_list.append(section[list_index]['#text'])	
-				elif 'od' in section[list_index]['@tag']:
+						self.material_list.append(section[list_index]['#text'])
+				#Lots of info here; to many used tags for treatment
+				elif any(condition in section[list_index]['@tag'].lower() for condition in conditions):
+					# Assign to the string key_value both the key and the value (like 'Mnase concentration : 10 mM')
 					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
-					self.treatment_list.append(key_value)		
+					self.treatment_list.append(key_value)
+				# Valid info, but for 'tag': 'MATa ade2-1 can1-100 HIS3 leu2-3,112 trp1-1 ura3-1 RAD5+ ISW1-FL3-KanMX snf2-delta::URA3'; 'tag' not specific
+				elif any(item in section[list_index]['@tag'] for item in target):
+					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					self.target_list.append(key_value)		
+				elif any(item in section[list_index]['@tag'] for item in junk):
+					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					self.other_stuff_sample(key_value)
+				#Not specific tags, but valid info
+				elif 'od' in section[list_index]['@tag'] or 'age' in section[list_index]['@tag']:
+					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					self.treatment_list.append(key_value)
+				elif 'rna' in section[list_index]['@tag'].lower():
+					self.material_list.append(section[list_index]['#text'])
 				else:
 					# The leftover goes in the 'Other' section
 					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
@@ -280,33 +304,47 @@ class XmlManager(object):
 				
 		elif type(section) is OrderedDict:
 			for key in section.keys():
-				if any(condition in section['@tag'] for condition in conditions):
-					self.treatment_list.append(section['#text'])
-				elif 'antibody' in section['@tag']:
+				#Some info; valid
+				if 'antibody' in section['@tag']:
 					self.antibody_list.append(section['#text'])
+				# Some info here; valid
+				elif 'stage' in section['@tag']:
+					key_value = section['@tag']+ ': ' + section['#text']
+					self.treatment_list.append(key_value)
+				#Nothing here
 				elif any(item in section['@tag'] for item in target):
 					self.target_list.append(section['#text'])	
 		#		elif section['@tag']:	
 		#			self.descrip_list.append(section['#text'])
+				# Lots of info; valid
 				elif any(item in section['@tag']for item in gene):
 					self.gene_list.append(section['#text'])
-				#Nothing here
+				#Info going here; valid
 				elif any(item in section['@tag'] for item in strain):
+					#Not sure if should go in genotype, strain or description
 					if 'Strain Background is ' in section['@tag']:
-					#	print (section['@tag'])
-					#	print (section['#text'])
 						key_value = section['@tag'] + ': ' + section['#text']
-						self.descrip_list.append (key_value)
+						self.strain_list.append(key_value)
 					else:
 						#lots of info goes here
 						self.strain_list.append(section['#text'])
-				#Nothing here
+				# Some info; valid
+				elif any(item in section['@tag'] for item in cell_type):
+					self.cell_list.append(section['#text'])
+				#lots of info; valid
+				elif any(condition in section['@tag'] for condition in conditions):
+					key_value = section['@tag']+ ': ' + section['#text']
+					self.treatment_list.append(key_value)
+				#Some info here
 				elif any(item in section['@tag'] for item in material):	
 					self.material_list.append(section['#text'])
-				# noting goes here
+				# Some info goes here; valid
 				elif 'protocol' in section['@tag'] or 'harvest' in section['@tag']:	
 					self.protocol_list.append(section['#text'])	
-				#elif any(item in section['@tag'] for item in junk):
+				#Not specific tags
+				elif 'od' in section['@tag'] or 'age' in section['@tag']:
+					key_value =  section['@tag'] + ' : ' +  section['#text']
+					self.treatment_list.append(key_value)
 				else:
 					# The leftover goes in the 'Other' section
 					key_value = section['@tag']+ ': ' + section['#text']
@@ -504,7 +542,6 @@ class XmlManager(object):
 			else:
 				uniq_lines[string_dict]= non_uniq_cols
 		self.rows = [dict(itertools.chain({key.encode('utf-8'):value.encode('utf-8') for key, value in json.loads(key).items()}.items(), value.items())) for key,value in uniq_lines.items()]
-#		print (self.rows) #in the shell, the special characters are written \u2103 and \xb5
 
 	#not needed with xml files
 	def empty_row(self):
