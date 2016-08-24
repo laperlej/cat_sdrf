@@ -50,7 +50,7 @@ PREPROCESS_7 = lambda csvfile, row: operator.setitem(row, "protocol_description_
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
-	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs']
+	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'Bisulfite-Seq']
 	#file types needed
 	file_types = ['.fastq.gz', '.bam', '.sam', 'SRX']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
