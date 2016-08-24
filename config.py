@@ -169,7 +169,6 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H3K9me3','(h3k9me3|h3.?k9\s?me3|ab8898)'),
 	('H3K9me2','(h3k9me2|h3.?k9\s?me2)'),
 	('H3K9','(h3k9)'),
-	('H3K4me3', '(h3.?k4.?me3)'),
 	('H3K4','(h3k4)'),
 	('H3K27me3', '(h3k27me3)'),
 	('H3R2me2', '(h3r2me2)'),

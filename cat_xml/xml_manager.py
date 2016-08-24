@@ -29,7 +29,7 @@ class XmlManager(object):
 		#mon_dict = xmltodict.parse(opened_file.read(), encoding='utf-8')
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
-		special_characters = {'∆': 'Delta', 'ɛ': 'Epsilon', 'δ': 'Delta', 'α':'alpha'}
+		special_characters = {'∆': 'Delta', 'ɛ': 'Epsilon', 'δ': 'Delta', 'α':'Alpha'}
 		if 'Series' in mon_dict['MINiML']:
 			# information left from GSE section of file: 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Accession database', 'Type', 'Contributor-Ref', 'Sample-Ref', 'Contact-Ref', 'Supplementary-Data' and 'Relation-Type'
 			#Information left from GPL section of file: 'Platform iid', 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Title', 'Accession database', 'Technology', 'Distribution', 'Organism', 'Description', 'Manufacturer', 'Manufacture-Protocol'
@@ -193,7 +193,7 @@ class XmlManager(object):
 						row['26)Pubmed ID'] = self.series_dict['Pubmed']
 						#Used tag:
 						row['Other'] = sep.join(self.other_list)
-						#test if we can just replace the special characters (ɛ, δ, α, ∆)
+						#replace the special characters (ɛ, δ, α, ∆)
 						for key in special_characters:
 							#iteration on the dictionnary row
 							for section in row:
@@ -290,11 +290,11 @@ class XmlManager(object):
 		#			self.descrip_list.append(section['#text'])
 				elif any(item in section['@tag']for item in gene):
 					self.gene_list.append(section['#text'])
-				#Nothing here
+				#Info going here
 				elif any(item in section['@tag'] for item in strain):
 					if 'Strain Background is ' in section['@tag']:
-					#	print (section['@tag'])
-					#	print (section['#text'])
+						print (section['@tag'])
+						print (section['#text'])
 						key_value = section['@tag'] + ': ' + section['#text']
 						self.descrip_list.append (key_value)
 					else:

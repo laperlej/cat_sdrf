@@ -14,7 +14,6 @@ import copy
 import StringIO
 import json
 import itertools
-from xml.etree import ElementTree
 
 class CsvManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
