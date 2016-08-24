@@ -29,7 +29,7 @@ class XmlManager(object):
 		#mon_dict = xmltodict.parse(opened_file.read(), encoding='utf-8')
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
-		special_characters = {'∆': 'Delta', 'ɛ': 'Epsilon', 'δ': 'Delta', 'α':'alpha'}
+		special_characters = {'∆': 'Delta', 'ɛ': 'Epsilon', 'δ': 'Delta', 'α':'Alpha'}
 		if 'Series' in mon_dict['MINiML']:
 			# information left from GSE section of file: 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Accession database', 'Type', 'Contributor-Ref', 'Sample-Ref', 'Contact-Ref', 'Supplementary-Data' and 'Relation-Type'
 			#Information left from GPL section of file: 'Platform iid', 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Title', 'Accession database', 'Technology', 'Distribution', 'Organism', 'Description', 'Manufacturer', 'Manufacture-Protocol'
@@ -193,7 +193,7 @@ class XmlManager(object):
 						row['26)Pubmed ID'] = self.series_dict['Pubmed']
 						#Used tag:
 						row['Other'] = sep.join(self.other_list)
-						#test if we can just replace the special characters (ɛ, δ, α, ∆)
+						#replace the special characters (ɛ, δ, α, ∆)
 						for key in special_characters:
 							#iteration on the dictionnary row
 							for section in row:
@@ -215,7 +215,7 @@ class XmlManager(object):
 			self.org_list.append(section['#text'])		
 	def characteristics_sample(self, section):
 		key_value = ''
-		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'DMSO', 'stress', 'concentration', 'mnase', 'agent', 'age', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'Sex' , 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'Cy3', 'Cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna','od']
+		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'DMSO', 'stress', 'concentration', 'mnase', 'agent', 'age', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'Sex' , 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'Cy3', 'Cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna']
 		
 		material = ['molecule', 'tissue', 'organelle', 'rna', 'RNA', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'DNA', 'nucleosomal DNA', 'Input', 'input', 'chromatin']
 		strain = ['strain', 'Strain', 'variant', 'mutant', 'yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
@@ -229,8 +229,9 @@ class XmlManager(object):
 				if type(section[list_index]) is not OrderedDict:
 					self.other_stuff_sample(section[list_index])
 				#When the components of the list are OrderedDict 
-				elif 'processed data file' in section[list_index]['#text']:
-					self.other_stuff_sample(section[list_index]['#text'])
+				#elif 'processed data file' in section[list_index]['#text']:
+				#	print (section[list_index]['#text'])
+				#	self.other_stuff_sample(section[list_index]['#text'])
 				elif any(condition in section[list_index]['@tag'] for condition in conditions):
 					# Assign to the string key_value both the key and the value (like 'Mnase concentration : 10 mM')
 					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
@@ -260,15 +261,18 @@ class XmlManager(object):
 						self.descrip_list.append(section[list_index]['#text'])
 					else:
 						self.material_list.append(section[list_index]['#text'])	
+				# Used tag: 'library' catches 'library strategy' and 'library type'
 				elif 'library' in section[list_index]['@tag']:
 					self.assay_list.append(section[list_index]['#text'])
+				# Used tag : 'assay' catches 'assayed molecue' and 'assay'
 				elif 'assay' in section[list_index]['@tag']:
 					self.assay_list.append(section[list_index]['#text'])	
-				# not sure if still needed
+				# Used tag: 'protocol', but does not contain much info; catches also 'growt protocol'; 2nd used tag: 'harvest', catches 'harvest method'
 				elif 'protocol' in section[list_index]['@tag'] or 'harvest' in section[list_index]['@tag']:	
 					self.protocol_list.append(section[list_index]['#text'])	
-		#		elif any(item in section[list_index]['@tag'] for item in junk):
-		#			self.other_list.append(section[list_index]['#text'])		
+				elif 'od' in section[list_index]['@tag']:
+					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					self.treatment_list.append(key_value)		
 				else:
 					# The leftover goes in the 'Other' section
 					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
@@ -276,68 +280,71 @@ class XmlManager(object):
 				
 		elif type(section) is OrderedDict:
 			for key in section.keys():
-				if 'processed data file' in section['#text']:
-					self.other_stuff_sample(section['#text'])
-				elif any(condition in section['@tag'] for condition in conditions):
+				if any(condition in section['@tag'] for condition in conditions):
 					self.treatment_list.append(section['#text'])
 				elif 'antibody' in section['@tag']:
 					self.antibody_list.append(section['#text'])
 				elif any(item in section['@tag'] for item in target):
 					self.target_list.append(section['#text'])	
-				elif section['@tag']:	
-					self.descrip_list.append(section['#text'])
+		#		elif section['@tag']:	
+		#			self.descrip_list.append(section['#text'])
 				elif any(item in section['@tag']for item in gene):
 					self.gene_list.append(section['#text'])
+				#Nothing here
 				elif any(item in section['@tag'] for item in strain):
 					if 'Strain Background is ' in section['@tag']:
+					#	print (section['@tag'])
+					#	print (section['#text'])
 						key_value = section['@tag'] + ': ' + section['#text']
+						self.descrip_list.append (key_value)
 					else:
+						#lots of info goes here
 						self.strain_list.append(section['#text'])
+				#Nothing here
 				elif any(item in section['@tag'] for item in material):	
 					self.material_list.append(section['#text'])
-				# not sure if still needed
+				# noting goes here
 				elif 'protocol' in section['@tag'] or 'harvest' in section['@tag']:	
 					self.protocol_list.append(section['#text'])	
-				elif any(item in section['@tag'] for item in junk):
+				#elif any(item in section['@tag'] for item in junk):
+				else:
+					# The leftover goes in the 'Other' section
 					key_value = section['@tag']+ ': ' + section['#text']
 					self.other_list.append(key_value)
-				else:
-					# The leftover goes in the 'Other' section 
-					self.other_stuff_sample(section['#text'])	
+	
 		else:
+			#nothing here
 			if 'library strategy' in section:
 				self.protocol_list.append(section)
-			elif 'processed data file' in section.lower() or 'processed_data' in section.lower() :
-				if 'ATAC-seq' in section:
-					self.protocol_list.append(section)
-				else:
-					self.other_list.append(section)
+			#Some info 
 			elif any(condition in section for condition in conditions):
 				self.treatment_list.append(section)
+			#nothing here
 			elif 'antibody' in section:
 				self.antibody_list.append(section)
+			#nothing here
 			elif any(item in section for item in target):
 				# catch publication if it contains 'tag' or 'flag'
 				if 'et al.' in section:
 					self.other_list.append(section)
 				else:	
 					self.target_list.append(section)	
+			#noting here
 			elif any(item in section for item in strain):
 				self.strain_list.append(section)
 			#noting here
-			elif any(item in section for item in gene):	
+			elif any(item in section for item in gene):
 				self.gene_list.append(section)
+			#Nothing here
 			elif any(item in section for item in material):	
 				self.material_list.append(section)
-			elif '.txt.gz' in section or '.txt':
-				self.supp_data_sample(section)
+			#nothing here
 			elif 'BrdU' in section or 'brdu' in section:
-				self.assay_list.append(section)
-			elif any(item in section for item in junk):
-				self.other_list.append(section)	
+				self.assay_list.append(section)	
 			else:	
-				# The leftover goes in the 'Other' section
-				self.other_stuff_sample(section)
+				# The leftover (there is some info) goes in the 'Other' section
+				self.other_list.append(section)
+				#self.other_stuff_sample(section)
 
 	def descrip_sample(self, section):
 		if type(section) is list:
@@ -523,9 +530,20 @@ class XmlManager(object):
 		return result
 
 	def write_csv(self, outfile):
-		#message d'erreur ici
+		tmp_rows = []
+		for row in self.rows:
+			tmp_row = {}
+			for k, v in row.items():
+				if isinstance(k, bytes):
+					tmp_row[k.decode("utf-8")]=v.decode("utf-8")
+				else:
+					tmp_row[k]=v
+			tmp_rows.append(tmp_row)
+		self.rows = tmp_rows
+		#self.rows = [{k.decode("utf-8"):v.decode("utf-8") if isinstance(k, bytes) else k:v for k, v in row.items()} for row in self.rows]
 		#self.rows = [{k.encode('utf-8'):v.encode('utf-8') for k, v in row.items()} for row in self.rows] 
-		#self.rows = [{k.decode('utf-8'):v.decode('utf-8') for k, v in row.items()} for row in self.rows] 
+		#self.rows = [{k.decode('utf-8'):v for k, v in row.items()} for row in self.rows] 
+		#self.rows = [{k:v for k, v in row.items()} for row in self.rows] 
 		writer = csv.DictWriter(outfile,
 			                    fieldnames=self.column_names,
 			                    dialect='excel-tab')
