@@ -186,8 +186,9 @@ class XmlManager(object):
 						#row['20)SRA_files'] not very useful now
 						Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 						#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
-						row['21)Experiment description'] = Exp_descrip
+						row['21)Experiment description'] = Exp_descrip.strip('\n')
 						row['22)Protocol'] = sep.join(self.protocol_list)
+						row['22)Protocol'] = row['22)Protocol'].strip('\n')
 						#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part
 						row['23)Author(s)'] = self.contributor_dict[contact]
 						#row['24)Submission Date'] and row['25)Release Date'] done earlier
