@@ -34,7 +34,6 @@ def main():
 	for file_name in file_names:
 		# Preprocesses get information from idf files (see config)
 		xml_manager.read_xml(codecs.open(file_name, 'r', encoding='utf-8'))
-	# Reunites lines that are identical for the information in the columns listed and concatenate their informations if it is not the same
 	xml_manager.fix_dup_gsm(['1)identifier'])
 	# Fills a 'raw_files' column with fastq ou sra or bam/sam files
 	xml_manager.rows = raw_files_filter_rows(xml_manager.rows, '18)raw_files', '20)SRA_accessions')
@@ -52,7 +51,7 @@ def main():
 	
 	# Output section
 	xml_managers[0].write_csv(codecs.open(output_clean,'w', encoding='utf-8'))
-	xml_managers[1].write_csv(codecs.open(output_discard,'w', encoding='utf-8'))
+	xml_managers[1].write_csv(codecs.open(output_discard,'w', encoding='utf-8')) 
 	
 
 if __name__ == "__main__":
