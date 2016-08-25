@@ -50,7 +50,7 @@ PREPROCESS_7 = lambda csvfile, row: operator.setitem(row, "protocol_description_
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
-	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'Bisulfite-Seq']
+	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
 	#file types needed
 	file_types = ['.fastq.gz', '.bam', '.sam', 'SRX']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
@@ -277,7 +277,7 @@ TARGET_DICO=OrderedDict([
 TARGET2 = OrderedDict ([
 	('input','(input|input_dna|whole\scell\sextract|none|n/a)'),
 	('Negative control', '(negative\scontrol)'),
-	('Mock', '(mock|no.?antibody)'),
+	('Mock', '(mock|no.?antibody|untagged)'),
 	('ESA1','(esa1)'),
 	('H2AQ105me1','(q105me1)'),
 	('AAR','(aar|o-acetyl-adp-ribose)'),

@@ -36,8 +36,10 @@ def sra_files(row, output_col1, output_col2):
 	URL_list = []
 	if url in row['19)all_supp_files']:
 		match0 = re.search('(ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra/\S+)', row['19)all_supp_files'])
+		match1 = re.search('(SRX\d{6,7})', row['19)all_supp_files'])
 		if match0:
 			row[output_col1] = match0.group(1)
+			row[output_col2] = match1.group(1)
 		return row	
 	#Important part for sdrf files
 	elif 'SRX' in row['19)all_supp_files'] and 'SRR' in row['19)all_supp_files']:
@@ -197,7 +199,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	#Assign 'mock' to column 'clean_target' if one of the following keyword is found
 	mock_list = ['mock', 'non antibody control', 'no epitope tag', 'no-epitope', 'untagged', 'un-tagged', 'no tag', 'notag', 'no tap tag', 'null-tap', 'no-tag']
 	#added the column 'all_supp_files', sometimes a keyword is found in the file name
-	if any(mock in merge_cols(row, ["7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']) for mock in mock_list):
+	if any(mock in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']) for mock in mock_list):
 		return "Mock", "keyword (1)"
 	#Assign 'control' to column 'clean_target' if one of the following keyword is found
 	control_list = ['control for', 'control_for', 'control replicate', 'degron', 'wild type control']

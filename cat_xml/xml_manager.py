@@ -181,17 +181,19 @@ class XmlManager(object):
 						row['16)platform'] = sep.join(self.platform_list)
 						#Used tag: 'Description'
 						row['17)Sample_description'] = sep.join(self.descrip_list)
+						row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
 						#Used tag:
 						row['19)all_supp_files'] = sep.join(self.supp_data)
 						#row['20)SRA_files'] not very useful now
 						Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 						#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
-						row['21)Experiment description'] = Exp_descrip.strip('\n')
+						row['21)Experiment description'] = Exp_descrip.replace('\n', '')
 						row['22)Protocol'] = sep.join(self.protocol_list)
-						row['22)Protocol'] = row['22)Protocol'].strip('\n')
+						row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
 						#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part
 						row['23)Author(s)'] = self.contributor_dict[contact]
-						#row['24)Submission Date'] and row['25)Release Date'] done earlier
+						# If we wanted a 'releasing group' row 
+						#row['Releasing group']= self.contributor_dict[contrib1_organization]
 						#Used tag: Pubmed ID in the GSE part
 						row['26)Pubmed ID'] = self.series_dict['Pubmed']
 						#Used tag:
@@ -220,7 +222,7 @@ class XmlManager(object):
 		key_value = ''
 		cell_type = ['cell type', 'cell line']
 		#carefull that 'tag' is not specific but it is used as a tag
-		target = ['protein', 'epitope', 'target', 'tag', 'flag', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein']
+		target = ['protein', 'epitope', 'target', 'flag', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein']
 		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'dmso', 'stress', 'concentration', 'mnase', 'agent', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'cy3', 'cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna', 'mixed percentage', 'incubation', 'harvest', 'passage']
 		#removed : 'rna', 'dna'
 		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'Input', 'input', 'chromatin']
@@ -243,7 +245,7 @@ class XmlManager(object):
 					self.protocol_list.append(section[list_index]['#text'])	
 				#Used tag here catches 'Treatment', 'culture condition', 'growth condition' and 'growth protocol'; valid info
 				elif 'mg/l' in section[list_index]['#text'] or 'uM' in section[list_index]['#text']:
-					key_value = section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					key_value = section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.treatment_list.append(section[list_index]['#text'])	
 				#Some info; valid; catches tag 'ip' with a more specific keyword
 				elif 'IP against' in section[list_index]['#text']:
@@ -273,7 +275,7 @@ class XmlManager(object):
 				elif any(item in section[list_index]['@tag'] for item in material):
 					#nothing here
 					if any(item in section[list_index]['@tag'] for item in junk):
-						key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+						key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 						self.other_stuff_sample(key_value)
 					#nothing here
 					elif 'rna subset' in section[list_index]['@tag'].lower():
@@ -282,25 +284,28 @@ class XmlManager(object):
 						self.material_list.append(section[list_index]['#text'])
 				#Lots of info here; to many used tags for treatment
 				elif any(condition in section[list_index]['@tag'].lower() for condition in conditions):
-					# Assign to the string key_value both the key and the value (like 'Mnase concentration : 10 mM')
-					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					# Assign to the string key_value both the key and the value (like 'Mnase concentration= 10 mM')
+					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.treatment_list.append(key_value)
 				# Valid info, but for 'tag': 'MATa ade2-1 can1-100 HIS3 leu2-3,112 trp1-1 ura3-1 RAD5+ ISW1-FL3-KanMX snf2-delta::URA3'; 'tag' not specific
 				elif any(item in section[list_index]['@tag'] for item in target):
-					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.target_list.append(key_value)		
 				elif any(item in section[list_index]['@tag'] for item in junk):
-					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.other_stuff_sample(key_value)
 				#Not specific tags, but valid info
 				elif 'od' in section[list_index]['@tag'] or 'age' in section[list_index]['@tag']:
-					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.treatment_list.append(key_value)
 				elif 'rna' in section[list_index]['@tag'].lower():
 					self.material_list.append(section[list_index]['#text'])
+				elif 'tag' in section[list_index]['@tag'].lower():
+					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
+					self.target_list.append(key_value)
 				else:
 					# The leftover goes in the 'Other' section
-					key_value =  section[list_index]['@tag'] + ' : ' +  section[list_index]['#text']
+					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.other_stuff_sample(key_value)
 				
 		elif type(section) is OrderedDict:
@@ -310,7 +315,7 @@ class XmlManager(object):
 					self.antibody_list.append(section['#text'])
 				# Some info here; valid
 				elif 'stage' in section['@tag']:
-					key_value = section['@tag']+ ': ' + section['#text']
+					key_value = section['@tag']+ '= ' + section['#text']
 					self.treatment_list.append(key_value)
 				#Nothing here
 				elif any(item in section['@tag'] for item in target):
@@ -344,11 +349,14 @@ class XmlManager(object):
 					self.protocol_list.append(section['#text'])	
 				#Not specific tags
 				elif 'od' in section['@tag'] or 'age' in section['@tag']:
-					key_value =  section['@tag'] + ' : ' +  section['#text']
+					key_value =  section['@tag'] + '= ' +  section['#text']
 					self.treatment_list.append(key_value)
+				elif 'tag' in section['@tag'] :
+					key_value =  section['@tag'] + '= ' +  section['#text']
+					self.target_list.append(key_value)	
 				else:
 					# The leftover goes in the 'Other' section
-					key_value = section['@tag']+ ': ' + section['#text']
+					key_value = section['@tag']+ '= ' + section['#text']
 					self.other_list.append(key_value)
 	
 		else:
@@ -385,6 +393,7 @@ class XmlManager(object):
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
 
+	#probably not useful anymore
 	def descrip_sample(self, section):
 		if type(section) is list:
 			for list_index in range(len(section)):
@@ -460,7 +469,10 @@ class XmlManager(object):
 					#Iteration on the First, middle and Last name of each contributor
 					for person_name in section[num]['Person']:
 						#names is a list of all the names for one contributor (first name, middle name and last name)
-						names.append(section[num]['Person'][person_name])		
+						names.append(section[num]['Person'][person_name])
+						#Adds the organization of contrib1 to the dict of contributors
+						if 'Organization' in section[1]:
+							self.contributor_dict['contrib1_organization'] = section[1]['Organization']		
 				# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 				self.contributor_dict[number] = " ".join(names)	
 							
