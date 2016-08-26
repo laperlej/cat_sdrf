@@ -42,7 +42,7 @@ class XmlManager(object):
 		else:	
 			#If the series contains only one sample
 			if type(mon_dict['MINiML']['Sample']) is not list:
-				row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
+				row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
 				self.id_list = []
 				self.id_list.append(mon_dict['MINiML']['Sample']['@iid'])
 				row['1)identifier'] = sep.join(self.id_list)
@@ -50,7 +50,7 @@ class XmlManager(object):
 			else:
 				#Iteration on the list of all samples
 				for x in range(len(mon_dict['MINiML']['Sample'])):
-					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
+					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
 					#Resets the lists after each sample
 					self.id_list = []
 					self.org_list = []
@@ -163,19 +163,20 @@ class XmlManager(object):
 						row['3)organism'] = sep.join(self.org_list)
 						#Used tag: 'Library-Strategy', 'Library-Selection'
 						row['7)assaytype'] = sep.join(self.assay_list)
-						#Used tag:
+						#Used tag: 'Antibody' and 'catalog' (not complete tags)
 						row['8)antibody'] = sep.join(self.antibody_list)
-						#Used tag:
+						#Used tag: 'tag', 'ChIP', 'target of ip', 'labeled protein', 'epitope tag', 'flag tagged', 'version of h2b', 'immunoprecipitated protein', 'protein'
 						row['9)target'] = sep.join(self.target_list)
 						#Used tag: 'Growth-Protocol', 'Treatment-Protocol' and 'Extract-Protocol' (from 'Channel','Characteristics' section) and 'Data-Processing' 
 						row['10)treatment'] = sep.join(self.treatment_list)
 						#Used tag: 'Library-Source', 'Molecule' in 'Channel' section
 						row['11)Material_type'] = sep.join(self.material_list)
-						row ['12)clean_celltype'] = sep.join(self.cell_list)
-						#13)cell_type not very useful now
-						#Used tag:
+						# Used tags: 'cell type', 'cell line', 'tissue/cell line', 'tissue/cel type'
+						row ['13)cell_type'] = sep.join(self.cell_list)
+						#12)clean_celltype not very useful now
+						#Used tag: mostly 'strain', 'strain background', 'backgroung strain'
 						row['14)strain'] = sep.join(self.strain_list)
-						#Used tag:
+						#Used tag: mostly 'genotype'
 						row['15)genotype'] = sep.join(self.gene_list)
 						# Used tag : 'Platform-Ref' and 'Instrument-Model'
 						row['16)platform'] = sep.join(self.platform_list)
@@ -190,10 +191,10 @@ class XmlManager(object):
 						row['21)Experiment description'] = Exp_descrip.replace('\n', '')
 						row['22)Protocol'] = sep.join(self.protocol_list)
 						row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
-						#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part
+						#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part, 
 						row['23)Author(s)'] = self.contributor_dict[contact]
-						# If we wanted a 'releasing group' row 
-						#row['Releasing group']= self.contributor_dict[contrib1_organization]
+						#Info from contributors' list in GSE part, specifically from contributor 1's section 'Organization'
+						row['Releasing group']= self.contributor_dict['contrib1_organization']
 						#Used tag: Pubmed ID in the GSE part
 						row['26)Pubmed ID'] = self.series_dict['Pubmed']
 						#Used tag:
@@ -202,6 +203,7 @@ class XmlManager(object):
 						for key in special_characters:
 							#iteration on the dictionnary row
 							for section in row:
+							#	print (row[section])
 								row[section] = row[section].replace(key,special_characters[key])
 						self.rows.append(row)
 	
@@ -224,7 +226,7 @@ class XmlManager(object):
 		#carefull that 'tag' is not specific but it is used as a tag
 		target = ['protein', 'epitope', 'target', 'flag', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein']
 		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'dmso', 'stress', 'concentration', 'mnase', 'agent', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'cy3', 'cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna', 'mixed percentage', 'incubation', 'harvest', 'passage']
-		#removed : 'rna', 'dna'
+		#removed : 'rna', 'dna'; really not specific
 		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'Input', 'input', 'chromatin']
 		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
 		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation']
@@ -239,7 +241,11 @@ class XmlManager(object):
 				#When the components of the list are OrderedDict 
 				#Used tags: 'cell type', 'cell line', 'tissue' (catches 'tissue/cell line')
 				elif any(item in section[list_index]['@tag'].lower() for item in cell_type):
-					self.cell_list.append(section[list_index]['#text'])
+					#condition for some special samples
+					if 'tagged' in section[list_index]['@tag'].lower():
+						self.gene_list.append(section[list_index]['#text'])
+					else:	
+						self.cell_list.append(section[list_index]['#text'])
 				# Used tag: 'protocol', but does not contain much info; catches 'protocol', 'growth protocol' ,'treatment protocol', 'culture protocol', 'harvest method' and also 'growt protocol';
 				elif 'protocol' in section[list_index]['@tag'].lower() or 'harvest method' in section[list_index]['@tag'].lower():	
 					self.protocol_list.append(section[list_index]['#text'])	
@@ -336,7 +342,10 @@ class XmlManager(object):
 						self.strain_list.append(section['#text'])
 				# Some info; valid
 				elif any(item in section['@tag'] for item in cell_type):
-					self.cell_list.append(section['#text'])
+					if 'tagged' in section['@tag'].lower():
+						self.gene_list.append(section['#text'])
+					else:
+						self.cell_list.append(section['#text'])
 				#lots of info; valid
 				elif any(condition in section['@tag'] for condition in conditions):
 					key_value = section['@tag']+ ': ' + section['#text']
@@ -351,7 +360,7 @@ class XmlManager(object):
 				elif 'od' in section['@tag'] or 'age' in section['@tag']:
 					key_value =  section['@tag'] + '= ' +  section['#text']
 					self.treatment_list.append(key_value)
-				elif 'tag' in section['@tag'] :
+				elif 'tag' in section['@tag']:
 					key_value =  section['@tag'] + '= ' +  section['#text']
 					self.target_list.append(key_value)	
 				else:
@@ -460,6 +469,7 @@ class XmlManager(object):
 					names = []
 					if 'Organization' in section[num]:
 						if type(section[num]['Organization']) is list:
+							org_name = []
 							org_name = " , ".join(item for item in section[num]['Organization'] if item is not None)
 							names.append(org_name)
 						else:
@@ -471,8 +481,18 @@ class XmlManager(object):
 						#names is a list of all the names for one contributor (first name, middle name and last name)
 						names.append(section[num]['Person'][person_name])
 						#Adds the organization of contrib1 to the dict of contributors
-						if 'Organization' in section[1]:
-							self.contributor_dict['contrib1_organization'] = section[1]['Organization']		
+						if 'Organization' in section[0]:
+							if type(section[0]['Organization']) is list:
+								org_name = []
+								for item in range(len(section[0]['Organization'])):
+									#Ensures that None and same information is not added to 'org-name'
+									if section[0]['Organization'][item] not in org_name and section[0]['Organization'][item] is not None:
+										org_name.append(section[0]['Organization'][item])
+								#org_name = " , ".join(item for item in section[1]['Organization'] if item is not None and item is not in org_name)
+								#print (org_name)
+								self.contributor_dict['contrib1_organization'] = ", ".join(org_name)
+							else:	
+								self.contributor_dict['contrib1_organization'] = section[0]['Organization']		
 				# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 				self.contributor_dict[number] = " ".join(names)	
 							

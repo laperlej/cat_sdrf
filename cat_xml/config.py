@@ -116,6 +116,7 @@ FIELDNAMES=OrderedDict([
 	('21)Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
 	('22)Protocol', lambda title, row: re.search('protocol_description_idf', title)),
 	('23)Author(s)', lambda title, row: re.search('author_list_idf', title)),
+	('Releasing group', lambda title, row: re.search('$a', title)),
 	('24)Submission Date', lambda title, row: re.search('submission_date_idf', title)),
 	('25)Release Date', lambda title, row: re.search('release_date_idf', title)),
 	('26)Pubmed ID', lambda title, row: re.search('pubmed_id_idf', title)),
@@ -145,10 +146,10 @@ ASSAY_DICO = OrderedDict([
 #Histone marks and polymerase dictionnary
 HISTONES_MARKS_DICO = OrderedDict([
 	('RNAPII_tyr1P','(61383|mabe350)'),
-	('RNAPII_ser2P','(ser2p|ser2-po4|ab24758|ab193468|ab5095|s2\sphosphorylated\srna\spolii)'),
-	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|ab193467|ab5131|s5\sphosphorylated\srna\spolii)'),
+	('RNAPII_ser2P','(ser2p|ser2-po4|ab24758|ab193468|ab5095|cma602|s2\sphosphorylated\srna\spolii)'),
+	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|cma603|ab193467|ab5131|s5\sphosphorylated\srna\spolii)'),
 	('RNAPII_ser7P','(ser7p|ab126537)'),
-	('RNAPII_CTD','(8wg16|ab817|mms-126r-200|rpb1)'),
+	('RNAPII_CTD','(8wg16|ab817|cma601|mms-126r-200|rpb1)'),
 	('RNAPII_RPB3','(wp012|1Y26|ab202893|rpb3)'),
 	('RNAPIII','(rpc1|53330002|rnapol3|rnapoliii|rnapiii|rnap3)'),
 	('RNAPII','(rnapii|rnap2|rnapolii|rnapol2|rna\spoly?m?e?r?a?s?e?\si?i?2?)'),
@@ -282,12 +283,6 @@ TARGET2 = OrderedDict ([
 	('H2AQ105me1','(q105me1)'),
 	('AAR','(aar|o-acetyl-adp-ribose)'),
 	('DNMT3b','(dnmt3b|ab2851)'),
-	('RNAPII_tyr1P','(tyr1|61383|mabe350)'),
-	('RNAPII_ser2P','(ser2p|ser2-po4|ab24758|ab193468|ab5095|s2\sphosphorylated\srna\spolii)'),
-	('RNAPII_ser5P','(4h8|ab5408|ser5p|ab55208|ab140748|ab5401|ab193467|ab5131|s5\sphosphorylated\srna\spolii)'),
-	('RNAPII_ser7P','(ser7p|ab126537)'),
-	('RNAPII_CTD','(ctd|8wg16|ab817|mms-126r-200|rpb1)'),
-	('RNAPII_RPB3','(wp012|1Y26|ab202893|rpb3)'),
 	('POL30','pcna'),
 	('RAD51','rad51'),
 	('ORC','orc'),
@@ -326,10 +321,10 @@ ANTIBODY_DICO = OrderedDict ([
 	('SIR2', '(dam1514081|07131)'),
 	('RNAPIII','(53330002)'),
 	('RNAPII_tyr1P','(61383|mabe350)'),
-	('RNAPII_ser2P','(ab24758|ab193468|ab5095)'),
-	('RNAPII_ser5P','(4h8|ab5408|ab55208|ab140748|ab5401|ab193467|ab5131)'),
+	('RNAPII_ser2P','(ab24758|ab193468|ab5095|cma602)'),
+	('RNAPII_ser5P','(4h8|ab5408|ab55208|ab140748|ab5401|ab193467|ab5131|cma603)'),
 	('RNAPII_ser7P','(ab126537)'),
-	('RNAPII_CTD','(8wg16|ab817|mms-126r-200)'),
+	('RNAPII_CTD','(8wg16|ab817|mms-126r-200|cma601)'),
 	('RNAPII_RPB3','(wp012|1Y26|ab202893)') ])
 
 #dictionnaire des tag et leur regex pour la cible taggée
@@ -344,7 +339,7 @@ TAG_DICO_old=OrderedDict([
 
 #dictionnaire des tag et leur regex pour la cible taggée
 TAG_DICO=OrderedDict([
-	 ('tag_HA','((\w+)\.ha|(\w+)::\d?ha|(\w+)-ha|ha.tagged.(\w+)|ha-(\w+)|\|ha::(\w+)|(\w+)::\S{1,5}ha|(\w+-\d+)_ha|(\w+)-\S{1,5}ha|ha\S{1,5}::(\w+))'),
+	 ('tag_HA','((\w+)\.ha|(\w+)::\d?ha|(\w+)-ha|ha.tagged.(\w+)|ha-(\w+)|\|ha::(\w+)|(\w+)::\S{1,5}ha|(\w+-\d+)_ha|(\w+)-\S{1,5}ha|ha\S{1,5}::(\w+)|(\w+):\d?x?ha)'),
 	 ('tag_GFP','((\w+)\.gfp|(?:anti)(\w+)-gfp|gfp::(\w+)|(\w+-?\d+)_gfp|(\w+\.\d+)_gfp|(\w+)-\S*gfp|gfp\S{1,5}::(\w+)|gfp-tagged\s(\w+-?\d+)|(\w+.\d+)::?ty1\se?gfp|(\w+.?\d*)::\S{1,5}gfp)'),
 	 ('tag_flag','((\w+)\.flag|(\w+)::flag|(\w+)::\S*flag|(\w+)-flag|(\w+-\d+)_flag|(\w+)-\S{1,5}flag|flag-(\w+)|flag::(\w+)|flag\S*-(\w+)|flag\S*::(\w+)|(\w+)_flag|flag.tagged\s(\w+))'),
 	 ('tag_myc','((\w+)\.myc|(\w+)::myc|(\w+)-myc|myc.tagged\s(\w+)|myc-(\w+)|myc::(\w+)|(\w+)::\S{1,5}myc|(\w+-\d+)_myc|(\w+)-\S{1,5}myc|myc\S*-(\w+)|myc\S{1,5}::(\w+)|(\w+)myc)'),
@@ -377,7 +372,8 @@ CHIP_DICO = OrderedDict ([
 	('IP','(\w{2,}_(\w+)_ip|(\w{2,})\s?ip|(\w+)_ip)'),
 	('IP of', '(ip\sof\s(\w+))'),
 	('something IP','((\w{2,})_ip|(\w{2,})\s\w*\sip)'),#vague
-	('something chip','((\w{2,})\s\w*\schip|(\w+-\d+)\schip)') #peut être problématique car vague et parfois 2 options
+	('something chip','((\w{2,})\s\w*\schip|(\w+-\d+)\schip)'), #peut être problématique car vague et parfois 2 options
+	('chip of', '(chip-seq\s(\w+))')
 	])
 	 
 #dictionnaire des les types cellulaires utilisés pour le ChIP-Seq avec celegans (not used here anymore)

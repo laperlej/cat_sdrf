@@ -174,8 +174,9 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	assays_list = ['mnase', 'dnase', 'faire', 'ssdna', 'bisulfite-seq', 'atac-seq']
 #	if any(assay in merge_cols(row,["4)clean_assay", "Other", "17)Sample_description"]) for assay in assays_list):
 	if any(assay in merge_cols(row,["4)clean_assay"]) for assay in assays_list):
-		return "N/A", "assay type (1)"	
-
+		return "N/A", "assay type (1)"
+	elif 'brdu' in row["4)clean_assay"].lower() and 'brdu' in row["8)antibody"].lower():
+		return "N/A", "assay type (1)"
 	#if 'none' in merge_cols(row,["clean_target", "5)antibody"]) and 'input' in merge_cols(row,["clean_assay", "11)description", "13)other"]):
 	#	return 'input', 'keyword (1)'
 	elif 'not specified' in merge_cols(row,["8)antibody"])  and 'input' in merge_cols(row,["13)cell_type","17)Sample_description", "1,1)Sample_title"]):
@@ -222,7 +223,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 		var_compare_chip1 = compare_chip1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico)
 		if var_compare_chip1 is not None:
 			return var_compare_chip1
-		var_compare_tag_larger2 = 	compare_tag_larger2(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico)
+		var_compare_tag_larger2 = compare_tag_larger2(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico)
 		if var_compare_tag_larger2 is not None:
 			return var_compare_tag_larger2	
 		var_compare_chip2 = compare_chip2(row, histones_dico, gene_dico, gene_descrip_dico, chip_dico)
@@ -267,7 +268,7 @@ def search_target(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, ch
 	return None	
 
 def search_antibody(row, antibody_dico):
-	""" This function searches for antibodies' catalog number in columns 'cell_type' and 'description' """
+	""" This function searches for antibodies' catalog number in columns 'cell_type', 'description' and 'Sample_title"""
 	for antibody in antibody_dico:
 		if re.search(antibody_dico[antibody],merge_cols(row,['13)cell_type', "17)Sample_description"])):
 			return antibody, "antibody no (2)"	
@@ -280,7 +281,7 @@ def compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 	tagged = row["5)clean_target"]
 	#compares the regex to the content of columns 'assaytype', 'cell_type' and 'descriptiom'
 	match = re.search(tag_dico[tagged],merge_cols(row,["7)assaytype",'13)cell_type', "17)Sample_description"]))
-#	match2 = re.search(tag_dico[tagged],merge_cols(row,["1,1)Sample_title"]))
+	match2 = re.search(tag_dico[tagged],merge_cols(row,["1,1)Sample_title"]))
 	if match:
 		#compares tag's match with the histone dict
 		for hist in histones_dico:
@@ -294,9 +295,8 @@ def compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 		#compares tag's match with the alias dict
 		for gene in gene_descrip_dico:
 			if re.search(gene_descrip_dico[gene], match.group(1)):	
-				return gene, "tag to gene descr (4)"
-	return None			
-"""	elif match2:
+				return gene, "tag to gene descr (4)"			
+	elif match2:
 		#compares tag's match with the histone dict
 		for hist in histones_dico:
 			if re.search(histones_dico[hist], match2.group(1)):	
@@ -310,14 +310,14 @@ def compare_tag1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chi
 		for gene in gene_descrip_dico:
 			if re.search(gene_descrip_dico[gene], match2.group(1)):	
 				return gene, "tag to gene descr (4)"
-	return None """
+	return None 
 
 def compare_chip1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico): 
 	""" This function searches for the keyword 'ChIP' and compares what comes before 'ChIP' with the histone, gene and alias dictionnaries"""
 	#Iterates on the chip_dico regex (in order to find the target of the ChIP)
 	for regex in chip_dico:
 		match = re.search(chip_dico[regex], merge_cols(row,['13)cell_type', "17)Sample_description"]))
-	#	match2 = re.search(chip_dico[regex], merge_cols(row,[ "1,1)Sample_title"]))
+		match2 = re.search(chip_dico[regex], merge_cols(row,[ "1,1)Sample_title"]))
 		if match:
 			for hist in histones_dico:
 				#compares regex's match with the histone dict
@@ -333,8 +333,7 @@ def compare_chip1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, ch
 				#compares regex's match with the alias dict
 				if re.search(gene_descrip_dico[gene], match.group(1)):
 					return gene, "chip to gene descr (4)"
-	return None				
-	"""	if match2:
+	if match2:
 			for hist in histones_dico:
 				#compares regex's match with the histone dict
 				if re.search(histones_dico[hist], match2.group(1)):
@@ -349,7 +348,7 @@ def compare_chip1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, ch
 				#compares regex's match with the alias dict
 				if re.search(gene_descrip_dico[gene], match2.group(1)):
 					return gene, "chip to gene descr (4)"
-	return None  """
+	return None 
 
 def compare_tag_larger1(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico): 
 	""" This function searches the target of the tag found in the columns 'antibody' or 'target'; columns 'strain' and 'genotype' are sometimes very specific and sometimes very unspecific (when it lists many genes) """
