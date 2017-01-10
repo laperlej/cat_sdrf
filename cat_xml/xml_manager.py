@@ -130,7 +130,10 @@ class XmlManager(object):
 								self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
 							elif section == 'Instrument-Model':
 								# Used tag: 'Instrument-Model'
-								self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
+								#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
+								for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
+									# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
+									self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 							elif section == 'Description':
 								#verify what goes here
 								self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
@@ -238,6 +241,10 @@ class XmlManager(object):
 				#when some part of the list is just text
 				if type(section[list_index]) is not OrderedDict:
 					self.other_stuff_sample(section[list_index])
+				#Special case without text associated to the tag (orderedDict containing only one key-value pair)
+				elif type(section[list_index]) is OrderedDict and len(list(section[list_index].items())) ==1:
+					#Do nothing, since there is no valuable information
+					pass
 				#When the components of the list are OrderedDict 
 				#Used tags: 'cell type', 'cell line', 'tissue' (catches 'tissue/cell line')
 				elif any(item in section[list_index]['@tag'].lower() for item in cell_type):
