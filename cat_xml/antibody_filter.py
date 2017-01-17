@@ -202,7 +202,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	if any(mock in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']) for mock in mock_list):
 		return "Mock", "keyword (1)"
 	# special case were 'IP-vs-mock' is a sample name
-	elif 'mock' in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']) and 'IP-vs-mock' not in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']):
+	elif 'mock' in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']) and 'ip-vs-mock' not in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']):
 		return "Mock", "keyword (1)"
 	#Assign 'control' to column 'clean_target' if one of the following keyword is found
 	control_list = ['control for', 'control_for', 'control replicate', 'degron', 'wild type control']
