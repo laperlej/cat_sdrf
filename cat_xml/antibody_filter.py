@@ -185,7 +185,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	elif "input" in merge_cols(row, ["7)assaytype", "8)antibody"]) or "reference dna" in merge_cols(row, ["7)assaytype", "8)antibody"]):
 		return "input", "keyword (1)"
 
-	input_word_list = ['chromatin input', 'input sonicated dna', 'wce fraction used for the nomalization', 'wce fraction used for normalization', 'input lane', 'input dataset', 'channel ch1 is input dna' ]
+	input_word_list = ['chromatin input', 'input sonicated dna', 'wce fraction used for the nomalization', 'wce fraction used for normalization', 'input lane', 'input dataset', 'channel ch1 is input dna', 'noip' ]
 	if any(input_word in merge_cols(row, ["17)Sample_description", "1,1)Sample_title", '13)cell_type', '11)Material_type']) for input_word in input_word_list):
 		return "input", "keyword (1)"
 
