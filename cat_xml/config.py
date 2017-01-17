@@ -133,7 +133,7 @@ ASSAY_DICO = OrderedDict([
 	("ChIP-eSPAN", "chip-espan"),
 	('FAIRE-Seq', 'faire'),
 	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin)'),
-	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|mononucleosomal\sdna|micro-c)'),
+	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
 	("DNase-Seq",'dnase'),
 	("Bisulfite-Seq", "bisulfite"),
 	("Rip-Seq", 'rip-seq'),
@@ -185,6 +185,7 @@ HISTONES_MARKS_DICO = OrderedDict([
 	('H3R2me2', '(h3r2me2)'),
 	('H3K9-14ac','(ach3\sk9,14|h3k9-14ac)'),
 	('H3','(h3|ab12079|05-928|07-690|ab1791)'),
+	('H4K20me3', '(h4k20me3)')
 	('H4K16ac','(h4k16ac|07-329)'),
 	('H4K16','(h4k16)'),
 	('H4K12ac', '(h4k12ac)'),

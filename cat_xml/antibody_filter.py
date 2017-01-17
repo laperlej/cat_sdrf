@@ -185,7 +185,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	elif "input" in merge_cols(row, ["7)assaytype", "8)antibody"]) or "reference dna" in merge_cols(row, ["7)assaytype", "8)antibody"]):
 		return "input", "keyword (1)"
 
-	input_word_list = ['chromatin input', 'input sonicated dna', 'wce fraction used for the nomalization', 'wce fraction used for normalization', 'input lane', 'input dataset', 'channel ch1 is input dna' ]
+	input_word_list = ['chromatin input', 'input sonicated dna', 'wce fraction used for the nomalization', 'wce fraction used for normalization', 'input lane', 'input dataset', 'channel ch1 is input dna', 'noip' ]
 	if any(input_word in merge_cols(row, ["17)Sample_description", "1,1)Sample_title", '13)cell_type', '11)Material_type']) for input_word in input_word_list):
 		return "input", "keyword (1)"
 
@@ -196,11 +196,13 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 #	elif '[input dna]' in merge_cols(row, ["17)Sample_description"]):
 	elif 'input dna' in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]):
 		return 'input', 'keyword (3)'
-
 	#Assign 'mock' to column 'clean_target' if one of the following keyword is found
-	mock_list = ['mock', 'non antibody control', 'no epitope tag', 'no-epitope', 'untagged', 'un-tagged', 'no tag', 'notag', 'no tap tag', 'null-tap', 'no-tag']
+	mock_list = ['non antibody control', 'no epitope tag', 'no-epitope', 'untagged', 'un-tagged', 'no tag', 'notag', 'no tap tag', 'null-tap', 'no-tag']
 	#added the column 'all_supp_files', sometimes a keyword is found in the file name
 	if any(mock in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']) for mock in mock_list):
+		return "Mock", "keyword (1)"
+	# special case were 'IP-vs-mock' is a sample name
+	elif 'mock' in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']) and 'ip-vs-mock' not in merge_cols(row, [ '9)target' ,"7)assaytype", "17)Sample_description", "1,1)Sample_title", '15)genotype', '14)strain', '19)all_supp_files']):
 		return "Mock", "keyword (1)"
 	#Assign 'control' to column 'clean_target' if one of the following keyword is found
 	control_list = ['control for', 'control_for', 'control replicate', 'degron', 'wild type control']
