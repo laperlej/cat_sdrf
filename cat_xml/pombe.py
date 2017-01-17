@@ -13,6 +13,8 @@ Ptr6 est synonyme de Taf7
 Rpb3 est assigné à RNAPII_RPB3 (consistance avec le dictionnaire de target)
 CENP-A est un homologue de CNP1
 PHT1 est synonyme de H2A.Z
+Eic1 est synonyme de Mis19
+Crt9 est synonyme de Paf1
 """
 
 # Gene dictionnary with usual gene name for S. pombe
@@ -1598,7 +1600,7 @@ GENE_DICT = OrderedDict ([
 	("MIS16","mis16"),
 	("MIS17","mis17"),
 	("MIS18","mis18"),
-	("MIS19","mis19"),
+	("MIS19","(mis19|eic1)"),
 	("MIS20","mis20"),
 	("MIS3","mis3"),
 	("MIS4","mis4"),
@@ -2079,7 +2081,7 @@ GENE_DICT = OrderedDict ([
 	("PAC10","pac10"),
 	("PAC1","pac1"),
 	("PAC2","pac2"),
-	("PAF1","paf1"),
+	("PAF1","(paf1|ctr9)"),
 	("PAL1","pal1"),
 	("PAM17","pam17"),
 	("PAM1","pam1"),
