@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 input:
-	file_names: list of sdrf.txt files
+	file_names: list of xml files
 output:
-	tab delimited file, contains lines from each sdrf file	
+	tab delimited file, contains lines from each xml file	
 """
 import codecs
 import config
