@@ -6,7 +6,7 @@ CELL_TYPE = OrderedDict ([
 	('N/A', '.*') ])
 
 """
-Informations provenant de pombase, en date de juin 2016.
+Informations provenant de pombase, fichier pombe_features_cat3chr.txt datant de juin 2016.
 modifications:
 rad22 est synonyme de rad52 (ancien nom); à placer avant RAD2
 Nrc1 synonyme de Bdf2

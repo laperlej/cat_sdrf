@@ -6,6 +6,7 @@ CELL_TYPE = OrderedDict ([
 	('N/A', '.*') ])
 
 """
+informations téléchargées à partir de SGD; fichier SGD_features.txt datant de juin 2016
 modifications:
 	($a): regex visant à ne rien reconnaitre 
 	BDP1, dans les alias, enlevé 'B"' car problématique avec regex
