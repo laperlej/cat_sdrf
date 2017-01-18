@@ -23,6 +23,9 @@ CELL_TYPE = OrderedDict ([
 	('N/A', '.*')])
 
 """
+information téléchargée à partir de ftp://ftp.wormbase.org/pub/wormbase/species/c_elegans/annotation/geneIDs/c_elegans.PRJNA13758.current.geneIDs.txt.gz;
+en date de juin 2016
+
 modifications:
 	gei-11 est synonyme de SNPC-4 (et F32H2.1); doit placer SNPC-4 avant gei-1 dans les 2 dico
 	Htz1 est renommé H2A.Z (consistance avec target_dico dans config)
