@@ -6,7 +6,7 @@ import re
 from collections import OrderedDict
 import saccer, pombe, celegans
 from antibody_filter import merge_cols
-
+"""
 # Assign 'csvfile.name' as the value of 'row' at the index 'filename' 
 PREPROCESS_1 = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
 
@@ -46,12 +46,12 @@ PREPROCESS_5 = lambda csvfile, row: operator.setitem(row, "submission_date_idf",
 PREPROCESS_6 = lambda csvfile, row: operator.setitem(row, "release_date_idf", idf_extract(csvfile, ['Public Release Date']))
 #Assign the info from the 'Protocol description' line in associated idf file as the value of 'row' at the index 'protocol_description_idf'
 PREPROCESS_7 = lambda csvfile, row: operator.setitem(row, "protocol_description_idf", idf_extract(csvfile, ["Protocol Description"]))
-
+"""
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
 	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
-	#file types needed
+	#file types needed (to update for chip-chip)
 	file_types = ['.fastq.gz', '.bam', '.sam', 'SRX']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
@@ -62,7 +62,7 @@ def split_condition_aux(row, species):
 	
 	return (species_dict[species] in row["3)organism"] and 
 		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
-		   any(file_type in row["18)raw_files"] for file_type in file_types) and
+		   #any(file_type in row["18)raw_files"] for file_type in file_types) and
 			#not "non-genomic" in row["Material_type"] and
 	 	   	not [False for discard_assay in discard_assays if discard_assay in row["4)clean_assay"].lower()])
 
@@ -132,7 +132,8 @@ ASSAY_DICO = OrderedDict([
 	('ChIP-exo', 'chip-exo'),
 	("ChIP-eSPAN", "chip-espan"),
 	('FAIRE-Seq', 'faire'),
-	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin)'),
+	("ChIP-chip",'(chip|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin)'),
+	("ChIP-Seq", "chip-seq"),
 	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
 	("DNase-Seq",'dnase'),
 	("Bisulfite-Seq", "bisulfite"),
