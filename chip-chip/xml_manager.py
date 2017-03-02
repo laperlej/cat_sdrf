@@ -102,7 +102,7 @@ class XmlManager(object):
 											self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
 										#secion "label" caught here
 										elif 'Label' in key:
-											print (mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
+											self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
 										elif 'Characteristics' in key:
 											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 										elif any(protocol in key for protocol in all_protocols):
@@ -119,6 +119,7 @@ class XmlManager(object):
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][num][key])	
 											elif 'Label' in key: 
+												#in case we find something
 												print ('2')
 											elif 'Characteristics' in key:
 												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Characteristics'])
@@ -313,6 +314,8 @@ class XmlManager(object):
 					self.target_list.append(key_value)		
 				elif any(item in section[list_index]['@tag'] for item in junk):
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
+					if 'Affymetrix' in key_value:
+						print (key_value)
 					self.other_stuff_sample(key_value)
 				#Not specific tags, but valid info
 				elif 'od' in section[list_index]['@tag'] or 'age' in section[list_index]['@tag']:
@@ -324,8 +327,8 @@ class XmlManager(object):
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.target_list.append(key_value)
 				elif 'Label' in section[list_index]['@tag'].lower():
-					print (section[list_index]['@tag'])
-					print (section[list_index]['#text'])
+					print ('3')
+					
 				else:
 					# The leftover goes in the 'Other' section
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
@@ -381,12 +384,13 @@ class XmlManager(object):
 					key_value =  section['@tag'] + '= ' +  section['#text']
 					self.target_list.append(key_value)
 				elif 'Label' in section['@tag']:
-					print (section['@tag'])
-					print (section['#text'])
+					print ('4')
 					self.label_list.append(section['#text'])
 				else:
 					# The leftover goes in the 'Other' section
 					key_value = section['@tag']+ '= ' + section['#text']
+					if 'Affymetrix' in key_value:
+						print ('2', key_value)
 					self.other_list.append(key_value)
 	
 		else:
