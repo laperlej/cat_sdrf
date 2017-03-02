@@ -100,8 +100,9 @@ class XmlManager(object):
 											self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 										elif 'Molecule' in key:
 											self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
+										#secion "label" caught here
 										elif 'Label' in key:
-											print ('1')
+											print (mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
 										elif 'Characteristics' in key:
 											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 										elif any(protocol in key for protocol in all_protocols):
