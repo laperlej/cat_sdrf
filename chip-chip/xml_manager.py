@@ -103,6 +103,7 @@ class XmlManager(object):
 										#secion "label" caught here
 										elif 'Label' in key:
 											self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
+											print (self.label_list)
 										elif 'Characteristics' in key:
 											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 										elif any(protocol in key for protocol in all_protocols):
