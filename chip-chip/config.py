@@ -120,6 +120,7 @@ FIELDNAMES=OrderedDict([
 	('24)Submission Date', lambda title, row: re.search('submission_date_idf', title)),
 	('25)Release Date', lambda title, row: re.search('release_date_idf', title)),
 	('26)Pubmed ID', lambda title, row: re.search('pubmed_id_idf', title)),
+	('label', lambda title, row: re.search('$a', title)),
 	('Other', lambda title, row: re.search('.*', title))])
 
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
