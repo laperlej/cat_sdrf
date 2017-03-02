@@ -93,8 +93,10 @@ class XmlManager(object):
 							elif section == 'Channel':
 								if type(mon_dict['MINiML']['Sample'][x]['Channel']) is OrderedDict:
 									#Iteration on the ordereddict that is Channel
+									print (self.label_list)
 									for key in mon_dict['MINiML']['Sample'][x]['Channel']:
-										print (self.label_list)
+										#print (self.label_list)
+										# label_list not always empty as it should, weird
 										if 'Organism' in key:
 											self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
 										elif 'Source' in key:
