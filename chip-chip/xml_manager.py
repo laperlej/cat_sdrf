@@ -75,6 +75,7 @@ class XmlManager(object):
 						row['1)identifier'] = sep.join(self.id_list)
 						self.rows.append(row)
 					else:	
+						print (self.label_list)
 						#Iteration on one Sample dictionnary
 						for section in mon_dict['MINiML']['Sample'][x]:
 							all_protocols = ['Growth-Protocol', 'Extract-Protocol', 'Treatment-Protocol', 'Label-Protocol', 'Scan-Protocol', 'Hybridization-Protocol']
@@ -103,7 +104,7 @@ class XmlManager(object):
 										#secion "label" caught here
 										elif 'Label' in key:
 											self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
-											print (self.label_list)
+											#print (self.label_list)
 										elif 'Characteristics' in key:
 											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 										elif any(protocol in key for protocol in all_protocols):
