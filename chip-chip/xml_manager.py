@@ -93,10 +93,9 @@ class XmlManager(object):
 							elif section == 'Channel':
 								if type(mon_dict['MINiML']['Sample'][x]['Channel']) is OrderedDict:
 									#Iteration on the ordereddict that is Channel
-									print (self.label_list)
+									#print (self.label_list)
+									#label_list empty as it should, ok
 									for key in mon_dict['MINiML']['Sample'][x]['Channel']:
-										#print (self.label_list)
-										# label_list not always empty as it should, weird
 										if 'Organism' in key:
 											self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
 										elif 'Source' in key:
@@ -104,10 +103,9 @@ class XmlManager(object):
 										elif 'Molecule' in key:
 											self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
 										#secion "label" caught here
-										elif 'Label' in key:
+										elif 'Label' in key and 'Label-Protocol' not in key:
 											self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
-											#info passes twice here, how?
-											#print (self.label_list)
+											print (self.label_list)
 										elif 'Characteristics' in key:
 											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 										elif any(protocol in key for protocol in all_protocols):
