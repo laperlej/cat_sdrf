@@ -2,9 +2,9 @@
 
 """
 input:
-	file_names: list of sdrf.txt files
+	file_names: list of xml files
 output:
-	tab delimited file, contains first line of each sdrf file	
+	tab delimited file, contains first line of each xml file	
 """
 
 import csv
@@ -42,7 +42,7 @@ class XmlManager(object):
 		else:	
 			#If the series contains only one sample
 			if type(mon_dict['MINiML']['Sample']) is not list:
-				row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
+				row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 				self.id_list = []
 				self.id_list.append(mon_dict['MINiML']['Sample']['@iid'])
 				row['1)identifier'] = sep.join(self.id_list)
@@ -50,7 +50,7 @@ class XmlManager(object):
 			else:
 				#Iteration on the list of all samples
 				for x in range(len(mon_dict['MINiML']['Sample'])):
-					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
+					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 					#Resets the lists after each sample
 					self.id_list = []
 					self.org_list = []
@@ -66,6 +66,7 @@ class XmlManager(object):
 					self.descrip_list = []
 					self.protocol_list = []
 					self.supp_data = []
+					self.label_list = []
 					self.other_list = []
 					#since some GSM don't even have supplementary files
 					if 'Supplementary-Data' not in mon_dict['MINiML']['Sample'][x]:
@@ -200,6 +201,7 @@ class XmlManager(object):
 						row['Releasing group']= self.contributor_dict['contrib1_organization']
 						#Used tag: Pubmed ID in the GSE part
 						row['26)Pubmed ID'] = self.series_dict['Pubmed']
+						row['label']= sep.join(self.label_list)
 						#Used tag:
 						row['Other'] = sep.join(self.other_list)
 						#replace the special characters (ɛ, δ, α, ∆)
