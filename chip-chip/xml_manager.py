@@ -100,6 +100,8 @@ class XmlManager(object):
 											self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 										elif 'Molecule' in key:
 											self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
+										elif 'Label' in key:
+											print ('1')
 										elif 'Characteristics' in key:
 											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 										elif any(protocol in key for protocol in all_protocols):
@@ -115,6 +117,8 @@ class XmlManager(object):
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][num][key])	
+											elif 'Label' in key: 
+												print ('2')
 											elif 'Characteristics' in key:
 												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Characteristics'])
 											elif any(protocol in key for protocol in all_protocols):
