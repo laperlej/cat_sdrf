@@ -233,8 +233,8 @@ class XmlManager(object):
 		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'Input', 'input', 'chromatin']
 		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
 		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation']
-		
-		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'experiment', 'isolate number', 'index pair', 'grna libraries',  'matched wild type sample', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index', 'strategy',  'sort', 'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Biotin', 'biotin', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
+		#removed "biotin" since it is important for chip-chip
+		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'experiment', 'isolate number', 'index pair', 'grna libraries',  'matched wild type sample', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index', 'strategy',  'sort', 'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
 		if type(section) is list:
 			#Iteration on the list, which is often composed of orderedDict ([('@tag', '...') , ('#text', '...')])
 			for list_index in range(len(section)):
@@ -316,6 +316,9 @@ class XmlManager(object):
 				elif 'tag' in section[list_index]['@tag'].lower():
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.target_list.append(key_value)
+				elif 'tag' in section[list_index]['@tag'].lower():
+					print (section[list_index]['@tag'])
+					print (section[list_index]['#text'])
 				else:
 					# The leftover goes in the 'Other' section
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
