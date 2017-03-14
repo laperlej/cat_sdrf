@@ -103,7 +103,10 @@ class XmlManager(object):
 								all_protocols = ['Growth-Protocol', 'Extract-Protocol', 'Treatment-Protocol', 'Label-Protocol', 'Scan-Protocol', 'Hybridization-Protocol']
 								#Here add _ch1 or _ch2 depending on the channel position to differenciate between the 2 positions of 1 GSM
 								if section == '@iid':
-									self.general_sample(self.id_list, mon_dict['MINiML']['Sample'][x]['@iid'])
+									s == '_ch'
+									self.id_list = mon_dict['MINiML']['Sample'][x]['@iid']
+									self.id_list.append(ch_position)
+									row['1)identifier'] = s.join(self_id_list)
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
 								elif section == 'Type':
@@ -140,20 +143,20 @@ class XmlManager(object):
 										#for num in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
 										for key in mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]:
 											if 'Organism' in key:
-												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Organism'])
+												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Organism'])
 											elif 'Source' in key:
-												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Source'])
+												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
 											elif 'Molecule' in key:
-												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][num][key])	
+												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])	
 											elif 'Label' in key and 'Label-Protocol' not in key: 
 												#print ('2')
-												self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][num][key])
+												self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])
 											elif 'Characteristics' in key:
-												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Characteristics'])
+												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
 											elif any(protocol in key for protocol in all_protocols):
-												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][num][key])
+												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])
 											else:
-												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num][key])		
+												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])		
 
 								elif any(protocol in section for protocol in all_protocols):
 									self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x][section])
