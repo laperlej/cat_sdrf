@@ -195,7 +195,7 @@ class XmlManager(object):
 									self.other_stuff_sample(mon_dict['MINiML']['Sample'][x][section])
 
 							# Used tag: 'Sample iid' in sample part of file
-							row['1)identifier'] = sep.join(self.id_list)
+							#row['1)identifier'] = sep.join(self.id_list)
 							# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 							#Used tag: 'Series iid' in the GSE part of the file
 							row['2)filename'] = self.series_dict['GSE']
