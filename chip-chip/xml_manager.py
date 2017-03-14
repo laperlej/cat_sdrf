@@ -106,7 +106,7 @@ class XmlManager(object):
 									#s == '_ch'
 									self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 									self.id_list.append(ch_position)
-									row['1)identifier'] = '_ch'.join(self_id_list)
+									row['1)identifier'] = '_ch'.join(self.id_list)
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
 								elif section == 'Type':
