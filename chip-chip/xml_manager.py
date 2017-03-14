@@ -48,8 +48,9 @@ class XmlManager(object):
 				row['1)identifier'] = sep.join(self.id_list)
 				self.rows.append(row)
 			else:
-				#Iteration on the list of all samples
+				#Iteration on the list of all samples (x being the index of each sample)
 				for x in range(len(mon_dict['MINiML']['Sample'])):
+					#Move row and all the lists in the for loop for the channel positions
 					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 					#Resets the lists after each sample
 					self.id_list = []
@@ -75,9 +76,12 @@ class XmlManager(object):
 						row['1)identifier'] = sep.join(self.id_list)
 						self.rows.append(row)
 					else:	
+						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
+						#for ch_position in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
 						#Iteration on one Sample dictionnary
 						for section in mon_dict['MINiML']['Sample'][x]:
 							all_protocols = ['Growth-Protocol', 'Extract-Protocol', 'Treatment-Protocol', 'Label-Protocol', 'Scan-Protocol', 'Hybridization-Protocol']
+							#Here add _ch1 or _ch2 depending on the channel position to differenciate between the 2 positions of 1 GSM
 							if section == '@iid':
 								self.general_sample(self.id_list, mon_dict['MINiML']['Sample'][x]['@iid'])
 							elif section == 'Title':
@@ -93,6 +97,7 @@ class XmlManager(object):
 							elif section == 'Library-Selection':
 								self.general_sample(self.assay_list, mon_dict['MINiML']['Sample'][x]['Library-Selection'])
 							elif section == 'Channel':
+								#That case probably happens when there is only one channel
 								if type(mon_dict['MINiML']['Sample'][x]['Channel']) is OrderedDict:
 									#Iteration on the ordereddict that is Channel
 									for key in mon_dict['MINiML']['Sample'][x]['Channel']:
@@ -102,7 +107,6 @@ class XmlManager(object):
 											self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 										elif 'Molecule' in key:
 											self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
-										#secion "label" caught here
 										elif 'Label' in key and 'Label-Protocol' not in key:
 											self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
 										elif 'Characteristics' in key:
@@ -111,6 +115,7 @@ class XmlManager(object):
 											self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][key])
 										else:
 											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][key])
+								#Here we can have 2 positions on the channel
 								elif type(mon_dict['MINiML']['Sample'][x]['Channel']) is list:
 									for num in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
 										for key in mon_dict['MINiML']['Sample'][x]['Channel'][num]:
