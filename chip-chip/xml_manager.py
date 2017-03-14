@@ -82,6 +82,8 @@ class XmlManager(object):
 								self.general_sample(self.id_list, mon_dict['MINiML']['Sample'][x]['@iid'])
 							elif section == 'Title':
 								row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
+							elif section == 'Type':
+								self.material_list.append(mon_dict['MINiML']['Sample'][x]['Type'])
 							elif section == 'Organism':
 								self.organism_sample(self.org_list, mon_dict['MINiML']['Sample'][x]['Organism'])
 							elif section == 'Library-Source':
