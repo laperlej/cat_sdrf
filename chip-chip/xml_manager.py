@@ -199,7 +199,7 @@ class XmlManager(object):
 						Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 						#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
 						row['21)Experiment description'] = Exp_descrip.replace('\n', '')
-						print (self.protocol_list)
+						
 						row['22)Protocol'] = sep.join(x for x in self.protocol_list if x is not None)
 						row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
 						#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part, 
