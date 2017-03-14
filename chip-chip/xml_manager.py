@@ -327,8 +327,8 @@ class XmlManager(object):
 				elif 'tag' in section[list_index]['@tag'].lower():
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.target_list.append(key_value)
-				#elif 'Label' in section[list_index]['@tag'].lower():
-					#print ('3')
+				elif 'Label' in section[list_index]['@tag'].lower():
+					print ('3')
 					
 				else:
 					# The leftover goes in the 'Other' section
@@ -384,8 +384,8 @@ class XmlManager(object):
 				elif 'tag' in section['@tag']:
 					key_value =  section['@tag'] + '= ' +  section['#text']
 					self.target_list.append(key_value)
-				#elif 'Label' in section['@tag']:
-					#print ('4')
+				elif 'Label' in section['@tag']:
+					print ('4')
 					#self.label_list.append(section['#text'])
 				else:
 					# The leftover goes in the 'Other' section
