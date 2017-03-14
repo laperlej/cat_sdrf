@@ -104,7 +104,7 @@ class XmlManager(object):
 								#Here add _ch1 or _ch2 depending on the channel position to differenciate between the 2 positions of 1 GSM
 								if section == '@iid':
 									#s == '_ch'
-									self.id_list = mon_dict['MINiML']['Sample'][x]['@iid']
+									self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 									self.id_list.append(ch_position)
 									row['1)identifier'] = '_ch'.join(self_id_list)
 								elif section == 'Title':
