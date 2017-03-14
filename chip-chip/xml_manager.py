@@ -78,26 +78,26 @@ class XmlManager(object):
 						row['1)identifier'] = sep.join(self.id_list)
 						self.rows.append(row)
 					else:	
-						row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
-						#Resets the lists after each sample
-						self.id_list = []
-						self.org_list = []
-						self.treatment_list = []
-						self.antibody_list = []
-						self.target_list = []
-						self.assay_list = []
-						self.material_list = []
-						self.cell_list = []
-						self.gene_list = []
-						self.strain_list = []
-						self.platform_list = []
-						self.descrip_list = []
-						self.protocol_list = []
-						self.supp_data = []
-						self.label_list = []
-						self.other_list = []
 						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
 						for ch_position in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
+							row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
+							#Resets the lists after each sample
+							self.id_list = []
+							self.org_list = []
+							self.treatment_list = []
+							self.antibody_list = []
+							self.target_list = []
+							self.assay_list = []
+							self.material_list = []
+							self.cell_list = []
+							self.gene_list = []
+							self.strain_list = []
+							self.platform_list = []
+							self.descrip_list = []
+							self.protocol_list = []
+							self.supp_data = []
+							self.label_list = []
+							self.other_list = []
 							#Iteration on one Sample dictionnary
 							for section in mon_dict['MINiML']['Sample'][x]:
 								all_protocols = ['Growth-Protocol', 'Extract-Protocol', 'Treatment-Protocol', 'Label-Protocol', 'Scan-Protocol', 'Hybridization-Protocol']
