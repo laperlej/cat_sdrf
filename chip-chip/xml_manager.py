@@ -50,7 +50,7 @@ class XmlManager(object):
 			else:
 				#Iteration on the list of all samples (x being the index of each sample)
 				for x in range(len(mon_dict['MINiML']['Sample'])):
-					#Move row and all the lists in the for loop for the channel positions
+					"""
 					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 					#Resets the lists after each sample
 					self.id_list = []
@@ -69,56 +69,76 @@ class XmlManager(object):
 					self.supp_data = []
 					self.label_list = []
 					self.other_list = []
+					"""
 					#since some GSM don't even have supplementary files
 					if 'Supplementary-Data' not in mon_dict['MINiML']['Sample'][x]:
+						row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 						self.id_list = []
 						self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 						row['1)identifier'] = sep.join(self.id_list)
 						self.rows.append(row)
 					else:	
+						row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
+						#Resets the lists after each sample
+						self.id_list = []
+						self.org_list = []
+						self.treatment_list = []
+						self.antibody_list = []
+						self.target_list = []
+						self.assay_list = []
+						self.material_list = []
+						self.cell_list = []
+						self.gene_list = []
+						self.strain_list = []
+						self.platform_list = []
+						self.descrip_list = []
+						self.protocol_list = []
+						self.supp_data = []
+						self.label_list = []
+						self.other_list = []
 						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
-						#for ch_position in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
-						#Iteration on one Sample dictionnary
-						for section in mon_dict['MINiML']['Sample'][x]:
-							all_protocols = ['Growth-Protocol', 'Extract-Protocol', 'Treatment-Protocol', 'Label-Protocol', 'Scan-Protocol', 'Hybridization-Protocol']
-							#Here add _ch1 or _ch2 depending on the channel position to differenciate between the 2 positions of 1 GSM
-							if section == '@iid':
-								self.general_sample(self.id_list, mon_dict['MINiML']['Sample'][x]['@iid'])
-							elif section == 'Title':
-								row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
-							elif section == 'Type':
-								self.material_list.append(mon_dict['MINiML']['Sample'][x]['Type'])
-							elif section == 'Organism':
-								self.organism_sample(self.org_list, mon_dict['MINiML']['Sample'][x]['Organism'])
-							elif section == 'Library-Source':
-								self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Library-Source'])
-							elif section == 'Library-Strategy':
-								self.general_sample(self.assay_list, mon_dict['MINiML']['Sample'][x]['Library-Strategy'])
-							elif section == 'Library-Selection':
-								self.general_sample(self.assay_list, mon_dict['MINiML']['Sample'][x]['Library-Selection'])
-							elif section == 'Channel':
-								#That case probably happens when there is only one channel
-								if type(mon_dict['MINiML']['Sample'][x]['Channel']) is OrderedDict:
-									#Iteration on the ordereddict that is Channel
-									for key in mon_dict['MINiML']['Sample'][x]['Channel']:
-										if 'Organism' in key:
-											self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
-										elif 'Source' in key:
-											self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
-										elif 'Molecule' in key:
-											self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
-										elif 'Label' in key and 'Label-Protocol' not in key:
-											self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
-										elif 'Characteristics' in key:
-											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
-										elif any(protocol in key for protocol in all_protocols):
-											self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][key])
-										else:
-											self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][key])
-								#Here we can have 2 positions on the channel
-								elif type(mon_dict['MINiML']['Sample'][x]['Channel']) is list:
-									for num in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
-										for key in mon_dict['MINiML']['Sample'][x]['Channel'][num]:
+						for ch_position in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
+							#Iteration on one Sample dictionnary
+							for section in mon_dict['MINiML']['Sample'][x]:
+								all_protocols = ['Growth-Protocol', 'Extract-Protocol', 'Treatment-Protocol', 'Label-Protocol', 'Scan-Protocol', 'Hybridization-Protocol']
+								#Here add _ch1 or _ch2 depending on the channel position to differenciate between the 2 positions of 1 GSM
+								if section == '@iid':
+									self.general_sample(self.id_list, mon_dict['MINiML']['Sample'][x]['@iid'])
+								elif section == 'Title':
+									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
+								elif section == 'Type':
+									self.material_list.append(mon_dict['MINiML']['Sample'][x]['Type'])
+								elif section == 'Organism':
+									self.organism_sample(self.org_list, mon_dict['MINiML']['Sample'][x]['Organism'])
+								elif section == 'Library-Source':
+									self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Library-Source'])
+								elif section == 'Library-Strategy':
+									self.general_sample(self.assay_list, mon_dict['MINiML']['Sample'][x]['Library-Strategy'])
+								elif section == 'Library-Selection':
+									self.general_sample(self.assay_list, mon_dict['MINiML']['Sample'][x]['Library-Selection'])
+								elif section == 'Channel':
+									#That case probably happens when there is only one channel
+									if type(mon_dict['MINiML']['Sample'][x]['Channel']) is OrderedDict:
+										#Iteration on the ordereddict that is Channel
+										for key in mon_dict['MINiML']['Sample'][x]['Channel']:
+											if 'Organism' in key:
+												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
+											elif 'Source' in key:
+												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
+											elif 'Molecule' in key:
+												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
+											elif 'Label' in key and 'Label-Protocol' not in key:
+												self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
+											elif 'Characteristics' in key:
+												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
+											elif any(protocol in key for protocol in all_protocols):
+												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][key])
+											else:
+												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][key])
+									#Here we can have 2 positions on the channel
+									elif type(mon_dict['MINiML']['Sample'][x]['Channel']) is list:
+										#for num in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
+										for key in mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]:
 											if 'Organism' in key:
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num]['Organism'])
 											elif 'Source' in key:
@@ -135,96 +155,96 @@ class XmlManager(object):
 											else:
 												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][num][key])		
 
-							elif any(protocol in section for protocol in all_protocols):
-								self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x][section])
-							elif section == 'Characteristics':
-								#anything goes here?
-								self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
-							elif 'Platform-Ref' in section:
-								self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
-							elif section == 'Instrument-Model':
-								# Used tag: 'Instrument-Model'
-								#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
-								for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
-									# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
-									self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
-							elif section == 'Description':
-								#verify what goes here
-								self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
-							elif section == 'Data-Processing':
-								self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Data-Processing'])	
-							elif section == 'Supplementary-Data':
-								self.supp_data_sample(mon_dict['MINiML']['Sample'][x]['Supplementary-Data'])
-							# Assign to the variable contact the contributor number
-							elif section == 'Contact-Ref':
-								contact = mon_dict['MINiML']['Sample'][x]['Contact-Ref']['@ref']	
-							elif section == 'Status':
-								for key in mon_dict['MINiML']['Sample'][x]['Status']:
-									if 'Submission-Date' in key:
-										row['24)Submission Date'] = mon_dict['MINiML']['Sample'][x]['Status']['Submission-Date']
-									elif 'Release-Date' in key:
-										row['25)Release Date'] = mon_dict['MINiML']['Sample'][x]['Status']['Release-Date']
-									elif 'Last-Update-Date' in key:
-										self.other_list.append(mon_dict['MINiML']['Sample'][x]['Status']['Last-Update-Date'])
-									else:
-										self.other_stuff_sample(mon_dict['MINiML']['Sample'][x]['Status'][key])
-							else:
-								self.other_stuff_sample(mon_dict['MINiML']['Sample'][x][section])
+								elif any(protocol in section for protocol in all_protocols):
+									self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x][section])
+								elif section == 'Characteristics':
+									#anything goes here?
+									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
+								elif 'Platform-Ref' in section:
+									self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
+								elif section == 'Instrument-Model':
+									# Used tag: 'Instrument-Model'
+									#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
+									for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
+										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
+										self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
+								elif section == 'Description':
+									#verify what goes here
+									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
+								elif section == 'Data-Processing':
+									self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Data-Processing'])	
+								elif section == 'Supplementary-Data':
+									self.supp_data_sample(mon_dict['MINiML']['Sample'][x]['Supplementary-Data'])
+								# Assign to the variable contact the contributor number
+								elif section == 'Contact-Ref':
+									contact = mon_dict['MINiML']['Sample'][x]['Contact-Ref']['@ref']	
+								elif section == 'Status':
+									for key in mon_dict['MINiML']['Sample'][x]['Status']:
+										if 'Submission-Date' in key:
+											row['24)Submission Date'] = mon_dict['MINiML']['Sample'][x]['Status']['Submission-Date']
+										elif 'Release-Date' in key:
+											row['25)Release Date'] = mon_dict['MINiML']['Sample'][x]['Status']['Release-Date']
+										elif 'Last-Update-Date' in key:
+											self.other_list.append(mon_dict['MINiML']['Sample'][x]['Status']['Last-Update-Date'])
+										else:
+											self.other_stuff_sample(mon_dict['MINiML']['Sample'][x]['Status'][key])
+								else:
+									self.other_stuff_sample(mon_dict['MINiML']['Sample'][x][section])
 
-						# Used tag: 'Sample iid' in sample part of file
-						row['1)identifier'] = sep.join(self.id_list)
-						# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
-						#Used tag: 'Series iid' in the GSE part of the file
-						row['2)filename'] = self.series_dict['GSE']
-						#Used tag: 'Organism' from 'Channel' section of sample part of file
-						row['3)organism'] = sep.join(self.org_list)
-						#Used tag: 'Library-Strategy', 'Library-Selection'
-						row['7)assaytype'] = sep.join(self.assay_list)
-						#Used tag: 'Antibody' and 'catalog' (not complete tags)
-						row['8)antibody'] = sep.join(self.antibody_list)
-						#Used tag: 'tag', 'ChIP', 'target of ip', 'labeled protein', 'epitope tag', 'flag tagged', 'version of h2b', 'immunoprecipitated protein', 'protein'
-						row['9)target'] = sep.join(self.target_list)
-						#Used tag: 'Growth-Protocol', 'Treatment-Protocol' and 'Extract-Protocol' (from 'Channel','Characteristics' section) and 'Data-Processing' 
-						row['10)treatment'] = sep.join(self.treatment_list)
-						#Used tag: 'Library-Source', 'Molecule' in 'Channel' section
-						row['11)Material_type'] = sep.join(self.material_list)
-						# Used tags: 'cell type', 'cell line', 'tissue/cell line', 'tissue/cel type'
-						row ['13)cell_type'] = sep.join(self.cell_list)
-						#12)clean_celltype not very useful now
-						#Used tag: mostly 'strain', 'strain background', 'backgroung strain'
-						row['14)strain'] = sep.join(self.strain_list)
-						#Used tag: mostly 'genotype'
-						row['15)genotype'] = sep.join(self.gene_list)
-						# Used tag : 'Platform-Ref' and 'Instrument-Model'
-						row['16)platform'] = sep.join(self.platform_list)
-						#Used tag: 'Description'
-						row['17)Sample_description'] = sep.join(self.descrip_list)
-						row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
-						#Used tag:
-						row['19)all_supp_files'] = sep.join(self.supp_data)
-						#row['20)SRA_files'] not very useful now
-						Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
-						#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
-						row['21)Experiment description'] = Exp_descrip.replace('\n', '')
-						
-						row['22)Protocol'] = sep.join(x for x in self.protocol_list if x is not None)
-						row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
-						#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part, 
-						row['23)Author(s)'] = self.contributor_dict[contact]
-						#Info from contributors' list in GSE part, specifically from contributor 1's section 'Organization'
-						row['Releasing group']= self.contributor_dict['contrib1_organization']
-						#Used tag: Pubmed ID in the GSE part
-						row['26)Pubmed ID'] = self.series_dict['Pubmed']
-						row['label']= sep.join(self.label_list)
-						#Used tag:
-						row['Other'] = sep.join(self.other_list)
-						#replace the special characters (ɛ, δ, α, ∆)
-						for key in special_characters:
-							#iteration on the dictionnary row
-							for section in row:
-							#	print (row[section])
-								row[section] = row[section].replace(key,special_characters[key])
-						self.rows.append(row)
+							# Used tag: 'Sample iid' in sample part of file
+							row['1)identifier'] = sep.join(self.id_list)
+							# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
+							#Used tag: 'Series iid' in the GSE part of the file
+							row['2)filename'] = self.series_dict['GSE']
+							#Used tag: 'Organism' from 'Channel' section of sample part of file
+							row['3)organism'] = sep.join(self.org_list)
+							#Used tag: 'Library-Strategy', 'Library-Selection'
+							row['7)assaytype'] = sep.join(self.assay_list)
+							#Used tag: 'Antibody' and 'catalog' (not complete tags)
+							row['8)antibody'] = sep.join(self.antibody_list)
+							#Used tag: 'tag', 'ChIP', 'target of ip', 'labeled protein', 'epitope tag', 'flag tagged', 'version of h2b', 'immunoprecipitated protein', 'protein'
+							row['9)target'] = sep.join(self.target_list)
+							#Used tag: 'Growth-Protocol', 'Treatment-Protocol' and 'Extract-Protocol' (from 'Channel','Characteristics' section) and 'Data-Processing' 
+							row['10)treatment'] = sep.join(self.treatment_list)
+							#Used tag: 'Library-Source', 'Molecule' in 'Channel' section
+							row['11)Material_type'] = sep.join(self.material_list)
+							# Used tags: 'cell type', 'cell line', 'tissue/cell line', 'tissue/cel type'
+							row ['13)cell_type'] = sep.join(self.cell_list)
+							#12)clean_celltype not very useful now
+							#Used tag: mostly 'strain', 'strain background', 'backgroung strain'
+							row['14)strain'] = sep.join(self.strain_list)
+							#Used tag: mostly 'genotype'
+							row['15)genotype'] = sep.join(self.gene_list)
+							# Used tag : 'Platform-Ref' and 'Instrument-Model'
+							row['16)platform'] = sep.join(self.platform_list)
+							#Used tag: 'Description'
+							row['17)Sample_description'] = sep.join(self.descrip_list)
+							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
+							#Used tag:
+							row['19)all_supp_files'] = sep.join(self.supp_data)
+							#row['20)SRA_files'] not very useful now
+							Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
+							#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
+							row['21)Experiment description'] = Exp_descrip.replace('\n', '')
+
+							row['22)Protocol'] = sep.join(x for x in self.protocol_list if x is not None)
+							row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
+							#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part, 
+							row['23)Author(s)'] = self.contributor_dict[contact]
+							#Info from contributors' list in GSE part, specifically from contributor 1's section 'Organization'
+							row['Releasing group']= self.contributor_dict['contrib1_organization']
+							#Used tag: Pubmed ID in the GSE part
+							row['26)Pubmed ID'] = self.series_dict['Pubmed']
+							row['label']= sep.join(self.label_list)
+							#Used tag:
+							row['Other'] = sep.join(self.other_list)
+							#replace the special characters (ɛ, δ, α, ∆)
+							for key in special_characters:
+								#iteration on the dictionnary row
+								for section in row:
+								#	print (row[section])
+									row[section] = row[section].replace(key,special_characters[key])
+							self.rows.append(row)
 	
 
 	def general_sample(self, my_list, section):
