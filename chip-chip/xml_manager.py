@@ -223,7 +223,7 @@ class XmlManager(object):
 							#Used tag: mostly 'genotype'
 							row['15)genotype'] = sep.join(self.gene_list)
 							# Used tag : 'Platform-Ref' and 'Instrument-Model'
-							self.platform_list.append(self.platform_dict['Technology']
+							self.platform_list.append(self.platform_dict['Technology'])
 							row['16)platform'] = sep.join(self.platform_list)
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
