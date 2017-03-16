@@ -586,27 +586,6 @@ class XmlManager(object):
 					self.series_dict['Overall-Design'] = section[key]									
 
 
-	#Not needed with the xml files
-	def fixduplicates(self,csvcontent):
-		"""Checks all the headers and numerates the headers that have the same name"""
-		#Splits the first line from the rest (separated by a newline) and then in a list of string (tab-separated)
-		headers = csvcontent.split('\n')[0].split("\t")
-		#Splits the other lines (which are newline-separated)
-		content = csvcontent.split('\n')[1:]
-		new_headers = []
-		count = 1
-		#Iterate on the headers
-		for title in headers:
-			if title not in new_headers:
-				new_headers.append(title)
-			else:
-				#Modifies the header if it is a duplicate (adds a number equivalent to the count)
-				new_title = title + str(count)
-				new_headers.append(new_title)
-				count += 1
-		#Joins the headers (tab-separated) and then joins the content of the file (newline-separated) and returns the result	
-		return "\n".join(["\t".join(new_headers)]+ content)   
-
 	def fix_dup_gsm(self, uniq_titles):
 		""" Reunites lines that are identical for the information in the columns listed (uniq titles) and concatenate their informations if it is not the same"""
 		uniq_lines = {}
