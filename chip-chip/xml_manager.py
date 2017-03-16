@@ -107,7 +107,7 @@ class XmlManager(object):
 									self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 									self.id_list.append(str(ch_position+1))
 									row['1)identifier'] = '_ch'.join(self.id_list)
-									print (row['1)identifier'])
+									#print (row['1)identifier'])
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
 								elif section == 'Type':
@@ -240,7 +240,6 @@ class XmlManager(object):
 							#Used tag: Pubmed ID in the GSE part
 							row['26)Pubmed ID'] = self.series_dict['Pubmed']
 							row['label']= sep.join(self.label_list)
-							print (row['label'])
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
 							#replace the special characters (ɛ, δ, α, ∆)
