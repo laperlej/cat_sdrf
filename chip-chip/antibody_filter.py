@@ -15,7 +15,7 @@ def raw_files_filter_rows(rows, output_col1, output_col2 ):
 	for row in rows:
 		row = raw_files_filter_row(row, output_col1, output_col2)
 	return rows
-
+#probably not necessary with chip-chip
 def raw_files_filter_row(row, output_col1, output_col2):
 	""" Fills the 'raw_files column with preferencially fastq, else with .sra or finally with .bam or .sam files"""
 	#Probably won't find fastq in GEO
@@ -28,7 +28,7 @@ def raw_files_filter_row(row, output_col1, output_col2):
 			return SRX_SRR_combination
 		else:
 			return bam_sam_filter_row(row, output_col1)
-
+#probably not necessary with chip-chip
 def sra_files(row, output_col1, output_col2):
 	""" Makes the combination of SRX and SRR to compose the url for the .sra files; fills the col '20)SRA_accessions' with the SRX and SRR accessions for xml files"""
 	sep = "/"
@@ -191,7 +191,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 
 	elif 'input' in merge_cols(row, ["13)cell_type"]) and 'input control' not in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]) and 'input dna' in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]):
 		return 'input', 'keyword (2)'	
-	elif 'input dna' not in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]) and 'input control' not in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]) and 'input' in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]):
+	elif 'input dna' not in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]) and 'input control' not in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]) and 'input' in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]) and 'compared to input' not in merge_cols(row, ["17)Sample_description"]):
 		return 'input', 'keyword (3)'
 #	elif '[input dna]' in merge_cols(row, ["17)Sample_description"]):
 	elif 'input dna' in merge_cols(row, ["17)Sample_description", "1,1)Sample_title"]):
