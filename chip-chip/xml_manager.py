@@ -240,6 +240,7 @@ class XmlManager(object):
 							#Used tag: Pubmed ID in the GSE part
 							row['26)Pubmed ID'] = self.series_dict['Pubmed']
 							row['label']= sep.join(self.label_list)
+							print (row['label'])
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
 							#replace the special characters (ɛ, δ, α, ∆)
@@ -248,7 +249,7 @@ class XmlManager(object):
 								for section in row:
 								#	print (row[section])
 									row[section] = row[section].replace(key,special_characters[key])
-						self.rows.append(row)
+							self.rows.append(row)
 	
 
 	def general_sample(self, my_list, section):
