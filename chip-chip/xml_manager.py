@@ -80,7 +80,7 @@ class XmlManager(object):
 					else:	
 						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
 						for ch_position in range(len(mon_dict['MINiML']['Sample'][x]['Channel'])):
-							#print (ch_position)
+							print (ch_position)
 							row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 							#Resets the lists after each sample
 							self.id_list = []
@@ -107,7 +107,7 @@ class XmlManager(object):
 									self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 									self.id_list.append(str(ch_position+1))
 									row['1)identifier'] = '_ch'.join(self.id_list)
-									#print (row['1)identifier'])
+									print (row['1)identifier'])
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
 								elif section == 'Type':
