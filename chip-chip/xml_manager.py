@@ -248,7 +248,7 @@ class XmlManager(object):
 								for section in row:
 								#	print (row[section])
 									row[section] = row[section].replace(key,special_characters[key])
-							self.rows.append(row)
+						self.rows.append(row)
 	
 
 	def general_sample(self, my_list, section):
