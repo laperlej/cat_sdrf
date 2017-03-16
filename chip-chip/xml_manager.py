@@ -79,7 +79,7 @@ class XmlManager(object):
 						self.rows.append(row)
 					else:	
 						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
-						for ch_position in range(int(mon_dict['MINiML']['Sample'][x]['Channel-Count']-1)):
+						for ch_position in range(int(mon_dict['MINiML']['Sample'][x]['Channel-Count'])):
 							#print (mon_dict['MINiML']['Sample'][x]['Channel-Count'])
 							row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 							#Resets the lists after each sample
