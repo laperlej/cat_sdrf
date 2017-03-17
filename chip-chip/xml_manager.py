@@ -581,17 +581,17 @@ class XmlManager(object):
 				if '@iid' in section[num]:
 					self.series_dict['GSE'] = section[num]['@iid']
 				elif 'Title' in section[num]:
-					self.series_dict['Title'] = section[num]['Title']
+					self.series_dict['Title'] = str(section[num]['Title'])
 				elif 'Pubmed' in section[num]:
 					self.series_dict['Pubmed'] = section[num]['Pubmed-ID']
 				elif 'Summary' in section[num]:
-					self.series_dict['Summary'] = section[num]['Summary']
+					self.series_dict['Summary'] = str(section[num]['Summary'])
 		elif type(section) is OrderedDict:
 			for key in section:
 				if '@iid' in key:
 					self.series_dict['GSE'] = section['@iid']
 				elif 'Title' in key:
-					self.series_dict['Title'] = section[key]	
+					self.series_dict['Title'] = str(section[key])	
 				elif 'Pubmed' in key:
 					if type(section[key]) is list:
 						for i in range(len(section[key])):
@@ -601,9 +601,9 @@ class XmlManager(object):
 					else:
 						self.series_dict['Pubmed'] = section[key]
 				elif 'Summary' in key:
-					self.series_dict['Summary'] = section[key]
+					self.series_dict['Summary'] = str(section[key])
 				elif 'Overall-Design' in key:
-					self.series_dict['Overall-Design'] = section[key]									
+					self.series_dict['Overall-Design'] = str(section[key])									
 
 
 	def fix_dup_gsm(self, uniq_titles):
