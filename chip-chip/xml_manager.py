@@ -35,7 +35,7 @@ class XmlManager(object):
 			self.series_dict = {'GSE':'', 'Title':'', 'Summary':'', 'Pubmed':'' , 'Overall-Design':'', 'Type':''}
 			self.series_to_gsm(mon_dict['MINiML']['Series'])
 		if 'Contributor' in mon_dict['MINiML']:
-			print (mon_dict['MINiML']['Contributor'])
+			#print (mon_dict['MINiML']['Contributor'])
 			self.author_list(mon_dict['MINiML']['Contributor'])
 		#Information left from GPL section of file: 'Platform iid', 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Title', 'Accession database', 'Technology', 'Distribution', 'Organism', 'Description', 'Manufacturer', 'Manufacture-Protocol'
 		if 'Platform' in mon_dict['MINiML']:
@@ -204,7 +204,7 @@ class XmlManager(object):
 							# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 							#Used tag: 'Series iid' in the GSE part of the file
 							row['2)filename'] = self.series_dict['GSE']
-							print (row['2)filename'])
+							#print (row['2)filename'])
 							#Used tag: 'Organism' from 'Channel' section of sample part of file
 							row['3)organism'] = sep.join(self.org_list)
 							#Used tag: 'Library-Strategy', 'Library-Selection', 'Type' in series section
@@ -241,7 +241,7 @@ class XmlManager(object):
 							row['22)Protocol'] = sep.join(x for x in self.protocol_list if x is not None)
 							row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
 							#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part, 
-							print (self.contributor_dict)
+							#print (self.contributor_dict)
 							row['23)Author(s)'] = self.contributor_dict[contact]
 							#Info from contributors' list in GSE part, specifically from contributor 1's section 'Organization'
 							row['Releasing group']= self.contributor_dict['contrib1_organization']
@@ -540,7 +540,6 @@ class XmlManager(object):
 						else:
 							names.append(section[num]['Organization'])	
 				elif 'Person' in section[num]:
-					print ('fonction')
 					names = []
 					#Iteration on the First, middle and Last name of each contributor
 					for person_name in section[num]['Person']:
@@ -561,7 +560,27 @@ class XmlManager(object):
 								self.contributor_dict['contrib1_organization'] = section[0]['Organization']		
 				# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 				self.contributor_dict[number] = " ".join(names)
-							
+		elif type(section) is OrderedDict:		
+			names = []
+			#Iteration on the First, middle and Last name of each contributor
+			for person_name in section[num]['Person']:
+				#names is a list of all the names for one contributor (first name, middle name and last name)
+				names.append(section[num]['Person'][person_name])
+				#Adds the organization of contrib1 to the dict of contributors
+				if 'Organization' in section[0]:
+					if type(section[0]['Organization']) is list:
+						org_name = []
+						for item in range(len(section[0]['Organization'])):
+							#Ensures that None and same information is not added to 'org-name'
+							if section[0]['Organization'][item] not in org_name and section[0]['Organization'][item] is not None:
+								org_name.append(section[0]['Organization'][item])
+						#org_name = " , ".join(item for item in section[1]['Organization'] if item is not None and item is not in org_name)
+						#print (org_name)
+						self.contributor_dict['contrib1_organization'] = ", ".join(org_name)
+					else:	
+						self.contributor_dict['contrib1_organization'] = section[0]['Organization']		
+		# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
+		self.contributor_dict[number] = " ".join(names)
 
 	def platform_to_gsm(self, section):
 		if type(section) is list:
