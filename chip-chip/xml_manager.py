@@ -35,6 +35,7 @@ class XmlManager(object):
 			self.series_dict = {'GSE':'', 'Title':'', 'Summary':'', 'Pubmed':'' , 'Overall-Design':'', 'Type':''}
 			self.series_to_gsm(mon_dict['MINiML']['Series'])
 		if 'Contributor' in mon_dict['MINiML']:
+			print ('yes')
 			self.author_list(mon_dict['MINiML']['Contributor'])
 		#Information left from GPL section of file: 'Platform iid', 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Title', 'Accession database', 'Technology', 'Distribution', 'Organism', 'Description', 'Manufacturer', 'Manufacture-Protocol'
 		if 'Platform' in mon_dict['MINiML']:
