@@ -32,7 +32,7 @@ class XmlManager(object):
 		special_characters = {'∆': 'Delta', 'ɛ': 'Epsilon', 'δ': 'Delta', 'α':'Alpha', 'µ':'micro'}
 		if 'Series' in mon_dict['MINiML']:
 			# information left from GSE section of file: 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Accession database', 'Type', 'Contributor-Ref', 'Sample-Ref', 'Contact-Ref', 'Supplementary-Data' and 'Relation-Type'
-			self.series_dict = {'GSE':'', 'Title':'', 'Summary':'', 'Pubmed':'' , 'Overall-Design':''}
+			self.series_dict = {'GSE':'', 'Title':'', 'Summary':'', 'Pubmed':'' , 'Overall-Design':'', 'Type':''}
 			self.series_to_gsm(mon_dict['MINiML']['Series'])
 		if 'Contributor' in mon_dict['MINiML']:
 			self.author_list(mon_dict['MINiML']['Contributor'])
@@ -205,7 +205,8 @@ class XmlManager(object):
 							row['2)filename'] = self.series_dict['GSE']
 							#Used tag: 'Organism' from 'Channel' section of sample part of file
 							row['3)organism'] = sep.join(self.org_list)
-							#Used tag: 'Library-Strategy', 'Library-Selection'
+							#Used tag: 'Library-Strategy', 'Library-Selection', 'Type' in series section
+							self.assay_list.append(self.series_dict['Type'])
 							row['7)assaytype'] = sep.join(self.assay_list)
 							#Used tag: 'Antibody' and 'catalog' (not complete tags)
 							row['8)antibody'] = sep.join(self.antibody_list)
@@ -223,7 +224,7 @@ class XmlManager(object):
 							#Used tag: mostly 'genotype'
 							row['15)genotype'] = sep.join(self.gene_list)
 							# Used tag : 'Platform-Ref' and 'Instrument-Model'
-							self.platform_list.append(self.platform_dict['Technology'])
+							self.platform_list.append(self.platform_dict['Manufacturer'])
 							row['16)platform'] = sep.join(self.platform_list)
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
@@ -586,6 +587,8 @@ class XmlManager(object):
 					self.series_dict['Pubmed'] = section[num]['Pubmed-ID']
 				elif 'Summary' in section[num]:
 					self.series_dict['Summary'] = str(section[num]['Summary'])
+				elif 'Type' in section[num]:
+					self.series_dict['Type'] = str(section[num]['Type'])
 		elif type(section) is OrderedDict:
 			for key in section:
 				if '@iid' in key:
@@ -603,7 +606,9 @@ class XmlManager(object):
 				elif 'Summary' in key:
 					self.series_dict['Summary'] = str(section[key])
 				elif 'Overall-Design' in key:
-					self.series_dict['Overall-Design'] = str(section[key])									
+					self.series_dict['Overall-Design'] = str(section[key])
+				elif 'Type' in key:
+					self.series_dict['Type'] = str(section[key])
 
 
 	def fix_dup_gsm(self, uniq_titles):
