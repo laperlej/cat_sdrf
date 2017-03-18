@@ -35,7 +35,7 @@ class XmlManager(object):
 			self.series_dict = {'GSE':'', 'Title':'', 'Summary':'', 'Pubmed':'' , 'Overall-Design':'', 'Type':''}
 			self.series_to_gsm(mon_dict['MINiML']['Series'])
 		if 'Contributor' in mon_dict['MINiML']:
-			print ('yes')
+			#print ('yes')
 			self.author_list(mon_dict['MINiML']['Contributor'])
 		#Information left from GPL section of file: 'Platform iid', 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Title', 'Accession database', 'Technology', 'Distribution', 'Organism', 'Description', 'Manufacturer', 'Manufacture-Protocol'
 		if 'Platform' in mon_dict['MINiML']:
@@ -540,6 +540,7 @@ class XmlManager(object):
 						else:
 							names.append(section[num]['Organization'])	
 				elif 'Person' in section[num]:
+					print (section[num])
 					names = []
 					#Iteration on the First, middle and Last name of each contributor
 					for person_name in section[num]['Person']:
@@ -559,7 +560,7 @@ class XmlManager(object):
 							else:	
 								self.contributor_dict['contrib1_organization'] = section[0]['Organization']		
 				# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
-				self.contributor_dict[number] = " ".join(names)	
+				self.contributor_dict[number] = " ".join(names)
 							
 
 	def platform_to_gsm(self, section):
