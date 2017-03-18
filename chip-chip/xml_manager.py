@@ -203,6 +203,7 @@ class XmlManager(object):
 							# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 							#Used tag: 'Series iid' in the GSE part of the file
 							row['2)filename'] = self.series_dict['GSE']
+							print (row['2)filename'])
 							#Used tag: 'Organism' from 'Channel' section of sample part of file
 							row['3)organism'] = sep.join(self.org_list)
 							#Used tag: 'Library-Strategy', 'Library-Selection', 'Type' in series section
