@@ -225,7 +225,7 @@ class XmlManager(object):
 							row['15)genotype'] = sep.join(self.gene_list)
 							# Used tag : 'Platform-Ref' and 'Instrument-Model'
 							self.platform_list.append(self.platform_dict['Manufacturer'])
-							row['16)platform'] = sep.join(self.platform_list)
+							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
