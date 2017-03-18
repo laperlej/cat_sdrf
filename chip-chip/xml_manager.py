@@ -239,6 +239,7 @@ class XmlManager(object):
 							row['22)Protocol'] = sep.join(x for x in self.protocol_list if x is not None)
 							row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
 							#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part, 
+							print (self.contributor_dict[contact])
 							row['23)Author(s)'] = self.contributor_dict[contact]
 							#Info from contributors' list in GSE part, specifically from contributor 1's section 'Organization'
 							row['Releasing group']= self.contributor_dict['contrib1_organization']
