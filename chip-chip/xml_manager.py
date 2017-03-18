@@ -562,23 +562,24 @@ class XmlManager(object):
 				self.contributor_dict[number] = " ".join(names)
 		elif type(section) is OrderedDict:		
 			names = []
+			number = section['@iid']
 			#Iteration on the First, middle and Last name of each contributor
-			for person_name in section[num]['Person']:
+			for person_name in section['Person']:
 				#names is a list of all the names for one contributor (first name, middle name and last name)
-				names.append(section[num]['Person'][person_name])
+				names.append(section['Person'][person_name])
 				#Adds the organization of contrib1 to the dict of contributors
-				if 'Organization' in section[0]:
-					if type(section[0]['Organization']) is list:
+				if 'Organization' in section:
+					if type(section['Organization']) is list:
 						org_name = []
-						for item in range(len(section[0]['Organization'])):
+						for item in range(len(section['Organization'])):
 							#Ensures that None and same information is not added to 'org-name'
-							if section[0]['Organization'][item] not in org_name and section[0]['Organization'][item] is not None:
-								org_name.append(section[0]['Organization'][item])
+							if section['Organization'][item] not in org_name and section['Organization'][item] is not None:
+								org_name.append(section['Organization'][item])
 						#org_name = " , ".join(item for item in section[1]['Organization'] if item is not None and item is not in org_name)
 						#print (org_name)
 						self.contributor_dict['contrib1_organization'] = ", ".join(org_name)
 					else:	
-						self.contributor_dict['contrib1_organization'] = section[0]['Organization']		
+						self.contributor_dict['contrib1_organization'] = section['Organization']		
 		# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 		self.contributor_dict[number] = " ".join(names)
 
