@@ -20,7 +20,7 @@ def raw_files_filter_row(row, output_col1, output_col2):
 	""" Fills the 'raw_files column with .CEL, .pair, .GPR or .txt files"""
 	#Probably won't find fastq in GEO
 	raw_file_list = ['.CEL.gz', '.pair.gz', '.gpr.gz', '.GPR.gz', '.txt.gz']
-	if any(raw_file in row['19)all_supp_files'] for rawfile in raw_file_list):
+	if any(raw_file in row['19)all_supp_files'] for raw_file in raw_file_list):
 		row[output_col1] = row['19)all_supp_files']
 		return row
 	else:
@@ -120,7 +120,6 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	"""
 	#Assign 'N/A' to 5)clean_target column if the assay type is mnase, dnase, with ssDNA, bisulfite or FAIRE-Seq
 	assays_list = ['mnase', 'dnase', 'faire', 'ssdna', 'bisulfite-seq', 'atac-seq']
-#	if any(assay in merge_cols(row,["4)clean_assay", "Other", "17)Sample_description"]) for assay in assays_list):
 	if any(assay in merge_cols(row,["4)clean_assay"]) for assay in assays_list):
 		return "N/A", "assay type (1)"
 	elif 'brdu' in row["4)clean_assay"].lower() and 'brdu' in row["8)antibody"].lower():
