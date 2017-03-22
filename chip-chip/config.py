@@ -86,7 +86,6 @@ FIELDNAMES=OrderedDict([
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
 	('Non-genomic', '(non.genomic|transcriptomic|total\srna|nascent\srna|polya\srna)'),
-	('Genome binding/occupancy profiling by genome tiling array','genome\sbinding.occupancy\sprofiling\sby\sgenome\stiling\sarray'),
 	('BrdU-ChIP', '(brdu\sip|brdu-ip)'),
 	('ATAC-Seq', 'atac-seq'),
 	('BrdU', 'brdu'),
@@ -98,6 +97,8 @@ ASSAY_DICO = OrderedDict([
 	("ChIP-Seq", "chip-seq"),
 	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
 	("DNase-Seq",'dnase'),
+	('Genome binding/occupancy profiling by genome tiling array','genome\sbinding.occupancy\sprofiling\sby\sgenome\stiling\sarray'),
+	('Expression profiling by genome tiling array', 'expression\sprofiling\sby\sgenome\stiling\sarray'),
 	("Bisulfite-Seq", "bisulfite"),
 	("Rip-Seq", 'rip-seq'),
 	("RNA-Seq", 'rna-seq'),
