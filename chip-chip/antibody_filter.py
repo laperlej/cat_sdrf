@@ -31,8 +31,8 @@ def raw_files_filter_row(row, output_col1, output_col2):
 	#if any(raw_file in row['19)all_supp_files'] for raw_file in raw_file_list):
 		#row[output_col1] = row['19)all_supp_files']
 		#return row
-	else:
-		return bam_sam_filter_row(row, output_col1)
+	#else:
+	#	return bam_sam_filter_row(row, output_col1)
 
 # Searches for specific file type and returns the complete file name if the file type is found
 def bam_sam_filter_row(row, output_col1):
