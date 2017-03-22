@@ -19,7 +19,7 @@ def raw_files_filter_rows(rows, output_col1, output_col2 ):
 def raw_files_filter_row(row, output_col1, output_col2):
 	""" Fills the 'raw_files column with .CEL, .pair, .GPR or .txt files"""
 	#Probably won't find fastq in GEO
-	raw_file_list = ['CEL.gz', '.pair', '.GPR', '.txt']
+	raw_file_list = ['.CEL.gz', '.pair.gz', '.gpr.gz', '.GPR.gz', '.txt.gz']
 	if any(raw_file in row['19)all_supp_files'] for rawfile in raw_file_list):
 		row[output_col1] = row['19)all_supp_files']
 		return row
