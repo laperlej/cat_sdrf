@@ -27,7 +27,7 @@ def raw_files_filter_row(row, output_col1, output_col2):
 		if match:
 			new_value = match.group(1)
 			file_list.append(new_value)
-			break
+			#break
 	row[output_col1] = " | ".join(file_list)
 	return row
 	#if any(raw_file in row['19)all_supp_files'] for raw_file in raw_file_list):
