@@ -19,18 +19,13 @@ def raw_files_filter_rows(rows, output_col1, output_col2 ):
 def raw_files_filter_row(row, output_col1, output_col2):
 	""" Fills the 'raw_files column with .CEL, .pair, .GPR or .txt files"""
 	raw_file_dict = {'CEL':'(\S+\.cel\.gz)', 'PAIR':'(\S+\.pair\.gz)', 'GPR':'(\S+\.gpr\.gz)', 'TXT':'(\S+\.txt\.gz)'}
-	#file_list = []
 	new_value = ''
 	for raw_file in raw_file_dict:
 		searchtarget = merge_cols(row, ['19)all_supp_files'])
 		match =  re.findall(raw_file_dict[raw_file], searchtarget)
-		print (match)
 		for pattern in match:
 			new_value = " | ".join(match)
-		#if match:
-			#new_value = match.group(1)
-			#file_list.append(new_value)
-			#break
+		
 	row[output_col1] = new_value
 	return row
 	#if any(raw_file in row['19)all_supp_files'] for raw_file in raw_file_list):
