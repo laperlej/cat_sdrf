@@ -24,12 +24,14 @@ def raw_files_filter_row(row, output_col1, output_col2):
 		new_value = ''
 		searchtarget = merge_cols(row, ['19)all_supp_files'])
 		match =  re.findall(raw_file_dict[raw_file], searchtarget)
-		print (match.group(1))
+		print (match)
+		for pattern in match:
+			new_value = " | ".join(match)
 		#if match:
 			#new_value = match.group(1)
 			#file_list.append(new_value)
 			#break
-	row[output_col1] = " | ".join(file_list)
+	row[output_col1] = new_value
 	return row
 	#if any(raw_file in row['19)all_supp_files'] for raw_file in raw_file_list):
 		#row[output_col1] = row['19)all_supp_files']
