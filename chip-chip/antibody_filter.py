@@ -23,10 +23,11 @@ def raw_files_filter_row(row, output_col1, output_col2):
 	for raw_file in raw_file_dict:
 		new_value = ''
 		searchtarget = merge_cols(row, ['19)all_supp_files'])
-		match =  re.search(raw_file_dict[raw_file], searchtarget)
-		if match:
-			new_value = match.group(1)
-			file_list.append(new_value)
+		match =  re.findall(raw_file_dict[raw_file], searchtarget)
+		print (match.group(1))
+		#if match:
+			#new_value = match.group(1)
+			#file_list.append(new_value)
 			#break
 	row[output_col1] = " | ".join(file_list)
 	return row
