@@ -18,11 +18,19 @@ def raw_files_filter_rows(rows, output_col1, output_col2 ):
 #probably not necessary with chip-chip
 def raw_files_filter_row(row, output_col1, output_col2):
 	""" Fills the 'raw_files column with .CEL, .pair, .GPR or .txt files"""
-	#Probably won't find fastq in GEO
-	raw_file_list = ['.CEL.gz', '.pair.gz', '.gpr.gz', '.GPR.gz', '.txt.gz']
-	if any(raw_file in row['19)all_supp_files'] for raw_file in raw_file_list):
-		row[output_col1] = row['19)all_supp_files']
-		return row
+	raw_file_dict = {'CEL':'\S+\.cel\.gz', 'PAIR':'\S+\.pair\.gz', 'GPR':'\S+\.gpr\.gz', 'TXT':'\S+\.txt\.gz'}
+	new_value: []
+	for raw_file in raw_file_dict:
+		searchtarget = merge_cols(row, ['19)all_supp_files'])
+		match =  re.search(raw_file_dict[raw_file], searchtarget)
+		if match:
+			new_value.append(match.group(1))
+			break
+	row[output_col1] = " | ".join(new_value)
+	return row
+	#if any(raw_file in row['19)all_supp_files'] for raw_file in raw_file_list):
+		#row[output_col1] = row['19)all_supp_files']
+		#return row
 	else:
 		return bam_sam_filter_row(row, output_col1)
 
