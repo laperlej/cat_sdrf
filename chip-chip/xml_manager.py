@@ -228,6 +228,9 @@ class XmlManager(object):
 							# Used tag : 'Platform-Ref' and 'Instrument-Model'
 							self.platform_list.append(self.platform_dict['Manufacturer'])
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
+							
+							#add a new column 'Manufaturer'
+							
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
@@ -611,6 +614,7 @@ class XmlManager(object):
 					self.series_dict['Pubmed'] = section[num]['Pubmed-ID']
 				elif 'Summary' in section[num]:
 					self.series_dict['Summary'] = str(section[num]['Summary'])
+				#verify if it is a list
 				elif 'Type' in section[num]:
 					self.series_dict['Type'] = str(section[num]['Type'])
 		elif type(section) is OrderedDict:
@@ -631,6 +635,7 @@ class XmlManager(object):
 					self.series_dict['Summary'] = str(section[key])
 				elif 'Overall-Design' in key:
 					self.series_dict['Overall-Design'] = str(section[key])
+				#verify if it is a list
 				elif 'Type' in key:
 					self.series_dict['Type'] = str(section[key])
 
