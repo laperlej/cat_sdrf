@@ -69,6 +69,7 @@ FIELDNAMES=OrderedDict([
 	('14)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
 	('15)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
 	('16)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
+	('Manufacturer', ''),
 	('17)Sample_description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
 	('18)raw_files', lambda title, row: re.search('$a', title)),
 	('19)all_supp_files', lambda title, row: re.search('fastq_uri', title)),
