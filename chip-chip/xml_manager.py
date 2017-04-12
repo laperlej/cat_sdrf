@@ -225,8 +225,8 @@ class XmlManager(object):
 							# Used tag : 'Platform-Ref' and 'Instrument-Model'
 							#self.platform_list.append(self.platform_dict['Manufacturer'])
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
-							#Used tag: 'Manufaturer'
-							row['Manufacturer' = self.platform_dict['Manufacturer']
+							#Used tag: 'Manufaturer' (in 'Platform' section)
+							row['Manufacturer'] = self.platform_dict['Manufacturer']
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
