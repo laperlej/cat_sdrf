@@ -199,12 +199,9 @@ class XmlManager(object):
 								else:
 									self.other_stuff_sample(mon_dict['MINiML']['Sample'][x][section])
 
-							# Used tag: 'Sample iid' in sample part of file
-							#row['1)identifier'] = sep.join(self.id_list)
 							# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 							#Used tag: 'Series iid' in the GSE part of the file
 							row['2)filename'] = self.series_dict['GSE']
-							#print (row['2)filename'])
 							#Used tag: 'Organism' from 'Channel' section of sample part of file
 							row['3)organism'] = sep.join(self.org_list)
 							#Used tag: 'Library-Strategy', 'Library-Selection', 'Type' in series section
@@ -226,11 +223,10 @@ class XmlManager(object):
 							#Used tag: mostly 'genotype'
 							row['15)genotype'] = sep.join(self.gene_list)
 							# Used tag : 'Platform-Ref' and 'Instrument-Model'
-							self.platform_list.append(self.platform_dict['Manufacturer'])
+							#self.platform_list.append(self.platform_dict['Manufacturer'])
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
-							
-							#add a new column 'Manufaturer'
-							
+							#Used tag: 'Manufaturer'
+							row['Manufacturer' = self.platform_dict['Manufacturer']
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
@@ -243,8 +239,7 @@ class XmlManager(object):
 
 							row['22)Protocol'] = sep.join(x for x in self.protocol_list if x is not None)
 							row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
-							#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part, 
-							#print (self.contributor_dict)
+							#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part
 							row['23)Author(s)'] = self.contributor_dict[contact]
 							#Info from contributors' list in GSE part, specifically from contributor 1's section 'Organization'
 							row['Releasing group']= self.contributor_dict['contrib1_organization']
@@ -257,7 +252,6 @@ class XmlManager(object):
 							for key in special_characters:
 								#iteration on the dictionnary row
 								for section in row:
-								#	print (row[section])
 									row[section] = row[section].replace(key,special_characters[key])
 							self.rows.append(row)
 	
@@ -614,12 +608,9 @@ class XmlManager(object):
 					self.series_dict['Pubmed'] = section[num]['Pubmed-ID']
 				elif 'Summary' in section[num]:
 					self.series_dict['Summary'] = str(section[num]['Summary'])
-				#verify if it is a list
+				#verify if it is a list (not a big problem)
 				elif 'Type' in section[num]:
-					if section[num]['Type'] is list:
-						self.series_dict['Type'] = " | ".join(section[num]['Type'])
-					else: 
-						self.series_dict['Type'] = str(section[num]['Type'])
+					self.series_dict['Type'] = str(section[num]['Type'])
 		elif type(section) is OrderedDict:
 			for key in section:
 				if '@iid' in key:
@@ -638,12 +629,9 @@ class XmlManager(object):
 					self.series_dict['Summary'] = str(section[key])
 				elif 'Overall-Design' in key:
 					self.series_dict['Overall-Design'] = str(section[key])
-				#verify if it is a list
+				#verify if it is a list (not a big problem)
 				elif 'Type' in key:
-					if section[key] is list:
-						self.series_dict['Type'] = " | ".join(section[key])
-					else:	
-						self.series_dict['Type'] = str(section[key])
+					self.series_dict['Type'] = str(section[key])
 
 
 	def fix_dup_gsm(self, uniq_titles):
