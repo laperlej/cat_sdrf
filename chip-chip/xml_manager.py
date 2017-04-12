@@ -616,7 +616,10 @@ class XmlManager(object):
 					self.series_dict['Summary'] = str(section[num]['Summary'])
 				#verify if it is a list
 				elif 'Type' in section[num]:
-					self.series_dict['Type'] = str(section[num]['Type'])
+					if section[num]['Type'] is list:
+						self.series_dict['Type'] = " | ".join(section[num]['Type'])
+					else: 
+						self.series_dict['Type'] = str(section[num]['Type'])
 		elif type(section) is OrderedDict:
 			for key in section:
 				if '@iid' in key:
@@ -637,7 +640,10 @@ class XmlManager(object):
 					self.series_dict['Overall-Design'] = str(section[key])
 				#verify if it is a list
 				elif 'Type' in key:
-					self.series_dict['Type'] = str(section[key])
+					if section[key] is list:
+						self.series_dict['Type'] = " | ".join(section[key])
+					else:	
+						self.series_dict['Type'] = str(section[key])
 
 
 	def fix_dup_gsm(self, uniq_titles):
