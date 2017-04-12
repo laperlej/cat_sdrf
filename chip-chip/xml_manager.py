@@ -226,7 +226,7 @@ class XmlManager(object):
 							#self.platform_list.append(self.platform_dict['Manufacturer'])
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
 							#Used tag: 'Manufaturer' (in 'Platform' section)
-							row['Manufacturer'] = self.platform_dict['Manufacturer']
+							row['Manufacturer'] = str(self.platform_dict['Manufacturer'])
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
@@ -252,7 +252,7 @@ class XmlManager(object):
 							for key in special_characters:
 								#iteration on the dictionnary row
 								for section in row:
-									print (row[section])
+									#print (row[section])
 									row[section] = row[section].replace(key,special_characters[key])
 							self.rows.append(row)
 	
