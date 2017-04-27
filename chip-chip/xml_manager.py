@@ -252,7 +252,8 @@ class XmlManager(object):
 							for key in special_characters:
 								#iteration on the dictionnary row
 								for section in row:
-									row[section] = row[section].replace(key,special_characters[key])
+									#row[section] = row[section].replace(key,special_characters[key])
+									row[section] = row[section].replace('∆', 'delta')
 									print (row[section])
 							self.rows.append(row)
 	
