@@ -29,7 +29,7 @@ class XmlManager(object):
 		#mon_dict = xmltodict.parse(opened_file.read(), encoding='utf-8')
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
-		special_characters = {'∆':'Delta', 'ɛ':'Epsilon', 'δ':'Delta', 'α':'Alpha', 'µ':'micro', '0x0394':'Delta', 'U+0394':'Delta', '0xce 0x94':'Delta', 'U+1D6E5':'Delta'}
+		special_characters = {'∆':'Delta', 'ɛ':'Epsilon', 'δ':'Delta', 'α':'Alpha', 'µ':'micro','Δ':'Delta', '0x0394':'Delta', 'U+0394':'Delta', '0xce 0x94':'Delta', 'U+1D6E5':'Delta'}
 		if 'Series' in mon_dict['MINiML']:
 			# information left from GSE section of file: 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Accession database', 'Type', 'Contributor-Ref', 'Sample-Ref', 'Contact-Ref', 'Supplementary-Data' and 'Relation-Type'
 			self.series_dict = {'GSE':'', 'Title':'', 'Summary':'', 'Pubmed':'' , 'Overall-Design':'', 'Type':''}
@@ -252,8 +252,7 @@ class XmlManager(object):
 							for key in special_characters:
 								#iteration on the dictionnary row
 								for section in row:
-									#row[section] = row[section].replace(key,special_characters[key])
-									row[section] = row[section].replace('Δ', 'delta')
+									row[section] = row[section].replace(key,special_characters[key])
 									print (row[section])
 							self.rows.append(row)
 	
