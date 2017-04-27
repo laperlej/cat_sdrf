@@ -612,7 +612,7 @@ class XmlManager(object):
 					self.series_dict['Summary'] = str(section[num]['Summary'])
 				#verify if it is a list (not a big problem)
 				elif 'Type' in section[num]:
-					if section[num]['Type'] is list:
+					if type(section[num]['Type']) is list:
 						self.series_dict['Type'] = ' | '.join(section[num]['Type'])
 					else:	
 						self.series_dict['Type'] = str(section[num]['Type'])
@@ -636,7 +636,7 @@ class XmlManager(object):
 					self.series_dict['Overall-Design'] = str(section[key])
 				#verify if it is a list (not a big problem)
 				elif 'Type' in key:
-					if section['Type'] is list:
+					if type(section['Type']) is list:
 						self.series_dict['Type'] = ' | '.join(section['Type'])
 					else:	
 						self.series_dict['Type'] = str(section[key])
