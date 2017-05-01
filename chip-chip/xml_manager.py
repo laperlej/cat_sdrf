@@ -437,36 +437,15 @@ class XmlManager(object):
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
 
-	#probably not useful anymore
-	"""def descrip_sample(self, section):
-		if type(section) is list:
-			for list_index in range(len(section)):
-				if type(section[list_index]) is list:
-					for num in range(len(section[list_index])):
-						self.descrip_list.append(section[list_index][num])
-				elif type(section[list_index]) is OrderedDict:
-					for key in section[list_index]:
-						self.descrip_list.append(section[list_index]['#text'])
-				else:
-					self.descrip_list.append(section[list_index])
-		elif type(section) is OrderedDict:
-			for key in section.keys():
-				if type(key) is OrderedDict:
-					for key2 in section[key]:
-						self.descrip_list.append(section[key]['#text'])
-				else:
-					self.descrip_list.append(section['#text'])
-		else:	
-			self.descrip_list.append(section)"""
 	#this function gets the URL to the raw files
 	def supp_data_sample(self, section):
 		filetypes = ['GPR', 'PAIR', 'CEL']
 		if type(section) is list:
 			for list_index in range(len(section)):
-				if any(file in section[list_index]['@tag'] for file in filetypes:
+				if any(file in section[list_index]['@tag'] for file in filetypes):
 					self.supp_data.append(section[list_index]['#text'])
 		elif type(section) is OrderedDict:
-			if any(file in section['@tag'] for file in filetypes:
+			if any(file in section['@tag'] for file in filetypes):
 				self.supp_data.append(section['#text'])
 		else:	
 			self.supp_data.append(section)
