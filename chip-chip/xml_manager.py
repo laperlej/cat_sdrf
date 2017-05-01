@@ -463,10 +463,10 @@ class XmlManager(object):
 		filetypes = ['GPR', 'PAIR', 'CEL']
 		if type(section) is list:
 			for list_index in range(len(section)):
-				if any(file in filetypes) in section[list_index]['@tag'] for file in filetypes:
+				if any(file in section[list_index]['@tag'] for file in filetypes:
 					self.supp_data.append(section[list_index]['#text'])
 		elif type(section) is OrderedDict:
-			if any(file in filetypes) in section['@tag'] for file in filetypes:
+			if any(file in section['@tag'] for file in filetypes:
 				self.supp_data.append(section['#text'])
 		else:	
 			self.supp_data.append(section)
