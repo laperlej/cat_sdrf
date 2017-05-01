@@ -522,7 +522,8 @@ class XmlManager(object):
 					self.other_list.append(section[key])
 		else:	
 			self.other_list.append(section)
-	
+					
+	#This function finds the complete name of each contributor or organization listed
 	def author_list(self, section):
 		if type(section) is list:
 			#Iteration on the list of contributors at the begining of the GSE file
@@ -546,17 +547,7 @@ class XmlManager(object):
 						names.append(section[num]['Person'][person_name])
 						#Adds the organization of contrib1 to the dict of contributors
 						if 'Organization' in section[0]:
-							if type(section[0]['Organization']) is list:
-								org_name = []
-								for item in range(len(section[0]['Organization'])):
-									#Ensures that None and same information is not added to 'org-name'
-									if section[0]['Organization'][item] not in org_name and section[0]['Organization'][item] is not None:
-										org_name.append(section[0]['Organization'][item])
-								#org_name = " , ".join(item for item in section[1]['Organization'] if item is not None and item is not in org_name)
-								#print (org_name)
-								self.contributor_dict['contrib1_organization'] = ", ".join(org_name)
-							else:	
-								self.contributor_dict['contrib1_organization'] = section[0]['Organization']		
+							self.contributor_search(section[0]['Organization'])		
 				# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 				self.contributor_dict[number] = " ".join(names)
 		elif type(section) is OrderedDict:		
@@ -568,20 +559,20 @@ class XmlManager(object):
 				names.append(section['Person'][person_name])
 				#Adds the organization of contrib1 to the dict of contributors
 				if 'Organization' in section:
-					if type(section['Organization']) is list:
-						org_name = []
-						for item in range(len(section['Organization'])):
-							#Ensures that None and same information is not added to 'org-name'
-							if section['Organization'][item] not in org_name and section['Organization'][item] is not None:
-								org_name.append(section['Organization'][item])
-						#org_name = " , ".join(item for item in section[1]['Organization'] if item is not None and item is not in org_name)
-						#print (org_name)
-						self.contributor_dict['contrib1_organization'] = ", ".join(org_name)
-					else:	
-						self.contributor_dict['contrib1_organization'] = section['Organization']		
+					self.contributor_search(section['Organization'])					
 		# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 		self.contributor_dict[number] = " ".join(names)
-
+	#This function finds the firts contributor's organization
+	def contributor_search (self, section)
+		if type(section) is list:
+			org_name = []
+			for item in range(len(section)):
+				#Ensures that None and same information is not added to 'org-name'
+				if section[item] not in org_name and section[item] is not None:
+					org_name.append(section[item])
+			self.contributor_dict['contrib1_organization'] = ", ".join(org_name)
+		else:	
+			self.contributor_dict['contrib1_organization'] = section
 	def platform_to_gsm(self, section):
 		if type(section) is list:
 			for num in range(len(section)):
