@@ -547,7 +547,7 @@ class XmlManager(object):
 						names.append(section[num]['Person'][person_name])
 						#Adds the organization of contrib1 to the dict of contributors
 						if 'Organization' in section[0]:
-							self.contributor_search(section[0]['Organization'])		
+							self.organization_search(section[0]['Organization'])		
 				# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 				self.contributor_dict[number] = " ".join(names)
 		elif type(section) is OrderedDict:		
@@ -559,11 +559,11 @@ class XmlManager(object):
 				names.append(section['Person'][person_name])
 				#Adds the organization of contrib1 to the dict of contributors
 				if 'Organization' in section:
-					self.contributor_search(section['Organization'])					
+					self.organization_search(section['Organization'])					
 		# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 		self.contributor_dict[number] = " ".join(names)
 	#This function finds the firts contributor's organization
-	def contributor_search (self, section)
+	def organization_search (self, section):
 		if type(section) is list:
 			org_name = []
 			for item in range(len(section)):
