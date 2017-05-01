@@ -176,9 +176,7 @@ class XmlManager(object):
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
 										self.manufacturer_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 								elif section == 'Description':
-									print (mon_dict['MINiML']['Sample'][x]['Description'])
-									#verify what goes here
-									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
+									self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Description'])
 								elif section == 'Data-Processing':
 									self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Data-Processing'])	
 								elif section == 'Supplementary-Data':
@@ -363,9 +361,6 @@ class XmlManager(object):
 				elif 'tag' in section[list_index]['@tag'].lower():
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.target_list.append(key_value)
-				elif 'Label' in section[list_index]['@tag'].lower():
-					print ('3')
-					
 				else:
 					# The leftover goes in the 'Other' section
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
@@ -420,9 +415,6 @@ class XmlManager(object):
 				elif 'tag' in section['@tag']:
 					key_value =  section['@tag'] + '= ' +  section['#text']
 					self.target_list.append(key_value)
-				elif 'Label' in section['@tag']:
-					print ('4')
-					#self.label_list.append(section['#text'])
 				else:
 					# The leftover goes in the 'Other' section
 					key_value = section['@tag']+ '= ' + section['#text']
@@ -430,6 +422,7 @@ class XmlManager(object):
 						#print ('2', key_value)
 					self.other_list.append(key_value)
 	
+		#this section is here in case of files with very unorthodox structure
 		else:
 			#nothing here
 			if 'library strategy' in section:
