@@ -99,6 +99,7 @@ class XmlManager(object):
 							self.gene_list = []
 							self.strain_list = []
 							self.platform_list = []
+							self.manufaturer_list = []
 							self.descrip_list = []
 							self.protocol_list = []
 							self.supp_data = []
@@ -171,11 +172,9 @@ class XmlManager(object):
 								elif 'Platform-Ref' in section:
 									self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
 								elif section == 'Instrument-Model':
-									#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
 									for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
-										print ('1', mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
-										#self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
+										self.manufacturer_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 								elif section == 'Description':
 									#print ('c' , section)
 									#verify what goes here
@@ -226,7 +225,8 @@ class XmlManager(object):
 							# Used tag : 'Platform-Ref'
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
 							#Used tag: 'Manufaturer' (in 'Platform' section)
-							row['Manufacturer'] = str(self.platform_dict['Manufacturer'])
+							self.manufacturer_list.append(self.platform_dict['Manufacturer'])
+							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None)
 							print ('2', row['Manufacturer'])
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
