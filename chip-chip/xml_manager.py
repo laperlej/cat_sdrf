@@ -439,16 +439,16 @@ class XmlManager(object):
 
 	#this function gets the URL to the raw files
 	def supp_data_sample(self, section):
-		filetypes = ['GPR', 'PAIR', 'CEL']
+		filetypes = ['GPR', 'PAIR', 'CEL', 'TXT']
 		if type(section) is list:
 			for list_index in range(len(section)):
 				print ('a', section)
-				#if any(file in section[list_index]['@tag'] for file in filetypes):
-				#	self.supp_data.append(section[list_index]['#text'])
+				if any(file in section[list_index]['@type'] for file in filetypes):
+					self.supp_data.append(section[list_index]['#text'])
 		elif type(section) is OrderedDict:
 			print ('b', section)
-			#if any(file in section['@tag'] for file in filetypes):
-			#	self.supp_data.append(section['#text'])
+			if any(file in section['@type'] for file in filetypes):
+				self.supp_data.append(section['#text'])
 		else:	
 			self.supp_data.append(section)
 	def other_stuff_sample(self, section):
