@@ -9,7 +9,7 @@ import codecs
 import config
 from xml_manager import XmlManager
 import sys
-from antibody_filter import raw_files_filter_rows, filter_rows, assign_tag_multiple 
+from antibody_filter import filter_rows, assign_tag_multiple 
 
 def main():
 	if len(sys.argv) < 5:
