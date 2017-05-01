@@ -115,7 +115,6 @@ class XmlManager(object):
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
 											elif 'Source' in key:
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
-												print (mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
 											elif 'Label' in key and 'Label-Protocol' not in key:
@@ -148,7 +147,7 @@ class XmlManager(object):
 								elif any(protocol in section for protocol in all_protocols):
 									self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x][section])
 								elif section == 'Characteristics':
-									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
+									self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
 								elif 'Platform-Ref' in section:
 									self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
 								#this section isn't always present
@@ -439,7 +438,7 @@ class XmlManager(object):
 				#self.other_stuff_sample(section)
 
 	#probably not useful anymore
-	def descrip_sample(self, section):
+	"""def descrip_sample(self, section):
 		if type(section) is list:
 			for list_index in range(len(section)):
 				if type(section[list_index]) is list:
@@ -458,13 +457,17 @@ class XmlManager(object):
 				else:
 					self.descrip_list.append(section['#text'])
 		else:	
-			self.descrip_list.append(section)
+			self.descrip_list.append(section)"""
+	#this function gets the URL to the raw files
 	def supp_data_sample(self, section):
+		filetypes = ['GPR', 'PAIR', 'CEL']
 		if type(section) is list:
 			for list_index in range(len(section)):
-				self.supp_data.append(section[list_index]['#text'])
+				if any(file in filetypes) in section[list_index]['@tag'] for file in filetypes:
+					self.supp_data.append(section[list_index]['#text'])
 		elif type(section) is OrderedDict:
-			self.supp_data.append(section['#text'])
+			if any(file in filetypes) in section['@tag'] for file in filetypes:
+				self.supp_data.append(section['#text'])
 		else:	
 			self.supp_data.append(section)
 	def other_stuff_sample(self, section):
