@@ -173,7 +173,7 @@ class XmlManager(object):
 								elif section == 'Instrument-Model':
 									#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
 									for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
-										print (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
+										print ('1', mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
 										#self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 								elif section == 'Description':
@@ -227,6 +227,7 @@ class XmlManager(object):
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
 							#Used tag: 'Manufaturer' (in 'Platform' section)
 							row['Manufacturer'] = str(self.platform_dict['Manufacturer'])
+							print ('2', row['Manufacturer'])
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
