@@ -650,10 +650,6 @@ class XmlManager(object):
 					tmp_row[k]=v
 			tmp_rows.append(tmp_row)
 		self.rows = tmp_rows
-		#self.rows = [{k.decode("utf-8"):v.decode("utf-8") if isinstance(k, bytes) else k:v for k, v in row.items()} for row in self.rows]
-		#self.rows = [{k.encode('utf-8'):v.encode('utf-8') for k, v in row.items()} for row in self.rows] 
-		#self.rows = [{k.decode('utf-8'):v for k, v in row.items()} for row in self.rows] 
-		#self.rows = [{k:v for k, v in row.items()} for row in self.rows] 
 		writer = csv.DictWriter(outfile,
 			                    fieldnames=self.column_names,
 			                    dialect='excel-tab')
