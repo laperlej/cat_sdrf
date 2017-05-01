@@ -168,16 +168,19 @@ class XmlManager(object):
 									self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x][section])
 								elif section == 'Characteristics':
 									#anything goes here?
+									print ('a')
 									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
 								elif 'Platform-Ref' in section:
 									self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
 								elif section == 'Instrument-Model':
+									print ('b')
 									# Used tag: 'Instrument-Model'
 									#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
 									for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
 										self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 								elif section == 'Description':
+									print ('c' , section['Description'])
 									#verify what goes here
 									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
 								elif section == 'Data-Processing':
