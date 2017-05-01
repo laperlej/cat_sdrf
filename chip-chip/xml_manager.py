@@ -174,7 +174,7 @@ class XmlManager(object):
 								elif section == 'Instrument-Model':
 									for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
-										self.manufacturer_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
+										self.manufacturer_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 								elif section == 'Description':
 									#print ('c' , section)
 									#verify what goes here
@@ -224,7 +224,7 @@ class XmlManager(object):
 							row['15)genotype'] = sep.join(self.gene_list)
 							# Used tag : 'Platform-Ref'
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
-							#Used tag: 'Manufaturer' (in 'Platform' section)
+							#Used tag: 'Manufaturer' (in 'Platform' section) and/or 'Intrument-model'
 							self.manufacturer_list.append(self.platform_dict['Manufacturer'])
 							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None)
 							print ('2', row['Manufacturer'])
