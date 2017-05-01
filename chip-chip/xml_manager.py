@@ -226,7 +226,7 @@ class XmlManager(object):
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
 							#Used tag: 'Manufaturer' (in 'Platform' section) and/or 'Intrument-model'
 							self.manufacturer_list.append(self.platform_dict['Manufacturer'])
-							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None and x is not " ")
+							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None and x is not "")
 							print ('2-', row['Manufacturer'], '-2')
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
