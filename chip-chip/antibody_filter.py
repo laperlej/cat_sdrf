@@ -11,13 +11,14 @@ from collections import OrderedDict
 def merge_cols(row, input_cols):
 	return "|".join(row[input_col].lower() for input_col in input_cols if row[input_col] is not None)
 
+"""
 def raw_files_filter_rows(rows, output_col1, output_col2 ):
 	for row in rows:
 		row = raw_files_filter_row(row, output_col1, output_col2)
 	return rows
 #probably not necessary with chip-chip
 def raw_files_filter_row(row, output_col1, output_col2):
-	""" Fills the 'raw_files column with .CEL, .pair, .GPR or .txt files"""
+	#Fills the 'raw_files column with .CEL, .pair, .GPR or .txt files
 	raw_file_dict = {'CEL':'(\S+\.CEL\.gz)', 'PAIR':'(\S+\.pair\.gz)', 'GPR':'(\S+\.gpr\.gz)', 'TXT':'(\S+\.txt\.gz)'}
 	new_value = ''
 	for raw_file in raw_file_dict:
@@ -28,26 +29,7 @@ def raw_files_filter_row(row, output_col1, output_col2):
 			new_value = " | ".join(match)
 		
 	row[output_col1] = new_value
-	return row
-	#if any(raw_file in row['19)all_supp_files'] for raw_file in raw_file_list):
-		#row[output_col1] = row['19)all_supp_files']
-		#return row
-	#else:
-	#	return bam_sam_filter_row(row, output_col1)
-
-# Searches for specific file type and returns the complete file name if the file type is found
-def bam_sam_filter_row(row, output_col1):
-	filetypes = {'BAM':'(\S+\.bam|\S+\.bam.wig)', 'SAM':'(\S+\.sam)', 'supplementary file':'(supplementary\sfile\s\S+\.sam)'}
-	new_value = ""
-	for filetype in filetypes:
-		searchtarget = merge_cols(row, ["Other", "22)Protocol", '19)all_supp_files'])
-		match =  re.search(filetypes[filetype], searchtarget)
-		if match:
-			new_value = match.group(1)
-			break
-	row[output_col1] = new_value
-	return row
-
+	return row """
 
 # Iterate on each line of the dictionnary that is rows (contains info from the sdrf files)
 def filter_rows(rows, target_dico, histones_dico, input_cols, output_col):
