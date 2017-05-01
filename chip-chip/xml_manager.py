@@ -176,7 +176,7 @@ class XmlManager(object):
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
 										self.manufacturer_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 								elif section == 'Description':
-									#print ('c' , section)
+									print (mon_dict['MINiML']['Sample'][x]['Description'])
 									#verify what goes here
 									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
 								elif section == 'Data-Processing':
@@ -227,7 +227,6 @@ class XmlManager(object):
 							#Used tag: 'Manufaturer' (in 'Platform' section) and/or 'Intrument-model'
 							self.manufacturer_list.append(self.platform_dict['Manufacturer'])
 							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None and x is not "")
-							print ('2-', row['Manufacturer'], '-2')
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
@@ -237,7 +236,6 @@ class XmlManager(object):
 							Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 							#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
 							row['21)Experiment description'] = Exp_descrip.replace('\n', '')
-
 							row['22)Protocol'] = sep.join(x for x in self.protocol_list if x is not None)
 							row['22)Protocol'] = row['22)Protocol'].replace('\n', '')
 							#Consist of the name associated to a contributor number mentionned in the GSM part; the contributor number and name are taken from a list or contributors described in the GSE part
