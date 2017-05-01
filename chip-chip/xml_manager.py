@@ -180,7 +180,7 @@ class XmlManager(object):
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
 										self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 								elif section == 'Description':
-									print ('c' , section)
+									#print ('c' , section)
 									#verify what goes here
 									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
 								elif section == 'Data-Processing':
