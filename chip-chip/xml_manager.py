@@ -99,7 +99,7 @@ class XmlManager(object):
 							self.gene_list = []
 							self.strain_list = []
 							self.platform_list = []
-							self.manufaturer_list = []
+							self.manufacturer_list = []
 							self.descrip_list = []
 							self.protocol_list = []
 							self.supp_data = []
