@@ -55,26 +55,6 @@ class XmlManager(object):
 			else:
 				#Iteration on the list of all samples (x being the index of each sample)
 				for x in range(len(mon_dict['MINiML']['Sample'])):
-					"""
-					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
-					#Resets the lists after each sample
-					self.id_list = []
-					self.org_list = []
-					self.treatment_list = []
-					self.antibody_list = []
-					self.target_list = []
-					self.assay_list = []
-					self.material_list = []
-					self.cell_list = []
-					self.gene_list = []
-					self.strain_list = []
-					self.platform_list = []
-					self.descrip_list = []
-					self.protocol_list = []
-					self.supp_data = []
-					self.label_list = []
-					self.other_list = []
-					"""
 					#since some GSM don't even have supplementary files
 					if 'Supplementary-Data' not in mon_dict['MINiML']['Sample'][x]:
 						row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
@@ -135,6 +115,7 @@ class XmlManager(object):
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
 											elif 'Source' in key:
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
+												print (mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
 											elif 'Label' in key and 'Label-Protocol' not in key:
@@ -156,7 +137,6 @@ class XmlManager(object):
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])	
 											elif 'Label' in key and 'Label-Protocol' not in key: 
-												#print ('2')
 												self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])
 											elif 'Characteristics' in key:
 												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
@@ -171,6 +151,7 @@ class XmlManager(object):
 									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
 								elif 'Platform-Ref' in section:
 									self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
+								#this section isn't always present
 								elif section == 'Instrument-Model':
 									for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
