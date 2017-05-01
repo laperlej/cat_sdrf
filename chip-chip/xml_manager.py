@@ -167,18 +167,15 @@ class XmlManager(object):
 								elif any(protocol in section for protocol in all_protocols):
 									self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x][section])
 								elif section == 'Characteristics':
-									#anything goes here?
-									print ('a')
 									self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
 								elif 'Platform-Ref' in section:
 									self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
 								elif section == 'Instrument-Model':
-									print ('b')
-									# Used tag: 'Instrument-Model'
 									#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
 									for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
+										print (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 										# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
-										self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
+										#self.platform_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 								elif section == 'Description':
 									#print ('c' , section)
 									#verify what goes here
@@ -226,8 +223,7 @@ class XmlManager(object):
 							row['14)strain'] = sep.join(self.strain_list)
 							#Used tag: mostly 'genotype'
 							row['15)genotype'] = sep.join(self.gene_list)
-							# Used tag : 'Platform-Ref' and 'Instrument-Model'
-							#self.platform_list.append(self.platform_dict['Manufacturer'])
+							# Used tag : 'Platform-Ref'
 							row['16)platform'] = sep.join(x for x in self.platform_list if x is not None)
 							#Used tag: 'Manufaturer' (in 'Platform' section)
 							row['Manufacturer'] = str(self.platform_dict['Manufacturer'])
