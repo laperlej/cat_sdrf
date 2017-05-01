@@ -115,6 +115,7 @@ FIELDNAMES_old=OrderedDict([
 	('label', lambda title, row: re.search('$a', title)),
 	('Other', lambda title, row: re.search('.*', title))])
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
+#update 'FAIRE-seq' since there seems to be some 'FAIRE-chip' also
 ASSAY_DICO = OrderedDict([
 	('Non-genomic', '(non.genomic|transcriptomic|total\srna|nascent\srna|polya\srna)'),
 	('BrdU-ChIP', '(brdu\sip|brdu-ip)'),
@@ -123,7 +124,7 @@ ASSAY_DICO = OrderedDict([
 	("WGS", 'wgs'),
 	('ChIP-exo', 'chip-exo'),
 	("ChIP-eSPAN", "chip-espan"),
-	('FAIRE-Seq', 'faire'),
+	('FAIRE-Seq', 'faire.seq'),
 	("ChIP-chip",'(chip|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin|genome\sbinding.occupancy\sprofiling\sby\sgenome\stiling\sarray)'),
 	("ChIP-Seq", "chip-seq"),
 	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
