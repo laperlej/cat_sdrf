@@ -210,6 +210,7 @@ class XmlManager(object):
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
 							#Used tag:
 							row['19)all_supp_files'] = sep.join(self.supp_data)
+							print (row['19)all_supp_files'])
 							#row['20)SRA_files'] not very useful now
 							Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 							#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
@@ -442,11 +443,9 @@ class XmlManager(object):
 		filetypes = ['GPR', 'PAIR', 'CEL', 'TXT']
 		if type(section) is list:
 			for list_index in range(len(section)):
-				print ('a', section)
 				if any(file in section[list_index]['@type'] for file in filetypes):
 					self.supp_data.append(section[list_index]['#text'])
 		elif type(section) is OrderedDict:
-			print ('b', section)
 			if any(file in section['@type'] for file in filetypes):
 				self.supp_data.append(section['#text'])
 		else:	
