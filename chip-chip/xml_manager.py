@@ -548,8 +548,7 @@ class XmlManager(object):
 					self.platform_dict['Manufacturer'] = section['Manufacturer']
 				elif 'Description' in key:
 					self.platform_dict['Description'] = section['Description']
-		else:
-			print(section)
+		
 	def series_to_gsm(self, section):
 		if type(section) is list:
 			for num in range(len(section)):
