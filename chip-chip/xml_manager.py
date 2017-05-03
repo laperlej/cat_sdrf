@@ -30,7 +30,7 @@ class XmlManager(object):
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
 		#yes the two 'delta' symbols are different
-		special_characters = {'∆':'Delta-', 'ɛ':'Epsilon', 'δ':'Delta-', 'α':'Alpha', 'µ':'micro-','Δ':'Delta-', '–':'-', '“', '"'}
+		special_characters = {'∆':'Delta-', 'ɛ':'Epsilon', 'δ':'Delta-', 'α':'Alpha', 'µ':'micro-','Δ':'Delta-', '–':'-', '“':'"'}
 		if 'Series' in mon_dict['MINiML']:
 			# information left from GSE section of file: 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Accession database', 'Type', 'Contributor-Ref', 'Sample-Ref', 'Contact-Ref', 'Supplementary-Data' and 'Relation-Type'
 			self.series_dict = {'GSE':'', 'Title':'', 'Summary':'', 'Pubmed':'' , 'Overall-Design':'', 'Type':''}
