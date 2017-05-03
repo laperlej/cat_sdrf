@@ -207,9 +207,8 @@ class XmlManager(object):
 							self.manufacturer_list.append(self.platform_dict['Manufacturer'])
 							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None and x is not "")
 							print (row['1)identifier'])
-							#print (mon_dict['MINiML']['Platform'])
 							print (self.platform_dict['Manufacturer'])
-							#print (self.manufacturer_list)
+							print (self.manufacturer_list)
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
