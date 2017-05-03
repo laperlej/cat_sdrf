@@ -38,6 +38,7 @@ class XmlManager(object):
 			self.author_list(mon_dict['MINiML']['Contributor'])
 		#Information left from GPL section of file: 'Platform iid', 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Title', 'Accession database', 'Technology', 'Distribution', 'Organism', 'Description', 'Manufacturer', 'Manufacture-Protocol'
 		if 'Platform' in mon_dict['MINiML']:
+			# Only 'Manufacturer' is useful for now, but the rest is easily accessible
 			self.platform_dict = {'Technology':'', 'Description':'', 'Manufacturer':''}
 			self.platform_to_gsm(mon_dict['MINiML']['Platform'])
 		if 'Sample' not in mon_dict['MINiML']:
@@ -206,9 +207,9 @@ class XmlManager(object):
 							self.manufacturer_list.append(self.platform_dict['Manufacturer'])
 							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None and x is not "")
 							print (row['1)identifier'])
-							print (mon_dict['MINiML']['Platform'])
+							#print (mon_dict['MINiML']['Platform'])
 							#print (self.platform_dict['Manufacturer'])
-							print (self.manufacturer_list)
+							#print (self.manufacturer_list)
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
@@ -536,21 +537,15 @@ class XmlManager(object):
 	def platform_to_gsm(self, section):
 		if type(section) is list:
 			for num in range(len(section)):
-				if 'Technology' in section[num]:
-					self.platform_dict['Technology'] = section[num]['Technology']
-				elif 'Manufacturer' in section[num]:
+				if 'Manufacturer' in section[num]:
+					print ('a-', section[num]['Manufacturer'])
 					self.platform_dict['Manufacturer'] = section[num]['Manufacturer']
-				elif 'Description' in section[num]:
-					self.platform_dict['Description'] = section[num]['Description']	
 		elif type(section) is OrderedDict:
 			for key in section:
-				if 'Technology' in key:
-					self.platform_dict['Technology'] = section['Technology']
-				elif 'Manufacturer' in key:
+				if 'Manufacturer' in key:
+					print ('b-', section[num]['Manufacturer'])
 					self.platform_dict['Manufacturer'] = section['Manufacturer']
-				elif 'Description' in key:
-					self.platform_dict['Description'] = section['Description']
-		
+				
 	def series_to_gsm(self, section):
 		if type(section) is list:
 			for num in range(len(section)):
