@@ -51,6 +51,8 @@ class XmlManager(object):
 				self.id_list = []
 				self.id_list.append(mon_dict['MINiML']['Sample']['@iid'])
 				row['1)identifier'] = sep.join(self.id_list)
+				#Used tag: 'Series iid' in the GSE part of the file
+				row['2)filename'] = self.series_dict['GSE']
 				self.rows.append(row)
 			else:
 				#Iteration on the list of all samples (x being the index of each sample)
@@ -61,6 +63,8 @@ class XmlManager(object):
 						self.id_list = []
 						self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 						row['1)identifier'] = sep.join(self.id_list)
+						#Used tag: 'Series iid' in the GSE part of the file
+						row['2)filename'] = self.series_dict['GSE']
 						self.rows.append(row)
 					else:	
 						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
