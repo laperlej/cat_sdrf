@@ -93,7 +93,7 @@ ASSAY_DICO = OrderedDict([
 	("ChIP-eSPAN", "chip-espan"),
 	('FAIRE-Seq', 'faire.seq'),
 	('FAIRE-chip', 'faire'),
-	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
+	("MNase-Seq",'(monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
 	("ChIP-chip",'(chip|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin|genome\sbinding.occupancy\sprofiling\sby\sgenome\stiling\sarray)'),
 	("ChIP-Seq", "chip-seq"),
 	("DNase-Seq",'dnase'),
