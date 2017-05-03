@@ -26,7 +26,6 @@ class XmlManager(object):
 
 	def read_xml(self, opened_file, sep=' | '):
 		#Makes a list of orderedDict containing key:value pairs and lists and orderedDict
-		#mon_dict = xmltodict.parse(opened_file.read(), encoding='utf-8')
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
 		#yes the two 'delta' symbols are different
@@ -36,7 +35,6 @@ class XmlManager(object):
 			self.series_dict = {'GSE':'', 'Title':'', 'Summary':'', 'Pubmed':'' , 'Overall-Design':'', 'Type':''}
 			self.series_to_gsm(mon_dict['MINiML']['Series'])
 		if 'Contributor' in mon_dict['MINiML']:
-			#print (mon_dict['MINiML']['Contributor'])
 			self.author_list(mon_dict['MINiML']['Contributor'])
 		#Information left from GPL section of file: 'Platform iid', 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Title', 'Accession database', 'Technology', 'Distribution', 'Organism', 'Description', 'Manufacturer', 'Manufacture-Protocol'
 		if 'Platform' in mon_dict['MINiML']:
@@ -47,7 +45,6 @@ class XmlManager(object):
 		else:	
 			#If the series contains only one sample
 			if type(mon_dict['MINiML']['Sample']) is not list:
-				print ('1')
 				row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 				self.id_list = []
 				self.id_list.append(mon_dict['MINiML']['Sample']['@iid'])
@@ -70,7 +67,6 @@ class XmlManager(object):
 					else:	
 						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
 						for ch_position in range(int(mon_dict['MINiML']['Sample'][x]['Channel-Count'])):
-							#print (mon_dict['MINiML']['Sample'][x]['Channel-Count'])
 							row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
 							#Resets the lists after each sample
 							self.id_list = []
@@ -98,7 +94,6 @@ class XmlManager(object):
 									self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 									self.id_list.append(str(ch_position+1))
 									row['1)identifier'] = '_ch'.join(self.id_list)
-									#print (row['1)identifier'])
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
 								elif section == 'Type':
@@ -213,7 +208,7 @@ class XmlManager(object):
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
-							#Used tag:
+							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
 							row['18)raw_files'] = sep.join(self.supp_data)
 							#To get ALL the supplementary files, go in the supp_data function and make a list with the leftovers
 							#row['19)all_supp_files'] = sep.join(self.supp_data)
