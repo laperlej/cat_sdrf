@@ -206,9 +206,9 @@ class XmlManager(object):
 							#Used tag: 'Manufaturer' (in 'Platform' section) and/or 'Intrument-model'
 							self.manufacturer_list.append(self.platform_dict['Manufacturer'])
 							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None and x is not "")
-							print (row['1)identifier'])
-							print (self.platform_dict['Manufacturer'])
-							print (row['Manufacturer'])
+							#print (row['1)identifier'])
+							#print (self.platform_dict['Manufacturer'])
+							#print (row['Manufacturer'])
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
@@ -537,12 +537,12 @@ class XmlManager(object):
 		if type(section) is list:
 			for num in range(len(section)):
 				if 'Manufacturer' in section[num]:
-					print ('a-', section[num]['Manufacturer'])
+					#print ('a-', section[num]['Manufacturer'])
 					self.platform_dict['Manufacturer'] = section[num]['Manufacturer']
 		elif type(section) is OrderedDict:
 			for key in section:
 				if 'Manufacturer' in key:
-					print ('b-', section['Manufacturer'])
+					#print ('b-', section['Manufacturer'])
 					self.platform_dict['Manufacturer'] = section['Manufacturer']
 				
 	def series_to_gsm(self, section):
