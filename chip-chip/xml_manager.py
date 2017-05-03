@@ -543,7 +543,7 @@ class XmlManager(object):
 		elif type(section) is OrderedDict:
 			for key in section:
 				if 'Manufacturer' in key:
-					print ('b-', section[num]['Manufacturer'])
+					print ('b-', section['Manufacturer'])
 					self.platform_dict['Manufacturer'] = section['Manufacturer']
 				
 	def series_to_gsm(self, section):
