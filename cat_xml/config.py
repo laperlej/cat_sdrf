@@ -7,47 +7,6 @@ from collections import OrderedDict
 import saccer, pombe, celegans
 from antibody_filter import merge_cols
 
-"""
-# Assign 'csvfile.name' as the value of 'row' at the index 'filename' 
-PREPROCESS_1 = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
-
-#gets information from each associated idf file
-def idf_extract(csvfile, keyword_list):
-	if "seq.sdrf.txt" in csvfile.name:
-		idf_file_path = csvfile.name.replace("seq.sdrf.txt", "idf.txt")
-	else:
-		idf_file_path = csvfile.name.replace("sdrf.txt", "idf.txt")
-	idf_file = open(idf_file_path)
-	for line in idf_file.readlines():
-		output1 = ""
-		#Search first keyword in the lines. Priority on first keyword, most specific
-		if keyword_list[0] in line:
-			output1 = line.replace(str(keyword_list[0]), "")
-			#returns output1 providing that it is not an empty string
-			if output1.strip() is not "" and output1.strip() is not None:
-				return output1.replace('\t', ' ')
-				break
-	#if first keyword not in any lines, use second keyword, providing that there is a second one
-	else:
-		for line in idf_file.readlines():
-			output2 = ""
-			if len(keyword_list)== 2 and keyword_list[1] in line:	
-				output2 = line.replace(str(keyword_list[1]), "")
-				return output2.replace('\t', ' ')
-		
-#Assign the info from the 'experiment description' line in associated idf file as the value of 'row' at the index 'experiment_description_idf'
-PREPROCESS_2 = lambda csvfile, row: operator.setitem(row, "experiment_description_idf", idf_extract(csvfile, ['Experiment Description']))
-#Assign the info from the 'PubMed ID' line in associated idf file as the value of 'row' at the index 'pubmed_id_idf'
-PREPROCESS_3 = lambda csvfile, row: operator.setitem(row, "pubmed_id_idf", idf_extract(csvfile, ['PubMed ID']))
-#Assign the info from the 'Publication Author list' line in associated idf file as the value of 'row' at the index 'author_list_idf'
-PREPROCESS_4 = lambda csvfile, row: operator.setitem(row, "author_list_idf", idf_extract(csvfile, ['Publication Author List','Person Last Name']))
-#Assign the info from the 'submission date' line in associated idf file as the value of 'row' at the index 'submission_date_idf'
-PREPROCESS_5 = lambda csvfile, row: operator.setitem(row, "submission_date_idf", idf_extract(csvfile, ['Comment[ArrayExpressSubmissionDate]', 'Comment[SRASubmissionDate]' ]))
-#Assign the info from the 'Public release date' line in associated idf file as the value of 'row' at the index 'release_date_idf'
-PREPROCESS_6 = lambda csvfile, row: operator.setitem(row, "release_date_idf", idf_extract(csvfile, ['Public Release Date']))
-#Assign the info from the 'Protocol description' line in associated idf file as the value of 'row' at the index 'protocol_description_idf'
-PREPROCESS_7 = lambda csvfile, row: operator.setitem(row, "protocol_description_idf", idf_extract(csvfile, ["Protocol Description"]))
-"""
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
@@ -167,6 +126,7 @@ ASSAY_DICO = OrderedDict([
 	('ChIP-exo', 'chip-exo'),
 	("ChIP-eSPAN", "chip-espan"),
 	('FAIRE-Seq', 'faire'),
+	('ChIP-chip', 'chip\/chip),
 	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin)'),
 	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
 	("DNase-Seq",'dnase'),
