@@ -29,7 +29,7 @@ class XmlManager(object):
 		#mon_dict = xmltodict.parse(opened_file.read(), encoding='utf-8')
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
-		special_characters = {'∆': 'Delta', 'ɛ': 'Epsilon', 'δ': 'Delta', 'α':'Alpha'}
+		special_characters = {'∆':'Delta-', 'Δ':'Delta-', 'ɛ':'Epsilon', 'δ':'Delta-', 'α':'Alpha', 'µ':'micro-', '–':'-', '“':'"'}
 		if 'Series' in mon_dict['MINiML']:
 			# information left from GSE section of file: 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Accession database', 'Type', 'Contributor-Ref', 'Sample-Ref', 'Contact-Ref', 'Supplementary-Data' and 'Relation-Type'
 			#Information left from GPL section of file: 'Platform iid', 'Status database', 'Submission-Date', 'Release-Date', 'Last-Update-Date', 'Title', 'Accession database', 'Technology', 'Distribution', 'Organism', 'Description', 'Manufacturer', 'Manufacture-Protocol'
@@ -191,7 +191,7 @@ class XmlManager(object):
 						row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
 						#Used tag:
 						row['19)all_supp_files'] = sep.join(self.supp_data)
-						#row['20)SRA_files'] not very useful now
+						#row['20)SRA_sra_accessions']
 						Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 						#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
 						row['21)Experiment description'] = Exp_descrip.replace('\n', '')
