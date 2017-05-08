@@ -42,15 +42,16 @@ class XmlManager(object):
 		else:	
 			#If the series contains only one sample
 			if type(mon_dict['MINiML']['Sample']) is not list:
-				row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
+				row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Instrument_model', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
 				self.id_list = []
 				self.id_list.append(mon_dict['MINiML']['Sample']['@iid'])
 				row['1)identifier'] = sep.join(self.id_list)
+				row['2)filename'] = self.series_dict['GSE']
 				self.rows.append(row)
 			else:
 				#Iteration on the list of all samples
 				for x in range(len(mon_dict['MINiML']['Sample'])):
-					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
+					row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Instrument_model', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('Other', '') ])
 					#Resets the lists after each sample
 					self.id_list = []
 					self.org_list = []
@@ -63,7 +64,7 @@ class XmlManager(object):
 					self.gene_list = []
 					self.strain_list = []
 					self.platform_list = []
-					self.manufacturer_list = []
+					self.instrument_list = []
 					self.descrip_list = []
 					self.protocol_list = []
 					self.supp_data = []
@@ -73,6 +74,7 @@ class XmlManager(object):
 						self.id_list = []
 						self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 						row['1)identifier'] = sep.join(self.id_list)
+						row['2)filename'] = self.series_dict['GSE']
 						self.rows.append(row)
 					else:	
 						#Iteration on one Sample dictionnary
@@ -134,7 +136,7 @@ class XmlManager(object):
 								#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
 								for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
 									# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
-									self.manufacturer_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
+									self.instrument_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 							elif section == 'Description':
 								#verify what goes here
 								self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
@@ -177,7 +179,7 @@ class XmlManager(object):
 						row['11)Material_type'] = sep.join(self.material_list)
 						# Used tags: 'cell type', 'cell line', 'tissue/cell line', 'tissue/cel type'
 						row ['13)cell_type'] = sep.join(self.cell_list)
-						#12)clean_celltype not very useful now
+						#12)clean_celltype not very useful with pombe and saccer
 						#Used tag: mostly 'strain', 'strain background', 'backgroung strain'
 						row['14)strain'] = sep.join(self.strain_list)
 						#Used tag: mostly 'genotype'
@@ -185,7 +187,7 @@ class XmlManager(object):
 						# Used tag : 'Platform-Ref'
 						row['16)platform'] = sep.join(self.platform_list)
 						# Used tag : 'Instrument-Model'
-						row['Manufacturer'] = sep.join(self.manufacturer_list)
+						row['Instrument_model'] = sep.join(self.manufacturer_list)
 						#Used tag: 'Description'
 						row['17)Sample_description'] = sep.join(self.descrip_list)
 						row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
