@@ -7,6 +7,7 @@ from collections import OrderedDict
 import saccer, pombe, celegans
 from antibody_filter import merge_cols
 
+"""
 # Assign 'csvfile.name' as the value of 'row' at the index 'filename' 
 PREPROCESS_1 = lambda csvfile, row: operator.setitem(row, "filename", os.path.basename(csvfile.name))
 
@@ -46,7 +47,7 @@ PREPROCESS_5 = lambda csvfile, row: operator.setitem(row, "submission_date_idf",
 PREPROCESS_6 = lambda csvfile, row: operator.setitem(row, "release_date_idf", idf_extract(csvfile, ['Public Release Date']))
 #Assign the info from the 'Protocol description' line in associated idf file as the value of 'row' at the index 'protocol_description_idf'
 PREPROCESS_7 = lambda csvfile, row: operator.setitem(row, "protocol_description_idf", idf_extract(csvfile, ["Protocol Description"]))
-
+"""
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
@@ -109,6 +110,7 @@ FIELDNAMES=OrderedDict([
 	('14)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
 	('15)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
 	('16)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
+	('Manufacturer', '')
 	('17)Sample_description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
 	('18)raw_files', lambda title, row: re.search('$a', title)),
 	('19)all_supp_files', lambda title, row: re.search('fastq_uri', title)),
