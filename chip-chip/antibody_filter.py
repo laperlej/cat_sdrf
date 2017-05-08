@@ -109,12 +109,14 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 		Makes use of other functions, such as compare_tag, compare_chip and compare_directly (different levels or comparison);
 		This function will overwrite the content of 'clean_assay'
 	"""
-	#Assign 'N/A' to 5)clean_target column if the assay type is mnase, dnase, with ssDNA, bisulfite or FAIRE-Seq
-	assays_list = ['mnase', 'dnase', 'faire', 'ssdna', 'bisulfite-seq', 'atac-seq']
+	#Assign 'N/A' to 5)clean_target column if the assay type is mnase, dnase, with ssDNA, bisulfite, with BrdU or FAIRE-Seq
+	assays_list = ['mnase', 'dnase', 'faire', 'ssdna', 'bisulfite-seq', 'atac-seq', 'brdu']
 	if any(assay in merge_cols(row,["4)clean_assay"]) for assay in assays_list):
 		return "N/A", "assay type (1)"
-	elif 'brdu' in row["4)clean_assay"].lower() and 'brdu' in row["8)antibody"].lower():
-		return "N/A", "assay type (1)"
+	# With ChIP-chip, seems that BrdU assays have ideed no target
+	#elif 'brdu' in row["4)clean_assay"].lower() and 'brdu' in row["8)antibody"].lower():
+	#	return "N/A", "assay type (1)"
+	
 	#if 'none' in merge_cols(row,["clean_target", "5)antibody"]) and 'input' in merge_cols(row,["clean_assay", "11)description", "13)other"]):
 	#	return 'input', 'keyword (1)'
 	elif 'not specified' in merge_cols(row,["8)antibody"])  and 'input' in merge_cols(row,["13)cell_type","17)Sample_description", "1,1)Sample_title"]):
