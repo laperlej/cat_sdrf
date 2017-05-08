@@ -69,7 +69,7 @@ FIELDNAMES=OrderedDict([
 	('14)strain', ''),
 	('15)genotype', ''),
 	('16)platform', ''),
-	('Manufacturer', ''),
+	('Instrument_model', ''),
 	('17)Sample_description', ''),
 	('18)raw_files', ''),
 	('19)all_supp_files', ''),
