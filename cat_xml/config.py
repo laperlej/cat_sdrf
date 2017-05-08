@@ -50,40 +50,8 @@ CELL_TYPE_DICT = {
 	"pombe": pombe.CELL_TYPE,
 	"celegans": celegans.CELL_TYPE
 	}
-#only keys are useful in this dictionnary, the rest won't serve
+#only keys are useful in this dictionnary
 FIELDNAMES=OrderedDict([
-	('1)identifier', lambda title, row: re.search('sourcename', title)),
-	('1,1)Sample_title', lambda title, row: re.search('$a', title)),
-	('2)filename', lambda title, row: re.search('filename', title)),
-	('3)organism', lambda title, row: re.search("\[organism\]", title)),
-	('4)clean_assay',lambda title, row: re.search('$a', title)),
-	('5)clean_target', lambda title, row: re.search('$a', title)),
-	('6)reliability', lambda title, row: re.search('$a', title)),
-	('7)assaytype', lambda title, row: re.search('(\[library.?selection\]|\[library.?strategy\]|characteristics\[sampledescription\]|\[iporinput\]|\[experimenttype\]|\[test\]|\[type\]|\[protocoltype\])',title)),
-	('8)antibody', lambda title, row: re.search("(antibody|milliporecatno|vendor|\[label\|label$|antibodies)", title)),
-	('9)target', lambda title, row: re.search('(epitopetag|tagged|taptag|protein|h2b|histone|immunoprecipitate|target|\[tag\]|\[pol\sgenotype\]|\[ip\])', title)),
-	('10)treatment', lambda title, row: re.search('(\[mnasedigestiontime\]|\[mnaseorexoiii\]|phosphate|concentration|medium|media|condition|cycle|culturetype|transformedwith|treatment|temperature|percentage|compound|spikedna|\[time\])', title)),
-	('11)Material_type',lambda title, row: re.search('(\[library_source\]|sampletype|materialtype|samplecomposition|\[samplesubtype\]|\[fraction\]|tissue|cell\stype|organismpart|organelle)', title)),
-	('12)clean_celltype', lambda title, row: re.search('$a', title)),
-	('13)cell_type',lambda title, row: re.search('(comment\[sample_source_name\]|\[age\]|cellline|growth|stage|developmental)', title)),
-	('14)strain', lambda title, row: re.search('(strain|\[variant\])', title)),
-	('15)genotype', lambda title, row: re.search('(genotype|genedeletion|variation\]|genetic|\[yrr1alleletransformed\]|background)', title)),
-	('16)platform', lambda title, row: re.search('(platform|instrument_model)', title)),
-	('Manufacturer', ''),
-	('17)Sample_description', lambda title, row: re.search('(comment\[sample_description\]|sample_characteristics|\[individual\]|comment\[sample_title\]|comment\[ena_alias\]|\[control\]|variable)', title)),
-	('18)raw_files', lambda title, row: re.search('$a', title)),
-	('19)all_supp_files', lambda title, row: re.search('fastq_uri', title)),
-	('20)SRA_accessions', lambda title, row: re.search('(comment\[ena_run\]|comment\[ena_experiment\])', title)),
-	('21)Experiment description', lambda title, row: re.search('experiment_description_idf', title)),
-	('22)Protocol', lambda title, row: re.search('protocol_description_idf', title)),
-	('23)Author(s)', lambda title, row: re.search('author_list_idf', title)),
-	('Releasing group', lambda title, row: re.search('$a', title)),
-	('24)Submission Date', lambda title, row: re.search('submission_date_idf', title)),
-	('25)Release Date', lambda title, row: re.search('release_date_idf', title)),
-	('26)Pubmed ID', lambda title, row: re.search('pubmed_id_idf', title)),
-	('Other', lambda title, row: re.search('.*', title))])
-
-"""
 	('1)identifier', ''),
 	('1,1)Sample_title', ''),
 	('2)filename', ''),
@@ -114,7 +82,6 @@ FIELDNAMES=OrderedDict([
 	('25)Release Date', ''),
 	('26)Pubmed ID', ''),
 	('Other', '')])
-"""
 
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
@@ -126,7 +93,7 @@ ASSAY_DICO = OrderedDict([
 	('ChIP-exo', 'chip-exo'),
 	("ChIP-eSPAN", "chip-espan"),
 	('FAIRE-Seq', 'faire'),
-	('ChIP-chip', 'chip\/chip),
+	('ChIP-chip', 'chip\/chip'),
 	("ChIP-Seq",'(chip|chip-seq|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin)'),
 	("MNase-Seq",'(mnase|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
 	("DNase-Seq",'dnase'),
