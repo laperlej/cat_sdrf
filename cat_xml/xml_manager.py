@@ -126,20 +126,19 @@ class XmlManager(object):
 
 							elif any(protocol in section for protocol in all_protocols):
 								self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x][section])
-							elif section == 'Characteristics':
+							#elif section == 'Characteristics':
 								#anything goes here?
-								self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Characteristics'])
+								#self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Characteristics'])
 							elif 'Platform-Ref' in section:
 								self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Platform-Ref']['@ref'])
 							elif section == 'Instrument-Model':
 								# Used tag: 'Instrument-Model'
-								#self.platform_list.append(mon_dict['MINiML']['Sample'][x]['Instrument-Model']['Predefined'])
 								for key in mon_dict['MINiML']['Sample'][x]['Instrument-Model']:
 									# Used tag: 'Instrument-Model'; known subtags: 'Predefined' and 'Other'
 									self.instrument_list.append (mon_dict['MINiML']['Sample'][x]['Instrument-Model'][key])
 							elif section == 'Description':
 								#verify what goes here
-								self.descrip_sample(mon_dict['MINiML']['Sample'][x]['Description'])
+								self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Description'])
 							elif section == 'Data-Processing':
 								self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Data-Processing'])	
 							elif section == 'Supplementary-Data':
@@ -191,6 +190,7 @@ class XmlManager(object):
 						#Used tag: 'Description'
 						row['17)Sample_description'] = sep.join(self.descrip_list)
 						row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
+						#row['18)raw_files']
 						#Used tag:
 						row['19)all_supp_files'] = sep.join(self.supp_data)
 						#row['20)SRA_sra_accessions']
@@ -211,7 +211,6 @@ class XmlManager(object):
 						for key in special_characters:
 							#iteration on the dictionnary row
 							for section in row:
-							#	print (row[section])
 								row[section] = row[section].replace(key,special_characters[key])
 						self.rows.append(row)
 	
@@ -414,7 +413,7 @@ class XmlManager(object):
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
 
-	#probably not useful anymore
+	"""#probably not useful anymore
 	def descrip_sample(self, section):
 		if type(section) is list:
 			for list_index in range(len(section)):
@@ -435,7 +434,9 @@ class XmlManager(object):
 					self.descrip_list.append(section['#text'])
 		else:	
 			self.descrip_list.append(section)
+			"""
 	def supp_data_sample(self, section):
+		supp_data = ['SRA Experiment', 'BAM', 'SAM']
 		if type(section) is list:
 			for list_index in range(len(section)):
 				self.supp_data.append(section[list_index]['#text'])
