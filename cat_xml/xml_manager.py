@@ -186,7 +186,7 @@ class XmlManager(object):
 						# Used tag : 'Platform-Ref'
 						row['16)platform'] = sep.join(self.platform_list)
 						# Used tag : 'Instrument-Model'
-						row['Instrument_model'] = sep.join(self.manufacturer_list)
+						row['Instrument_model'] = sep.join(self.instrument_list)
 						#Used tag: 'Description'
 						row['17)Sample_description'] = sep.join(self.descrip_list)
 						row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
