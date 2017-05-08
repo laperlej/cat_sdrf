@@ -472,6 +472,7 @@ class XmlManager(object):
 		else:	
 			self.other_list.append(section)
 	
+	#This function finds the complete name of each contributor or organization listed
 	def author_list(self, section):
 		if type(section) is list:
 			#Iteration on the list of contributors at the begining of the GSE file
@@ -495,20 +496,32 @@ class XmlManager(object):
 						names.append(section[num]['Person'][person_name])
 						#Adds the organization of contrib1 to the dict of contributors
 						if 'Organization' in section[0]:
-							if type(section[0]['Organization']) is list:
-								org_name = []
-								for item in range(len(section[0]['Organization'])):
-									#Ensures that None and same information is not added to 'org-name'
-									if section[0]['Organization'][item] not in org_name and section[0]['Organization'][item] is not None:
-										org_name.append(section[0]['Organization'][item])
-								#org_name = " , ".join(item for item in section[1]['Organization'] if item is not None and item is not in org_name)
-								#print (org_name)
-								self.contributor_dict['contrib1_organization'] = ", ".join(org_name)
-							else:	
-								self.contributor_dict['contrib1_organization'] = section[0]['Organization']		
+							self.organization_search(section[0]['Organization'])		
 				# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
-				self.contributor_dict[number] = " ".join(names)	
-							
+				self.contributor_dict[number] = " ".join(names)
+		elif type(section) is OrderedDict:		
+			names = []
+			number = section['@iid']
+			#Iteration on the First, middle and Last name of each contributor
+			for person_name in section['Person']:
+				#names is a list of all the names for one contributor (first name, middle name and last name)
+				names.append(section['Person'][person_name])
+				#Adds the organization of contrib1 to the dict of contributors
+				if 'Organization' in section:
+					self.organization_search(section['Organization'])					
+		# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
+		self.contributor_dict[number] = " ".join(names)
+	#This function finds the firts contributor's organization
+	def organization_search (self, section):
+		if type(section) is list:
+			org_name = []
+			for item in range(len(section)):
+				#Ensures that None and same information is not added to 'org-name'
+				if section[item] not in org_name and section[item] is not None:
+					org_name.append(section[item])
+			self.contributor_dict['contrib1_organization'] = ", ".join(org_name)
+		else:	
+			self.contributor_dict['contrib1_organization'] = section	
 
 	def series_to_gsm(self, section):
 		if type(section) is list:
@@ -539,28 +552,6 @@ class XmlManager(object):
 					self.series_dict['Summary'] = section[key]
 				elif 'Overall-Design' in key:
 					self.series_dict['Overall-Design'] = section[key]									
-
-
-	#Not needed with the xml files
-	def fixduplicates(self,csvcontent):
-		"""Checks all the headers and numerates the headers that have the same name"""
-		#Splits the first line from the rest (separated by a newline) and then in a list of string (tab-separated)
-		headers = csvcontent.split('\n')[0].split("\t")
-		#Splits the other lines (which are newline-separated)
-		content = csvcontent.split('\n')[1:]
-		new_headers = []
-		count = 1
-		#Iterate on the headers
-		for title in headers:
-			if title not in new_headers:
-				new_headers.append(title)
-			else:
-				#Modifies the header if it is a duplicate (adds a number equivalent to the count)
-				new_title = title + str(count)
-				new_headers.append(new_title)
-				count += 1
-		#Joins the headers (tab-separated) and then joins the content of the file (newline-separated) and returns the result	
-		return "\n".join(["\t".join(new_headers)]+ content)   
 
 	def fix_dup_gsm(self, uniq_titles):
 		""" Reunites lines that are identical for the information in the columns listed (uniq titles) and concatenate their informations if it is not the same"""
