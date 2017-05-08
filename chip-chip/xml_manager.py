@@ -206,17 +206,14 @@ class XmlManager(object):
 							#Used tag: 'Manufaturer' (in 'Platform' section) and/or 'Intrument-model'
 							self.manufacturer_list.append(self.platform_dict['Manufacturer'])
 							row['Manufacturer'] = sep.join(x for x in self.manufacturer_list if x is not None and x is not "")
-							#print (row['1)identifier'])
-							#print (self.platform_dict['Manufacturer'])
-							#print (row['Manufacturer'])
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
 							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
 							row['18)raw_files'] = sep.join(self.supp_data)
-							#To get ALL the supplementary files, go in the supp_data function and make a list with the leftovers
+							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers
 							#row['19)all_supp_files'] = sep.join(self.supp_data)
-							#row['20)SRA_files'] not very useful for ChIP-chip
+							#row['20)SRA_accessions'] not very useful for ChIP-chip
 							Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 							#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
 							row['21)Experiment description'] = Exp_descrip.replace('\n', '')
