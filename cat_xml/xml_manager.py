@@ -190,8 +190,9 @@ class XmlManager(object):
 						#Used tag: 'Description'
 						row['17)Sample_description'] = sep.join(self.descrip_list)
 						row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
-						#row['18)raw_files']
-						#Used tag:
+						#Used tag: 'SRA Experiment', 'BAM', 'SAM'
+						row['18)raw_files'] = sep.join(self.supp_data)
+						# Would be possible to get all the supplementary files; modifications in supp_data_sample 
 						row['19)all_supp_files'] = sep.join(self.supp_data)
 						#row['20)SRA_sra_accessions']
 						Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
@@ -435,15 +436,18 @@ class XmlManager(object):
 		else:	
 			self.descrip_list.append(section)
 			"""
+	#this function gets the URL of the raw files
 	def supp_data_sample(self, section):
-		supp_data = ['SRA Experiment', 'BAM', 'SAM']
+		filetypes = ['SRA Experiment', 'BAM', 'SAM']
 		if type(section) is list:
 			for list_index in range(len(section)):
-				self.supp_data.append(section[list_index]['#text'])
+				if any(file in section[list_index]['@type'] for file in filetypes):
+					self.supp_data.append(section[list_index]['#text'])
 		elif type(section) is OrderedDict:
-			self.supp_data.append(section['#text'])
+			if any(file in section['@type'] for file in filetypes):
+				self.supp_data.append(section['#text'])
 		else:	
-			self.supp_data.append(section)
+			self.supp_data.append(section)			
 	def other_stuff_sample(self, section):
 		if type(section) is list:
 			for list_index in range(len(section)):
