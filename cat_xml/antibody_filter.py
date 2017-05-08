@@ -35,8 +35,9 @@ def sra_files(row, output_col1, output_col2):
 		match0 = re.search('(ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra/\S+)', row['19)all_supp_files'])
 		match1 = re.search('(SRX\d{6,7})', row['19)all_supp_files'])
 		if match0:
-			row[output_col1] = match0.group(1)
-			#row[output_col2] = match1.group(1)
+			#row[output_col1] = match0.group(1)
+			#This will give the SRX accession in the row['20)SRA_accessions']
+			row[output_col2] = match1.group(1)
 		return row
 	else:
 		pass
