@@ -18,19 +18,16 @@ def raw_files_filter_rows(rows, output_col1, output_col2 ):
 
 def raw_files_filter_row(row, output_col1, output_col2):
 	""" Fills the 'raw_files column with preferencially fastq, else with .sra or finally with .bam or .sam files"""
-	#Probably won't find fastq in GEO
-	if 'fastq.gz' in row['19)all_supp_files']:
-		row[output_col1] = row['19)all_supp_files']
-		return row
+	SRX_SRR_combination = sra_files(row, output_col1, output_col2)
+	if SRX_SRR_combination is not None:
+		return SRX_SRR_combination
 	else:
-		SRX_SRR_combination = sra_files(row, output_col1, output_col2)
-		if SRX_SRR_combination is not None:
-			return SRX_SRR_combination
-		else:
-			return bam_sam_filter_row(row, output_col1)
+		#return bam_sam_filter_row(row, output_col1)
+		pass
 
 def sra_files(row, output_col1, output_col2):
 	""" Makes the combination of SRX and SRR to compose the url for the .sra files; fills the col '20)SRA_accessions' with the SRX and SRR accessions for xml files"""
+	# With xml, need only to get the SRX accession
 	sep = "/"
 	url = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra"
 	URL_list = []
@@ -39,9 +36,12 @@ def sra_files(row, output_col1, output_col2):
 		match1 = re.search('(SRX\d{6,7})', row['19)all_supp_files'])
 		if match0:
 			row[output_col1] = match0.group(1)
-			row[output_col2] = match1.group(1)
-		return row	
-	#Important part for sdrf files
+			#row[output_col2] = match1.group(1)
+		return row
+	else:
+		pass
+	"""
+	#Important part for sdrf files, not as much in xml files
 	elif 'SRX' in row['19)all_supp_files'] and 'SRR' in row['19)all_supp_files']:
 		match1 = re.search('(SRX\d{6,7})', row['19)all_supp_files'])
 		#Finds all the occurences and returns them as a list
@@ -77,8 +77,9 @@ def sra_files(row, output_col1, output_col2):
 			row[output_col1] = new_value
 			row[output_col2] = SRXpart
 			return row
+			"""
 
-# Searches for specific file type and returns the complete file name if the file type is found
+# Searches for specific file type and returns the complete file name if the file type is found; not very useful with xml files
 def bam_sam_filter_row(row, output_col1):
 	filetypes = {'BAM':'(\S+\.bam|\S+\.bam.wig)', 'SAM':'(\S+\.sam)', 'supplementary file':'(supplementary\sfile\s\S+\.sam)'}
 	new_value = ""
