@@ -30,8 +30,21 @@ def raw_files_filter_row(row, output_col1, output_col2):
 		
 	row[output_col1] = new_value
 	return row """
-
-# Iterate on each line of the dictionnary that is rows (contains info from the sdrf files)
+#iterates on each line of the dictionnary that is rows (metadatas from xml files) 
+def condition_rows(rows, input_cols, output_col):
+	for row in rows:
+		row = condition_row(row, input_cols, output_col)
+	return rows	
+	
+def condition_row(row, input_cols, output_col):
+	"""explanation for the selection in the «clean» or «discard» file 
+	returns «yes» if all conditions are met in row; 
+	returns «wrong org», «no data» or «wrong assay» otherwise
+	input_cols = organism, clean_assay, raw_data
+	output_col = «Selection»
+	"""
+	
+# Iterate on each line of the dictionnary that is rows (contains info from the xml files)
 def filter_rows(rows, target_dico, histones_dico, input_cols, output_col):
 	""" Concatenate the content of 2 dictionnaries (necessary when filtering for the antibody target; otherwise use an empty dictionnary plus the one needed"""
 	all_targets = OrderedDict ([])
@@ -50,7 +63,7 @@ def filter_row(row, all_targets, input_cols, output_col):
 		row: dictionnary where the key is the column's title and the value is the content of said column
 		all_targets: target-regex dictionnary (concatenation of 2 dict)
 		input_cols: list of the concatenated columns in which we search.
-		output_col: clumn changed if there was a match
+		output_col: column changed if there is a match
 	output:
 		row: column output_col = key of the dictionnary (info) if there was a match
 	"""
@@ -66,7 +79,7 @@ def filter_row(row, all_targets, input_cols, output_col):
 			new_value = info
 			break
 
-	#Eiter a target (if one was found) or nothing will assigned to the output column
+	#Either a target (if one was found) or nothing will assigned to the output column
 	row[output_col] = new_value
 	return row
 
@@ -98,10 +111,8 @@ def assign_tag_multiple(rows, tag_dico, histones_dico, gene_dico, gene_descrip_d
 		p.join()
 	exit(1)
 
-
 def assign_tag_parallel(data):
 	return assign_tag(*data)
-
 
 
 def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_dico, antibody_dico):
@@ -115,8 +126,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 		return "N/A", "assay type (1)"
 	# With ChIP-chip, seems that BrdU assays have ideed no target
 	#elif 'brdu' in row["4)clean_assay"].lower() and 'brdu' in row["8)antibody"].lower():
-	#	return "N/A", "assay type (1)"
-	
+	#	return "N/A", "assay type (1)"	
 	#if 'none' in merge_cols(row,["clean_target", "5)antibody"]) and 'input' in merge_cols(row,["clean_assay", "11)description", "13)other"]):
 	#	return 'input', 'keyword (1)'
 	elif 'not specified' in merge_cols(row,["8)antibody"])  and 'input' in merge_cols(row,["13)cell_type","17)Sample_description", "1,1)Sample_title"]):
