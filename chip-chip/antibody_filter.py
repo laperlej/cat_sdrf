@@ -31,18 +31,32 @@ def raw_files_filter_row(row, output_col1, output_col2):
 	row[output_col1] = new_value
 	return row """
 #iterates on each line of the dictionnary that is rows (metadatas from xml files) 
-def condition_rows(rows, input_cols, output_col):
+def condition_rows(rows, species):
 	for row in rows:
-		row = condition_row(row, input_cols, output_col)
+		row = condition_row(row, species)
 	return rows	
 	
-def condition_row(row, input_cols, output_col):
+def condition_row(row, species):
 	"""explanation for the selection in the «clean» or «discard» file 
-	returns «yes» if all conditions are met in row; 
-	returns «wrong org», «no data» or «wrong assay» otherwise
-	input_cols = organism, clean_assay, raw_data
+	returns «yes» if all conditions are met in row; returns «wrong org», «no raw data» or «wrong assay» otherwise
+	input_cols = 3)organism, 4)clean_assay, 18)raw_files
 	output_col = «Selection»
 	"""
+	species_dict={
+		"saccer": "Saccharomyces cerevisiae",
+		"pombe": "Schizosaccharomyces pombe",
+		"celegans":"Caenorhabditis elegans"}
+	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
+	
+	if species_dict[species] not in row['3)organism']:
+		row['Selection'] = 'Wrong org' 
+	elif row['18)raw_files'] is false:
+		row['Selection'] = 'No raw data'
+	elif any(discard_assay in row['4)clean_assay'].lower() for discard_assay in discard_assays):
+		row['Selection'] = 'Wrong assay'
+	else:
+		row['Selection'] = 'Yes'
+	return row	
 	
 # Iterate on each line of the dictionnary that is rows (contains info from the xml files)
 def filter_rows(rows, target_dico, histones_dico, input_cols, output_col):
@@ -65,7 +79,7 @@ def filter_row(row, all_targets, input_cols, output_col):
 		input_cols: list of the concatenated columns in which we search.
 		output_col: column changed if there is a match
 	output:
-		row: column output_col = key of the dictionnary (info) if there was a match
+		row: column output_col = key of the dictionnary (info) if there is a match
 	"""
 	
 	#Iterates on a target-regex dictionnary	
@@ -75,7 +89,6 @@ def filter_row(row, all_targets, input_cols, output_col):
 		searchtarget = merge_cols(row, input_cols)
 		#If there is a match between the regex of the target and the concatenated columns	
 		if re.search(all_targets[info], searchtarget):
-			#
 			new_value = info
 			break
 
