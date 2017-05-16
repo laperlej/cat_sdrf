@@ -17,7 +17,6 @@ import xmltodict
 from collections import OrderedDict
 from config import FIELDNAMES
 
-print (FIELDNAMES)
 class XmlManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
 		self.column_names = column_names
@@ -27,6 +26,7 @@ class XmlManager(object):
 		self.rows = []
 
 	def read_xml(self, opened_file, sep=' | '):
+		print (FIELDNAMES)
 		#Makes a list of orderedDict containing key:value pairs and lists and orderedDict
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
