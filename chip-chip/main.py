@@ -9,7 +9,7 @@ import codecs
 import config
 from xml_manager import XmlManager
 import sys
-from antibody_filter import filter_rows, assign_tag_multiple 
+from antibody_filter import filter_rows, assign_tag_multiple, condition_rows 
 
 def main():
 	if len(sys.argv) < 5:
@@ -42,6 +42,8 @@ def main():
 	xml_manager.rows = filter_rows(xml_manager.rows, config.ASSAY_DICO, {}, ["7)assaytype", "1,1)Sample_title", "11)Material_type", '13)cell_type', "17)Sample_description"], "4)clean_assay")
 	# Filter section for tags and 'empty' lines in 'clean_target'. Takes in argument all the dictionnaries used
 	xml_manager.rows = assign_tag_multiple(xml_manager.rows, config.TAG_DICO, config.HISTONES_MARKS_DICO, gene_dict, gene_descrip_dict, config.CHIP_DICO, config.ANTIBODY_DICO)
+	#Fills a column 'Selection' which explains why the sample is in the 'clean file' or in the 'discard file'
+	xml_manager.rows = condition_rows(xml_manager.rows, species)
 	# Duplicate the list of dictionnaries (rows) in a 'clean' file and puts the unwanted lines in a 'discard' file; the conditions depends on the species
 	xml_managers=xml_manager.split(config.split_condition[species])	
 	
