@@ -50,7 +50,7 @@ def condition_row(row, species):
 	
 	if species_dict[species] not in row['3)organism']:
 		row['Selection'] = 'Wrong org' 
-	elif row['18)raw_files'] is False:
+	elif row['18)raw_files'] is '':
 		row['Selection'] = 'No raw data'
 	elif any(discard_assay in row['4)clean_assay'].lower() for discard_assay in discard_assays):
 		row['Selection'] = 'Wrong assay'
