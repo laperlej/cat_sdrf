@@ -48,8 +48,8 @@ class XmlManager(object):
 		else:	
 			#If the series contains only one sample
 			if type(mon_dict['MINiML']['Sample']) is not list:
-				row = self.fieldnames
-				#row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Selection', ''), ('Other', '') ])
+				#row = self.fieldnames
+				row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Selection', ''), ('Other', '') ])
 				self.id_list = []
 				self.id_list.append(mon_dict['MINiML']['Sample']['@iid'])
 				row['1)identifier'] = sep.join(self.id_list)
@@ -61,8 +61,8 @@ class XmlManager(object):
 				for x in range(len(mon_dict['MINiML']['Sample'])):
 					#since some GSM don't even have supplementary files
 					if 'Supplementary-Data' not in mon_dict['MINiML']['Sample'][x]:
-						row = self.fieldnames
-						#row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''),('Selection', ''), ('Other', '') ])
+						#row = self.fieldnames
+						row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''),('Selection', ''), ('Other', '') ])
 						self.id_list = []
 						self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
 						row['1)identifier'] = sep.join(self.id_list)
@@ -72,8 +72,8 @@ class XmlManager(object):
 					else:	
 						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
 						for ch_position in range(int(mon_dict['MINiML']['Sample'][x]['Channel-Count'])):
-							row = self.fieldnames
-							#row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Other', '') ])
+							#row = self.fieldnames
+							row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Selection', ''), ('Other', '') ])
 							#Resets the lists after each sample
 							self.id_list = []
 							self.org_list = []
