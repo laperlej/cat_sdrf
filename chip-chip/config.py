@@ -12,7 +12,7 @@ def split_condition_aux(row, species):
 	#Assays type to discard
 	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
 	#file types needed (updated for chip-chip)
-	file_types = ['cel.gz', 'CEL.gz', 'pair.gz', 'gpr.gz', 'txt.gz']
+	file_types = ['.CEL', 'cel.gz', 'CEL.gz', 'pair.gz', 'gpr.gz', 'txt.gz']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
