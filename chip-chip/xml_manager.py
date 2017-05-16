@@ -24,9 +24,11 @@ class XmlManager(object):
 		self.sep = sep
 		#self.rows will be a list of OrderedDict (row) which will contain pairs of (row title:info)
 		self.rows = []
+		self.fieldnames = FIELDNAMES
+		print (self.fieldnames)
 
 	def read_xml(self, opened_file, sep=' | '):
-		print (FIELDNAMES)
+		print (self.fieldnames)
 		#Makes a list of orderedDict containing key:value pairs and lists and orderedDict
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
