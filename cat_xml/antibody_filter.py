@@ -93,6 +93,33 @@ def bam_sam_filter_row(row, output_col1):
 	row[output_col1] = new_value
 	return row
 
+#iterates on each line of the dictionnary that is rows (metadatas from xml files) 
+def condition_rows(rows, species):
+	for row in rows:
+		row = condition_row(row, species)
+	return rows	
+	
+def condition_row(row, species):
+	"""explanation for the selection in the «clean» or «discard» file 
+	returns «yes» if all conditions are met in row; returns «wrong org», «no raw data» or «wrong assay» otherwise
+	input_cols = 3)organism, 4)clean_assay, 18)raw_files
+	output_col = «Selection»
+	"""
+	species_dict={
+		"saccer": "Saccharomyces cerevisiae",
+		"pombe": "Schizosaccharomyces pombe",
+		"celegans":"Caenorhabditis elegans"}
+	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
+	
+	if species_dict[species] not in row['3)organism']:
+		row['Selection'] = 'Wrong org' 
+	elif not row['18)raw_files']:
+		row['Selection'] = 'No raw data'
+	elif any(discard_assay in row['4)clean_assay'].lower() for discard_assay in discard_assays):
+		row['Selection'] = 'Wrong assay'
+	else:
+		row['Selection'] = 'Yes'
+	return row
 
 # Iterate on each line of the dictionnary that is rows (contains info from the sdrf files)
 def filter_rows(rows, target_dico, histones_dico, input_cols, output_col):
