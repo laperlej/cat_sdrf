@@ -17,6 +17,7 @@ import xmltodict
 from collections import OrderedDict
 from config import FIELDNAMES
 
+print (FIELDNAMES)
 class XmlManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
 		self.column_names = column_names
@@ -48,7 +49,6 @@ class XmlManager(object):
 			#If the series contains only one sample
 			if type(mon_dict['MINiML']['Sample']) is not list:
 				row = FIELDNAMES
-				print (FIELDNAMES)
 				#row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Selection', ''), ('Other', '') ])
 				self.id_list = []
 				self.id_list.append(mon_dict['MINiML']['Sample']['@iid'])
