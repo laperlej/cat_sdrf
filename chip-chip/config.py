@@ -81,6 +81,7 @@ FIELDNAMES=OrderedDict([
 	('25)Release Date', ''),
 	('26)Pubmed ID', ''),
 	('label', ''),
+	('Selection', ''),
 	('Other', '')])
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
