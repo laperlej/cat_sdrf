@@ -231,6 +231,8 @@ class XmlManager(object):
 								else:
 									#the rest goes in another column; another function will sort it out 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
+							elif len(self.supp_data) < 1:
+								row['18)raw_files'] = sep.join(self.txt_files)
 							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
 							#row['18)raw_files'] = sep.join(self.supp_data)
 							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers (such as .bar files and such)
