@@ -217,9 +217,23 @@ class XmlManager(object):
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
+							#if there is only 1 supplementary file, both channels will have the same info
+							if len(self.supp_data) == 1:
+								row['18)raw_files'] = sep.join(self.supp_data)
+							#if there is 2 raw files, the first one will go to _ch1 and the second to _ch2
+							elif len(self.supp_data) == 2:
+								row['18)raw_files'] = self.supp_data[ch_position]
+							#for 3 suppl. files and more
+							elif len(self.supp_data) > 2:
+								#the first suppl. file goes with _ch1
+								if ch_position == 0:
+									row['18)raw_files'] = self.supp_data[ch_position]
+								else:
+									#the rest goes in another column; another function will sort it out 
+									row['19)all_supp_files'] = sep.join(self.supp_data)
 							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
-							row['18)raw_files'] = sep.join(self.supp_data)
-							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers
+							#row['18)raw_files'] = sep.join(self.supp_data)
+							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers (such as .bar files and such)
 							#row['19)all_supp_files'] = sep.join(self.supp_data)
 							#row['20)SRA_accessions'] not very useful for ChIP-chip
 							Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
@@ -448,7 +462,7 @@ class XmlManager(object):
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
 
-	#this function gets the URL to the raw files
+	#this function gets the URL for the supplementary files
 	def supp_data_sample(self, section):
 		filetypes = ['GPR', 'PAIR', 'CEL']
 		if type(section) is list:
@@ -457,13 +471,14 @@ class XmlManager(object):
 					self.supp_data.append(section[list_index]['#text'])
 				elif 'TXT' in section[list_index]['@type']:
 					self.txt_files.append(section[list_index]['#text'])
+		#when there is only one suppl. file
 		elif type(section) is OrderedDict:
 			if any(file in section['@type'] for file in filetypes):
 				self.supp_data.append(section['#text'])
 			elif 'TXT' in section['@type']:
 				self.txt_files.append(section['#text'])
+		#Should not serve except if file is badly written
 		else:	
-			print ("a")
 			self.supp_data.append(section)
 	def other_stuff_sample(self, section):
 		if type(section) is list:
