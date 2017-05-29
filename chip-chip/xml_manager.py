@@ -451,8 +451,9 @@ class XmlManager(object):
 	def supp_data_sample(self, section):
 		filetypes = ['GPR', 'PAIR', 'CEL']
 		if type(section) is list:
+			print (section)
 			if any(file in section for file in filetypes):
-				print (section)
+				
 			#for list_index in range(len(section)):
 				#if any(file in section[list_index]['@type'] for file in filetypes):
 				#	self.supp_data.append(section[list_index]['#text'])
