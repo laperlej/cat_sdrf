@@ -234,6 +234,7 @@ class XmlManager(object):
 									row['19)all_supp_files'] = sep.join(self.supp_data)
 							elif len(self.supp_data) < 1:
 								if len(self.txt_files) < 2:
+									print (self.txt_files)
 									row['18)raw_files'] = self.txt_files
 								else:	
 									row['18)raw_files'] = self.txt_files[ch_position]
