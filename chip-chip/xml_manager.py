@@ -256,7 +256,7 @@ class XmlManager(object):
 							row['label']= sep.join(self.label_list)
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
-							self.duplicate_channels(self.rows, self.supp_data)
+							self.duplicate_channels(self.supp_data)
 							#replace the special characters (ɛ, δ, α, ∆)
 							for key in special_characters:
 								#iteration on the dictionnary row
@@ -619,9 +619,10 @@ class XmlManager(object):
 					else:	
 						self.series_dict['Type'] = str(section[key])
 
-	def duplicate_channels(self, self.rows, supp_data):
+	def duplicate_channels(self, supp_data):
 		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
 		for row in self.rows:
+			print ("lalala")
 			if row['18)raw_files'] is False and row['19)all_supp_data'] is not False:
 				#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 				for file in range(len(supp_data)):
