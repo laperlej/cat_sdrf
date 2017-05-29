@@ -614,7 +614,18 @@ class XmlManager(object):
 					else:	
 						self.series_dict['Type'] = str(section[key])
 
-
+	def duplicate_channels(self):
+		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
+		for row in self.rows:
+			# if there are files in col19 and nothing in col18
+			if row['18)raw_files'] is False and row['19)all_supp_file'] not False:
+				#makes a list out of the suppl files of col19
+				supp_files = row['19)all_supp_file'].split()
+				#creates a list for each item of the supp_files list, should be a copy of the _ch2
+				
+				#assigns raw file to col18 according to ch_position
+				
+				
 	def fix_dup_gsm(self, uniq_titles):
 		""" Reunites lines that are identical for the information in the columns listed (uniq titles) and concatenate their informations if it is not the same"""
 		uniq_lines = {}
