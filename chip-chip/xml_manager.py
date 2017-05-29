@@ -232,6 +232,7 @@ class XmlManager(object):
 									#row['18)raw_files'] = self.supp_data[ch_position]
 									#the supplementary files go in another column; another function will sort it out 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
+									row = duplicate_channels(row)
 							elif len(self.supp_data) < 1:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
@@ -620,23 +621,18 @@ class XmlManager(object):
 
 	def duplicate_channels(self):
 		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
-		for row in self.rows:
-			# if there are files in col19 and nothing in col18
-			if row['18)raw_files'] is False and row['19)all_supp_file'] is not False:
-				#makes a list out of the suppl files of col19
-				supp_files = row['19)all_supp_file'].replace(' |', '').split()
-				#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
-				for file in range(len(supp_files)):
-					if file == 0:
-						pass
-					else:
-						new_channel = row
-						ch_position = 'ch' + str(file + 1)
-						print (ch_position) 
-						new_channel['1)identifier'] = row['1)identifier'].replace('ch2', ch_position)
-						#assigns raw file to col18 according to ch_position
-						new_channel['18)raw_files'] = supp_files[file+1]
-						#self.rows.append(new_channel)
+		#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
+		for file in range(len(supp_files)):
+			if file == 0:
+				pass
+			else:
+				new_channel = row
+				ch_position = 'ch' + str(file + 1)
+				print (ch_position) 
+				new_channel['1)identifier'] = row['1)identifier'].replace('ch2', ch_position)
+				#assigns raw file to col18 according to ch_position
+				new_channel['18)raw_files'] = supp_files[file+1]
+				#self.rows.append(new_channel)
 				
 				
 	def fix_dup_gsm(self, uniq_titles):
