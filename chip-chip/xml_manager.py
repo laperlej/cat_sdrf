@@ -62,8 +62,8 @@ class XmlManager(object):
 				for x in range(len(mon_dict['MINiML']['Sample'])):
 					#since some GSM don't even have supplementary files
 					if 'Supplementary-Data' not in mon_dict['MINiML']['Sample'][x]:
+						Print ("a")
 						row = self.field_names
-						print ('b', row)
 						#row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''),('Selection', ''), ('Other', '') ])
 						self.id_list = []
 						self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
@@ -71,7 +71,7 @@ class XmlManager(object):
 						#Used tag: 'Series iid' in the GSE part of the file
 						row['2)filename'] = self.series_dict['GSE']
 						self.rows.append(row)
-						print ('b', row)
+						
 					else:	
 						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
 						for ch_position in range(int(mon_dict['MINiML']['Sample'][x]['Channel-Count'])):
