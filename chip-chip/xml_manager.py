@@ -24,12 +24,13 @@ class XmlManager(object):
 		self.sep = sep
 		#self.rows will be a list of OrderedDict (row) which will contain pairs of (row title:info)
 		self.rows = []
-		self.fieldnames = FIELDNAMES
 
 	def read_xml(self, opened_file, sep=' | '):
 		#Makes a list of orderedDict containing key:value pairs and lists and orderedDict
 		mon_dict = xmltodict.parse(opened_file.read())
 		self.contributor_dict = {}
+		self.field_names = FIELDNAMES
+		print (self.field_names)
 		#yes the two 'delta' symbols are different
 		special_characters = {'∆':'Delta-', 'ɛ':'Epsilon', 'δ':'Delta-', 'α':'Alpha', 'µ':'micro-','Δ':'Delta-', '–':'-', '“':'"'}
 		if 'Series' in mon_dict['MINiML']:
