@@ -622,10 +622,11 @@ class XmlManager(object):
 	def duplicate_channels(self, supp_data):
 		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
 		for row in self.rows:
-			print ("lalala")
+			#verify that col18 is empty but not col19
 			if not row['18)raw_files'] and row['19)all_supp_files']:
 				#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 				for file in range(len(supp_data)):
+					print (file)
 					if file == 0:
 						print ('nothing')
 						pass
@@ -635,7 +636,7 @@ class XmlManager(object):
 						print (ch_position) 
 						new_channel['1)identifier'] = row['1)identifier'].replace('ch2', ch_position)
 						#assigns raw file to col18 according to ch_position
-						new_channel['18)raw_files'] = supp_data[file+1]
+						new_channel['18)raw_files'] = supp_data[file]
 						#self.rows.append(new_channel)
 				
 				
