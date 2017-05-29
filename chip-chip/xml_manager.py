@@ -622,7 +622,7 @@ class XmlManager(object):
 	def duplicate_channels(self):
 		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
 		#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
-		for file in range(len(supp_files)):
+		for file in range(len(self.supp_data)):
 			if file == 0:
 				pass
 			else:
