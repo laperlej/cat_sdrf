@@ -256,6 +256,7 @@ class XmlManager(object):
 							row['label']= sep.join(self.label_list)
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
+							self.duplicate_channels(self.supp_data)
 							#replace the special characters (ɛ, δ, α, ∆)
 							for key in special_characters:
 								#iteration on the dictionnary row
@@ -263,7 +264,6 @@ class XmlManager(object):
 									row[section] = row[section].replace(key,special_characters[key])
 									#print (row[section])
 							self.rows.append(row)
-						self.duplicate_channels(self.supp_data)
 	
 
 	def general_sample(self, my_list, section):
