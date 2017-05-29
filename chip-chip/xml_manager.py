@@ -232,7 +232,7 @@ class XmlManager(object):
 									#row['18)raw_files'] = self.supp_data[ch_position]
 									#the supplementary files go in another column; another function will sort it out 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
-									row = duplicate_channels(row)
+									self.duplicate_channels()
 							elif len(self.supp_data) < 1:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
@@ -631,7 +631,7 @@ class XmlManager(object):
 				print (ch_position) 
 				new_channel['1)identifier'] = row['1)identifier'].replace('ch2', ch_position)
 				#assigns raw file to col18 according to ch_position
-				new_channel['18)raw_files'] = supp_files[file+1]
+				new_channel['18)raw_files'] = self.supp_data[file+1]
 				#self.rows.append(new_channel)
 				
 				
