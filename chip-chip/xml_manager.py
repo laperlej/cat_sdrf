@@ -92,6 +92,7 @@ class XmlManager(object):
 							self.descrip_list = []
 							self.protocol_list = []
 							self.supp_data = []
+							self.txt_files = []
 							self.label_list = []
 							self.other_list = []
 							#Iteration on one Sample dictionnary
@@ -451,20 +452,18 @@ class XmlManager(object):
 	def supp_data_sample(self, section):
 		filetypes = ['GPR', 'PAIR', 'CEL']
 		if type(section) is list:
-			print (section)
-			if any(file in section for file in filetypes):
-				print ('a')
-			#for list_index in range(len(section)):
-				#if any(file in section[list_index]['@type'] for file in filetypes):
-				#	self.supp_data.append(section[list_index]['#text'])
-				#elif 'TXT' in section[list_index]['@type']:
-				#	self.supp_data.append(section[list_index]['#text'])
+			for list_index in range(len(section)):
+				if any(file in section[list_index]['@type'] for file in filetypes):
+					self.supp_data.append(section[list_index]['#text'])
+				elif 'TXT' in section[list_index]['@type']:
+					self.txt_files.append(section[list_index]['#text'])
 		elif type(section) is OrderedDict:
 			if any(file in section['@type'] for file in filetypes):
 				self.supp_data.append(section['#text'])
 			elif 'TXT' in section['@type']:
-				self.supp_data.append(section['#text'])
+				self.txt_files.append(section['#text'])
 		else:	
+			print ("a")
 			self.supp_data.append(section)
 	def other_stuff_sample(self, section):
 		if type(section) is list:
