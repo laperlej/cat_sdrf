@@ -621,7 +621,7 @@ class XmlManager(object):
 			# if there are files in col19 and nothing in col18
 			if row['18)raw_files'] is False and row['19)all_supp_file'] is not False:
 				#makes a list out of the suppl files of col19
-				supp_files = row['19)all_supp_file'].replace(' |, '').split()
+				supp_files = row['19)all_supp_file'].replace(' |', '').split()
 				#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 				for file in range(len(supp_files)-1):
 					new_channel = row
