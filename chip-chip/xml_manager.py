@@ -623,7 +623,7 @@ class XmlManager(object):
 		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
 		for row in self.rows:
 			print ("lalala")
-			if not row['18)raw_files'] and row['19)all_supp_data']:
+			if not row['18)raw_files'] and row['19)all_supp_files']:
 				#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 				for file in range(len(supp_data)):
 					if file == 0:
