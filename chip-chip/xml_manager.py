@@ -245,7 +245,7 @@ class XmlManager(object):
 								else:
 									#the suppl. files go in another column; another function will sort it out 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
-									self.duplicate_channels()
+									self.duplicate_channels(row)
 							elif len(self.supp_data) < 1:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
@@ -618,7 +618,7 @@ class XmlManager(object):
 					else:	
 						self.series_dict['Type'] = str(section[key])
 
-	def duplicate_channels(self):
+	def duplicate_channels(self, row):
 		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
 		"""for row in self.rows:
 			#verifies that col18 is empty but not col19
