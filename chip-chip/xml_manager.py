@@ -639,7 +639,7 @@ class XmlManager(object):
 				#assigns raw file to col18 according to ch_position
 				new_channel['18)raw_files'] = supp_data[file]
 				print (new_channel['1)identifier'], new_channel['18)raw_files'])
-				self.rows.append(new_channel)
+			self.rows.append(new_channel)
 				
 				
 	def fix_dup_gsm(self, uniq_titles):
