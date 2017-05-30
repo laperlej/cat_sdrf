@@ -263,7 +263,7 @@ class XmlManager(object):
 									row[section] = row[section].replace(key,special_characters[key])
 									#print (row[section])
 							self.rows.append(row)
-			self.duplicate_channels()
+		self.duplicate_channels()
 			
 	
 
@@ -431,11 +431,9 @@ class XmlManager(object):
 				else:
 					# The leftover goes in the 'Other' section
 					key_value = section['@tag']+ '= ' + section['#text']
-					#if 'Affymetrix' in key_value:
-						#print ('2', key_value)
 					self.other_list.append(key_value)
 	
-		#this section is here in case of files with very unorthodox structure
+		#this section is here in case there are files with very unorthodox structure
 		else:
 			#nothing here
 			if 'library strategy' in section:
