@@ -633,7 +633,7 @@ class XmlManager(object):
 			else:
 				new_channel = row
 				ch_position = 'ch' + str(file + 1)
-				print (new_channel)
+				print ('a', new_channel['1)identifier'], new_channel['18)raw_files'])
 				if file > 1:
 					new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), ch_position)
 				#assigns raw file to col18 according to ch_position
