@@ -217,31 +217,6 @@ class XmlManager(object):
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
-							#if there is only 1 supplementary file, both channels will have the same info
-							if len(self.supp_data) == 1:
-								row['18)raw_files'] = sep.join(self.supp_data)
-							#if there is 2 raw files, the first one will go to _ch1 and the second to _ch2
-							elif len(self.supp_data) == 2:
-								row['18)raw_files'] = self.supp_data[ch_position]
-							#for 3 suppl. files and more
-							elif len(self.supp_data) > 2:
-								#the first suppl. file goes with _ch1
-								if ch_position == 0:
-									row['18)raw_files'] = self.supp_data[ch_position]
-								else:
-									#row['18)raw_files'] = self.supp_data[ch_position]
-									#the supplementary files go in another column; another function will sort it out 
-									row['19)all_supp_files'] = sep.join(self.supp_data)
-							elif len(self.supp_data) < 1:
-								if len(self.txt_files) < 2:
-									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
-								else:	
-									row['18)raw_files'] = self.txt_files[ch_position]
-							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
-							#row['18)raw_files'] = sep.join(self.supp_data)
-							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers (such as .bar files and such)
-							#row['19)all_supp_files'] = sep.join(self.supp_data)
-							#row['20)SRA_accessions'] not very useful for ChIP-chip
 							Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 							#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
 							row['21)Experiment description'] = Exp_descrip.replace('\n', '')
@@ -256,14 +231,39 @@ class XmlManager(object):
 							row['label']= sep.join(self.label_list)
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
+							#when there is only one supplementary file
+							if len(self.supp_data) == 1:
+								row['18)raw_files'] = sep.join(self.supp_data)
+							#if there are 2 suppl. files, the first one will go to _ch1 and the second to _ch2
+							elif len(self.supp_data) == 2:
+								row['18)raw_files'] = self.supp_data[ch_position]
+							#for 3 suppl. files and more
+							elif len(self.supp_data) > 2:
+								#the first suppl. file goes with _ch1
+								if ch_position == 0:
+									row['18)raw_files'] = self.supp_data[ch_position]
+								else:
+									#the suppl. files go in another column; another function will sort it out 
+									row['19)all_supp_files'] = sep.join(self.supp_data)
+									self.duplicate_channels()
+							elif len(self.supp_data) < 1:
+								if len(self.txt_files) < 2:
+									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
+								else:	
+									row['18)raw_files'] = self.txt_files[ch_position]
+							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
+							#row['18)raw_files'] = sep.join(self.supp_data)
+							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers (such as .bar files and such)
+							#row['19)all_supp_files'] = sep.join(self.supp_data)
+							#row['20)SRA_accessions'] not very useful for ChIP-chip
 							#replace the special characters (ɛ, δ, α, ∆)
 							for key in special_characters:
 								#iteration on the dictionnary row
 								for section in row:
 									row[section] = row[section].replace(key,special_characters[key])
-									#print (row[section])
 							self.rows.append(row)
-		self.duplicate_channels()
+		#process becomes very long, not working well
+		#self.duplicate_channels()
 			
 	
 
@@ -620,25 +620,26 @@ class XmlManager(object):
 
 	def duplicate_channels(self):
 		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
-		for row in self.rows:
+		"""for row in self.rows:
 			#verifies that col18 is empty but not col19
-			if not row['18)raw_files'] and row['19)all_supp_files']:
-				supp_data = row['19)all_supp_files'].replace(" | ", " ").split()
-				#print (supp_data)
-				#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
-				for file in range(len(supp_data)):
-					if file == 0:
-						pass
-					else:
-						new_channel = row
-						ch_position = 'ch' + str(file + 1)
-						#print (ch_position)
-						if file > 1:
-							new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), ch_position)
-						#assigns raw file to col18 according to ch_position
-						new_channel['18)raw_files'] = supp_data[file]
-						#print (new_channel['18)raw_files'])
-						self.rows.append(new_channel)
+			if not row['18)raw_files'] and row['19)all_supp_files']:"""
+		
+		supp_data = row['19)all_supp_files'].replace(" | ", " ").split()
+		#print (supp_data)
+		#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
+		for file in range(len(supp_data)):
+			if file == 0:
+				pass
+			else:
+				new_channel = row
+				ch_position = 'ch' + str(file + 1)
+				#print (ch_position)
+				if file > 1:
+					new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), ch_position)
+				#assigns raw file to col18 according to ch_position
+				new_channel['18)raw_files'] = supp_data[file]
+				print (new_channel['1)identifier'], new_channel['18)raw_files'])
+				self.rows.append(new_channel)
 				
 				
 	def fix_dup_gsm(self, uniq_titles):
