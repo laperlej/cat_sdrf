@@ -246,6 +246,7 @@ class XmlManager(object):
 									#the suppl. files go in another column; another function will sort it out 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
 									self.duplicate_channels(row)
+									self.rows.append(row)
 							elif len(self.supp_data) < 1:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
@@ -639,8 +640,8 @@ class XmlManager(object):
 				#assigns raw file to col18 according to ch_position
 				new_channel['18)raw_files'] = supp_data[file]
 				#print (new_channel['1)identifier'], new_channel['18)raw_files'])
-				self.rows.append(new_channel)
-				return self.rows
+				#self.rows.append(new_channel)
+				return new_channel
 				
 				
 	def fix_dup_gsm(self, uniq_titles):
