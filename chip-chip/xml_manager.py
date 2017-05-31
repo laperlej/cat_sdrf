@@ -265,7 +265,8 @@ class XmlManager(object):
 												#print ('chx', row)
 									#add the result of the function "duplicate_channels" 
 									#self.rows.append(self.duplicate_channels(row)) """
-							elif len(self.supp_data) < 1:
+							#elif len(self.supp_data) < 1:
+							else:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
 								else:	
