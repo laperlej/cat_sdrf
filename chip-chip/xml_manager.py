@@ -243,11 +243,22 @@ class XmlManager(object):
 								if ch_position == 0:
 									row['18)raw_files'] = self.supp_data[ch_position]
 								else:
-									#the suppl. files go in another column; another function will sort it out 
+									#the suppl. files go in another column 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
-									#self.duplicate_channels(row)
+									for file in range(len(self.supp_data)):
+										if file == 0:
+											pass
+										else:
+											new_channel = row
+											ch_position = 'ch' + str(file + 1)
+											if file > 1:
+												new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), ch_position)
+											#assigns raw file to col18 according to ch_position
+											new_channel['18)raw_files'] = self.supp_data[file]
+											#print (new_channel['1)identifier'], new_channel['18)raw_files'])
+											self.rows.append(new_channel)
 									#add the result of the function "duplicate_channels" 
-									self.rows.append(self.duplicate_channels(row))
+									#self.rows.append(self.duplicate_channels(row))
 							elif len(self.supp_data) < 1:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
