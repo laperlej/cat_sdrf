@@ -282,6 +282,7 @@ class XmlManager(object):
 									row[section] = row[section].replace(key,special_characters[key])
 							self.rows.append(row)
 							if self.duplicate_channels(row):
+								print (self.duplicate_channels(row))
 								self.rows.append(self.duplicate_channels(row))
 
 	def general_sample(self, my_list, section):
