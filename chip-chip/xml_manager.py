@@ -245,7 +245,8 @@ class XmlManager(object):
 								else:
 									#the suppl. files go in another column 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
-									for file in range(len(self.supp_data)):
+									
+									"""for file in range(len(self.supp_data)):
 										if file == 0:
 											pass
 										else:
@@ -263,7 +264,7 @@ class XmlManager(object):
 												self.rows.append(row)
 												#print ('chx', row)
 									#add the result of the function "duplicate_channels" 
-									#self.rows.append(self.duplicate_channels(row))
+									#self.rows.append(self.duplicate_channels(row)) """
 							elif len(self.supp_data) < 1:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
@@ -280,10 +281,7 @@ class XmlManager(object):
 								for section in row:
 									row[section] = row[section].replace(key,special_characters[key])
 							self.rows.append(row)
-		#process becomes very long, not working well
-		#self.duplicate_channels()
-			
-	
+							self.rows.append(self.duplicate_channels(row))
 
 	def general_sample(self, my_list, section):
 		my_list.append(section)
@@ -638,27 +636,26 @@ class XmlManager(object):
 
 	def duplicate_channels(self, row):
 		"""creates a new line for each supplementary raw file, in order to have only one raw file per 'channel' """
+		
 		"""for row in self.rows:
 			#verifies that col18 is empty but not col19
 			if not row['18)raw_files'] and row['19)all_supp_files']:"""
 		
-		supp_data = row['19)all_supp_files'].replace(" | ", " ").split()
-		#print (supp_data)
-		#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
-		for file in range(len(supp_data)):
-			if file == 0:
-				pass
-			else:
-				new_channel = row
-				ch_position = 'ch' + str(file + 1)
-				#print ('a', new_channel['1)identifier'], new_channel['18)raw_files'])
-				if file > 1:
-					new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), ch_position)
-				#assigns raw file to col18 according to ch_position
-				new_channel['18)raw_files'] = supp_data[file]
-				#print (new_channel['1)identifier'], new_channel['18)raw_files'])
-				#self.rows.append(new_channel)
-				return new_channel
+		if not row['18)raw_files'] and row['19)all_supp_files']:
+			supp_data = row['19)all_supp_files'].replace(" | ", " ").split()
+			#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
+			for file in range(len(supp_data)):
+				if file == 0:
+					pass
+				else:
+					new_channel = row
+					ch_position = 'ch' + str(file + 1)
+					if file > 1:
+						new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), ch_position)
+					#assigns raw file to col18 according to ch_position
+					new_channel['18)raw_files'] = supp_data[file]
+					#self.rows.append(new_channel)
+					return new_channel
 				
 				
 	def fix_dup_gsm(self, uniq_titles):
