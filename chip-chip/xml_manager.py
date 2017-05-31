@@ -245,8 +245,9 @@ class XmlManager(object):
 								else:
 									#the suppl. files go in another column; another function will sort it out 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
-									self.duplicate_channels(row)
-									self.rows.append(row)
+									#self.duplicate_channels(row)
+									#add the result of the function "duplicate_channels" 
+									self.rows.append(self.duplicate_channels(row))
 							elif len(self.supp_data) < 1:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
