@@ -254,14 +254,14 @@ class XmlManager(object):
 											if file == 1:
 												row['18)raw_files'] = self.supp_data[file]
 												self.rows.append(row)
-												print ('ch2', row)
+												#print ('ch2', row)
 											else:	
 												row['1)identifier'] = row['1)identifier'].replace(('ch'+str(file)), channel_position)
-												row['1,1)Sample_title'] = str(row['1)identifier']) + 'is a copy of channel 2'
+												row['1,1)Sample_title'] = str(row['1)identifier']) + ' is a copy of channel 2'
 												#assigns raw file to col18 according to ch_position
 												row['18)raw_files'] = self.supp_data[file]
 												self.rows.append(row)
-												print ('chx', row)
+												#print ('chx', row)
 									#add the result of the function "duplicate_channels" 
 									#self.rows.append(self.duplicate_channels(row))
 							elif len(self.supp_data) < 1:
