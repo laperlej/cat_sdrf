@@ -281,7 +281,7 @@ class XmlManager(object):
 								for section in row:
 									row[section] = row[section].replace(key,special_characters[key])
 							self.rows.append(row)
-							if self.duplicate_channels(row) is not None:
+							if self.duplicate_channels(row) is not 'nothing':
 								print (self.duplicate_channels(row))
 								self.rows.append(self.duplicate_channels(row))
 							else:
@@ -650,7 +650,7 @@ class XmlManager(object):
 			#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 			for file in range(len(supp_data)):
 				if file == 0:
-					pass
+					return 'nothing'
 				else:
 					new_channel = row
 					ch_position = 'ch' + str(file + 1)
