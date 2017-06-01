@@ -231,7 +231,6 @@ class XmlManager(object):
 							row['label']= sep.join(self.label_list)
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
-							print (row['Other'])
 							#when there is only one supplementary file
 							if len(self.supp_data) == 1:
 								row['18)raw_files'] = sep.join(self.supp_data)
@@ -323,8 +322,6 @@ class XmlManager(object):
 					#Do nothing, since there is no valuable information
 					pass
 				#When the components of the list are OrderedDict 
-				elif 'sample type' in section[list_index]:
-					self.descrip_list.append(section[list_index])
 				#Used tags: 'cell type', 'cell line', 'tissue' (catches 'tissue/cell line')
 				elif any(item in section[list_index]['@tag'].lower() for item in cell_type):
 					#condition for some special samples
