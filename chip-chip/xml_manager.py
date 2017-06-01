@@ -452,16 +452,14 @@ class XmlManager(object):
 					key_value = section['@tag']+ '= ' + section['#text']
 					self.other_list.append(key_value)
 	
-		#this section is here in case there are files with very unorthodox structure
+		#'characteristics' without tag goes here (with chip-chip)
 		else:
-			print (section)
 			#nothing here
 			if 'library strategy' in section:
 				self.protocol_list.append(section)
 			#Some info 
 			elif any(condition in section for condition in conditions):
 				self.treatment_list.append(section)
-			#nothing here
 			elif 'antibody' in section:
 				self.antibody_list.append(section)
 			#nothing here
@@ -471,7 +469,6 @@ class XmlManager(object):
 					self.other_list.append(section)
 				else:	
 					self.target_list.append(section)	
-			#noting here
 			elif any(item in section for item in strain):
 				self.strain_list.append(section)
 			#noting here
@@ -484,6 +481,7 @@ class XmlManager(object):
 			elif 'BrdU' in section or 'brdu' in section:
 				self.assay_list.append(section)	
 			else:	
+				print (section)
 				# The leftover (there is some info) goes in the 'Other' section
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
