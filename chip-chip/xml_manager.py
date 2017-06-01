@@ -262,7 +262,7 @@ class XmlManager(object):
 												#assigns raw file to col18 according to ch_position
 												new_channel['18)raw_files'] = self.supp_data[file]
 												self.rows.append(new_channel)
-												print ('a', new_channel['1)identifier'])
+												print ('b', new_channel['1)identifier'])
 									#add the result of the function "duplicate_channels" 
 									#self.rows.append(self.duplicate_channels(row)) 
 							#elif len(self.supp_data) < 1:
