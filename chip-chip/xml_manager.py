@@ -323,6 +323,8 @@ class XmlManager(object):
 					#Do nothing, since there is no valuable information
 					pass
 				#When the components of the list are OrderedDict 
+				elif 'sample type' in section[list_index]:
+					self.descrip_list.append(section[list_index])
 				#Used tags: 'cell type', 'cell line', 'tissue' (catches 'tissue/cell line')
 				elif any(item in section[list_index]['@tag'].lower() for item in cell_type):
 					#condition for some special samples
@@ -406,6 +408,8 @@ class XmlManager(object):
 				if 'antibody' in section['@tag']:
 					self.antibody_list.append(section['#text'])
 				# Some info here; valid
+				elif 'sample type' in section['@tag']:
+					self.descrip_list.append(section['#text'])
 				elif 'stage' in section['@tag']:
 					key_value = section['@tag']+ '= ' + section['#text']
 					self.treatment_list.append(key_value)
