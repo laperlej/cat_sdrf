@@ -306,7 +306,7 @@ class XmlManager(object):
 		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'dmso', 'stress', 'concentration', 'mnase', 'agent', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'cy3', 'cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna', 'mixed percentage', 'incubation', 'harvest', 'passage']
 		#removed : 'rna', 'dna'; really not specific
 		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'chromatin']
-		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
+		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'Yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
 		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation']
 		#removed "biotin" since it is important for chip-chip
 		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'experiment', 'isolate number', 'index pair', 'grna libraries',  'matched wild type sample', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index', 'strategy',  'sort', 'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
@@ -457,6 +457,8 @@ class XmlManager(object):
 			#nothing here
 			if 'library strategy' in section:
 				self.protocol_list.append(section)
+			elif 'Characteristics' in section:
+				print (section)
 			#Some info 
 			elif any(condition in section for condition in conditions):
 				self.treatment_list.append(section)
@@ -481,7 +483,7 @@ class XmlManager(object):
 			elif 'BrdU' in section or 'brdu' in section:
 				self.assay_list.append(section)	
 			else:	
-				print (section)
+				#print (section)
 				# The leftover (there is some info) goes in the 'Other' section
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
