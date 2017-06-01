@@ -316,7 +316,7 @@ class XmlManager(object):
 				#when the list is just text without any tag
 				if type(section[list_index]) is not OrderedDict:
 					#maybe add if/else to sort the info in more appropriate columns
-					self.descrip_list(section[list_index])
+					self.descrip_list.append(section[list_index])
 				#Special case without text associated to the tag (orderedDict containing only one key-value pair)
 				elif type(section[list_index]) is OrderedDict and len(list(section[list_index].items())) ==1:
 					#Do nothing, since there is no valuable information
