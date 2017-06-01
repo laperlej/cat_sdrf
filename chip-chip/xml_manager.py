@@ -655,7 +655,7 @@ class XmlManager(object):
 			for file in range(len(supp_data)):
 				print (file)
 				if file == 0:
-					return 'nothing'
+					pass
 				else:
 					print ('a')
 					new_channel = row
