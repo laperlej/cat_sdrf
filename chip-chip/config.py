@@ -169,7 +169,8 @@ HISTONES_MARKS_DICO = OrderedDict([
 
 #target dictionnary, not redundant with the histone dictionnary
 TARGET2 = OrderedDict ([
-	('input','(input|input_dna|whole\scell\sextract|none|n/a)'),
+	('input','(input|input_dna|none|n/a)'),
+	('WCE', 'whole\scell\sextract'),
 	('Negative control', '(negative\scontrol)'),
 	('Mock', '(mock|no.?antibody|untagged)'),
 	('ESA1','(esa1)'),
