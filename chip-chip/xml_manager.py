@@ -662,14 +662,14 @@ class XmlManager(object):
 					if file == 1:
 						new_channel['18)raw_files'] = supp_data[file]
 						print ('a', new_channel['1)identifier'])
-						return new_channel
-					else:	
+						#return new_channel
+					elif file > 1:	
 						new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), ch_position)
 						#assigns raw file to col18 according to ch_position
 						new_channel['18)raw_files'] = supp_data[file]
 						#self.rows.append(new_channel)
 						print ('x', new_channel['1)identifier'])
-						return new_channel
+					return new_channel
 						
 	def fix_dup_gsm(self, uniq_titles):
 		""" Reunites lines that are identical for the information in the columns listed (uniq titles) and concatenate their informations if it is not the same"""
