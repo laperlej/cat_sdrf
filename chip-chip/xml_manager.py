@@ -302,12 +302,12 @@ class XmlManager(object):
 		key_value = ''
 		cell_type = ['cell type', 'cell line']
 		#carefull that 'tag' is not specific but it is used as a tag
-		target = ['protein', 'epitope', 'target', 'flag', 'FLAG', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein', 'Input', 'input']
+		target = ['protein', 'epitope', 'target', 'flag', 'FLAG', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein', 'Input', 'input', 'WCE']
 		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'dmso', 'stress', 'concentration', 'mnase', 'agent', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'cy3', 'cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna', 'mixed percentage', 'incubation', 'harvest', 'passage']
 		#removed : 'rna', 'dna'; really not specific
-		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'chromatin']
-		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'Yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
-		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation']
+		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal dna', 'nucleosomal DNA', 'chromatin']
+		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'Yeast', 'parents', 'wild type', 'Wild Type', 'MAT-a', 'direct rna sequence from']
+		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation', 'deleted']
 		#removed "biotin" since it is important for chip-chip
 		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'experiment', 'isolate number', 'index pair', 'grna libraries',  'matched wild type sample', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index', 'strategy',  'sort', 'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
 		if type(section) is list:
@@ -463,7 +463,7 @@ class XmlManager(object):
 				self.treatment_list.append(section)
 			elif 'antibody' in section:
 				self.antibody_list.append(section)
-			#nothing here
+			#nothing here (?)
 			elif any(item in section for item in target):
 				# catch publication if it contains 'tag' or 'flag'
 				if 'et al.' in section:
@@ -472,20 +472,19 @@ class XmlManager(object):
 					self.target_list.append(section)	
 			elif any(item in section for item in strain):
 				self.strain_list.append(section)
-			#noting here
+			#noting here (?)
 			elif any(item in section for item in gene):
 				self.gene_list.append(section)
-			#Nothing here
+			#Nothing here (?)
 			elif any(item in section for item in material):	
 				self.material_list.append(section)
-			#nothing here
+			#nothing here (?)
 			elif 'BrdU' in section or 'brdu' in section:
 				self.assay_list.append(section)	
 			else:
-				print (section)
+				#print (section)
 				# The leftover (there is some info) goes in the 'Other' section
 				self.other_list.append(section)
-				#self.other_stuff_sample(section)
 
 	#this function gets the URL for the supplementary files
 	def supp_data_sample(self, section):
