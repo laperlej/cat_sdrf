@@ -457,8 +457,6 @@ class XmlManager(object):
 			#nothing here
 			if 'library strategy' in section:
 				self.protocol_list.append(section)
-			elif 'Characteristics' in section:
-				print (section)
 			#Some info 
 			elif any(condition in section for condition in conditions):
 				self.treatment_list.append(section)
@@ -483,7 +481,7 @@ class XmlManager(object):
 			elif 'BrdU' in section or 'brdu' in section:
 				self.assay_list.append(section)	
 			else:	
-				#print (section)
+				print (section)
 				# The leftover (there is some info) goes in the 'Other' section
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
