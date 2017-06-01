@@ -653,7 +653,7 @@ class XmlManager(object):
 			supp_data = row['19)all_supp_files'].replace(" | ", " ").split()
 			#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 			for file in range(len(supp_data)):
-				print (len(supp_data))
+				print (file)
 				if file == 0:
 					return 'nothing'
 				else:
