@@ -313,10 +313,10 @@ class XmlManager(object):
 		if type(section) is list:
 			#Iteration on the list, which is often composed of orderedDict ([('@tag', '...') , ('#text', '...')])
 			for list_index in range(len(section)):
-				#when some part of the list is just text
+				#when the list is just text without any tag
 				if type(section[list_index]) is not OrderedDict:
-					print (section[list_index])
-					self.other_stuff_sample(section[list_index])
+					#maybe add if/else to sort the info in more appropriate columns
+					self.descrip_list(section[list_index])
 				#Special case without text associated to the tag (orderedDict containing only one key-value pair)
 				elif type(section[list_index]) is OrderedDict and len(list(section[list_index].items())) ==1:
 					#Do nothing, since there is no valuable information
@@ -481,7 +481,8 @@ class XmlManager(object):
 			#nothing here
 			elif 'BrdU' in section or 'brdu' in section:
 				self.assay_list.append(section)	
-			else:	
+			else:
+				print (section)
 				# The leftover (there is some info) goes in the 'Other' section
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
