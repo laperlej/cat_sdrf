@@ -255,14 +255,14 @@ class XmlManager(object):
 											if file == 1:
 												row['18)raw_files'] = self.supp_data[file]
 												self.rows.append(row)
-												print ('a', row['1)identifier'])
+												#print ('a', row['1)identifier'])
 											else:	
 												row['1)identifier'] = row['1)identifier'].replace(('ch'+str(file)), channel_position)
 												#row['1,1)Sample_title'] = str(row['1)identifier']) + ' is a copy of channel 2'
 												#assigns raw file to col18 according to ch_position
 												row['18)raw_files'] = self.supp_data[file]
 												self.rows.append(row)
-												print ('b', row['1)identifier'])
+												#print ('b', row['1)identifier'])
 									 
 							#elif len(self.supp_data) < 1:
 							else:
@@ -302,7 +302,7 @@ class XmlManager(object):
 		key_value = ''
 		cell_type = ['cell type', 'cell line']
 		#carefull that 'tag' is not specific but it is used as a tag
-		target = ['protein', 'epitope', 'target', 'flag', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein', 'Input', 'input']
+		target = ['protein', 'epitope', 'target', 'flag', 'FLAG', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein', 'Input', 'input']
 		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'dmso', 'stress', 'concentration', 'mnase', 'agent', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'cy3', 'cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna', 'mixed percentage', 'incubation', 'harvest', 'passage']
 		#removed : 'rna', 'dna'; really not specific
 		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'chromatin']
@@ -454,6 +454,7 @@ class XmlManager(object):
 	
 		#this section is here in case there are files with very unorthodox structure
 		else:
+			print (section)
 			#nothing here
 			if 'library strategy' in section:
 				self.protocol_list.append(section)
