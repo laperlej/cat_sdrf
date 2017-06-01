@@ -231,6 +231,7 @@ class XmlManager(object):
 							row['label']= sep.join(self.label_list)
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
+							print (row['Other'])
 							#when there is only one supplementary file
 							if len(self.supp_data) == 1:
 								row['18)raw_files'] = sep.join(self.supp_data)
