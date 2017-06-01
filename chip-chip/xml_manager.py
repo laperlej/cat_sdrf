@@ -651,10 +651,11 @@ class XmlManager(object):
 			supp_data = row['19)all_supp_files'].replace(" | ", " ").split()
 			#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 			for file in range(len(supp_data)):
-				print ('also working')
+				#print ('also working')
 				if file == 0:
 					return 'nothing'
 				else:
+					print ('a')
 					new_channel = row
 					ch_position = 'ch' + str(file + 1)
 					if file == 1:
@@ -669,6 +670,7 @@ class XmlManager(object):
 						print (new_channel['1)identifier'])
 						return new_channel
 		else:
+			print ('b')
 			return 'nothing'
 						
 	def fix_dup_gsm(self, uniq_titles):
