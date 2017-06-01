@@ -654,7 +654,8 @@ class XmlManager(object):
 			#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 			for file in range(len(supp_data)):
 				if file == 0:
-					pass
+					#pass
+					continue
 				else:
 					#print ('a')
 					new_channel = row
