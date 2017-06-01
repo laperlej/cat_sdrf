@@ -663,7 +663,8 @@ class XmlManager(object):
 						#assigns raw file to col18 according to ch_position
 						new_channel['18)raw_files'] = supp_data[file]
 						#self.rows.append(new_channel)
-					return new_channel
+				print (new_channel['1)identifier'])
+				return new_channel
 		else:
 			return 'nothing'
 						
