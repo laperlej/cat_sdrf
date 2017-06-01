@@ -647,6 +647,7 @@ class XmlManager(object):
 			if not row['18)raw_files'] and row['19)all_supp_files']:"""
 		
 		if not row['18)raw_files'] and row['19)all_supp_files']:
+			print('working')
 			supp_data = row['19)all_supp_files'].replace(" | ", " ").split()
 			#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
 			for file in range(len(supp_data)):
