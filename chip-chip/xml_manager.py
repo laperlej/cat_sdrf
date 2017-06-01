@@ -131,7 +131,7 @@ class XmlManager(object):
 											elif 'Characteristics' in key:
 												print ('a', mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 												#self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
-												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
+												self.descrip_list.append(str(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics']))
 											elif any(protocol in key for protocol in all_protocols):
 												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][key])
 											else:
@@ -151,7 +151,7 @@ class XmlManager(object):
 											elif 'Characteristics' in key:
 												print ('b', mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
 												#self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
-												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
+												self.descrip_list.append(str(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics']))
 											elif any(protocol in key for protocol in all_protocols):
 												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])
 											else:
@@ -319,6 +319,7 @@ class XmlManager(object):
 			for list_index in range(len(section)):
 				#when some part of the list is just text
 				if type(section[list_index]) is not OrderedDict:
+					print (section[list_index])
 					self.other_stuff_sample(section[list_index])
 				#Special case without text associated to the tag (orderedDict containing only one key-value pair)
 				elif type(section[list_index]) is OrderedDict and len(list(section[list_index].items())) ==1:
