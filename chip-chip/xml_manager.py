@@ -129,7 +129,7 @@ class XmlManager(object):
 											elif 'Label' in key and 'Label-Protocol' not in key:
 												self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
 											elif 'Characteristics' in key:
-												#print (mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
+												print ('a', mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 												#self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 											elif any(protocol in key for protocol in all_protocols):
@@ -149,7 +149,7 @@ class XmlManager(object):
 											elif 'Label' in key and 'Label-Protocol' not in key: 
 												self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])
 											elif 'Characteristics' in key:
-												#print (mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
+												print ('b', mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
 												#self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
 											elif any(protocol in key for protocol in all_protocols):
@@ -485,7 +485,6 @@ class XmlManager(object):
 			elif 'BrdU' in section or 'brdu' in section:
 				self.assay_list.append(section)	
 			else:	
-				print (section)
 				# The leftover (there is some info) goes in the 'Other' section
 				self.other_list.append(section)
 				#self.other_stuff_sample(section)
