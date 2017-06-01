@@ -254,7 +254,7 @@ class XmlManager(object):
 											channel_position = 'ch' + str(file + 1)
 											if file == 1:
 												row['18)raw_files'] = self.supp_data[file]
-												self.rows.append(new_channel)
+												self.rows.append(row)
 												print ('a', row['1)identifier'])
 											else:	
 												row['1)identifier'] = row['1)identifier'].replace(('ch'+str(file)), channel_position)
