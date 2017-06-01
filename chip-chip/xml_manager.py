@@ -246,25 +246,25 @@ class XmlManager(object):
 									#the suppl. files go in another column 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
 									
-									"""for file in range(len(self.supp_data)):
+									for file in range(len(self.supp_data)):
 										if file == 0:
-											pass
+											continue
 										else:
-											#new_channel = row
+											new_channel = row
 											channel_position = 'ch' + str(file + 1)
 											if file == 1:
-												row['18)raw_files'] = self.supp_data[file]
-												self.rows.append(row)
-												#print ('ch2', row)
+												new_channel['18)raw_files'] = self.supp_data[file]
+												self.rows.append(new_channel)
+												print ('a', new_channel['1)identifier'])
 											else:	
-												row['1)identifier'] = row['1)identifier'].replace(('ch'+str(file)), channel_position)
-												row['1,1)Sample_title'] = str(row['1)identifier']) + ' is a copy of channel 2'
+												new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), channel_position)
+												#row['1,1)Sample_title'] = str(row['1)identifier']) + ' is a copy of channel 2'
 												#assigns raw file to col18 according to ch_position
-												row['18)raw_files'] = self.supp_data[file]
-												self.rows.append(row)
-												#print ('chx', row)
+												new_channel['18)raw_files'] = self.supp_data[file]
+												self.rows.append(new_channel)
+												print ('a', new_channel['1)identifier'])
 									#add the result of the function "duplicate_channels" 
-									#self.rows.append(self.duplicate_channels(row)) """
+									#self.rows.append(self.duplicate_channels(row)) 
 							#elif len(self.supp_data) < 1:
 							else:
 								if len(self.txt_files) < 2:
@@ -282,11 +282,10 @@ class XmlManager(object):
 								for section in row:
 									row[section] = row[section].replace(key,special_characters[key])
 							self.rows.append(row)
-							if self.duplicate_channels(row) is not 'nothing' and ch_position ==1:
-								print ('hourra!')
-								self.rows.append(self.duplicate_channels(row))
-							else:
-								pass
+							#if self.duplicate_channels(row) is not 'nothing' and ch_position ==1:
+							#	self.rows.append(self.duplicate_channels(row))
+							#else:
+							#	pass
 
 	def general_sample(self, my_list, section):
 		my_list.append(section)
