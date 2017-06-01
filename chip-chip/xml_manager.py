@@ -250,19 +250,19 @@ class XmlManager(object):
 										if file == 0:
 											continue
 										else:
-											new_channel = row
+											#new_channel = row
 											channel_position = 'ch' + str(file + 1)
 											if file == 1:
-												new_channel['18)raw_files'] = self.supp_data[file]
+												row['18)raw_files'] = self.supp_data[file]
 												self.rows.append(new_channel)
-												print ('a', new_channel['1)identifier'])
+												print ('a', row['1)identifier'])
 											else:	
-												new_channel['1)identifier'] = new_channel['1)identifier'].replace(('ch'+str(file)), channel_position)
-												row['1,1)Sample_title'] = str(row['1)identifier']) + ' is a copy of channel 2'
+												row['1)identifier'] = row['1)identifier'].replace(('ch'+str(file)), channel_position)
+												#row['1,1)Sample_title'] = str(row['1)identifier']) + ' is a copy of channel 2'
 												#assigns raw file to col18 according to ch_position
-												new_channel['18)raw_files'] = self.supp_data[file]
-												self.rows.append(new_channel)
-												print ('b', new_channel['1)identifier'])
+												row['18)raw_files'] = self.supp_data[file]
+												self.rows.append(row)
+												print ('b', row['1)identifier'])
 									 
 							#elif len(self.supp_data) < 1:
 							else:
