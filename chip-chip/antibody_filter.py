@@ -140,8 +140,8 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	# With ChIP-chip, seems that BrdU assays have ideed no target
 	#elif 'brdu' in row["4)clean_assay"].lower() and 'brdu' in row["8)antibody"].lower():
 	#	return "N/A", "assay type (1)"	
-	#if 'none' in merge_cols(row,["clean_target", "5)antibody"]) and 'input' in merge_cols(row,["clean_assay", "11)description", "13)other"]):
-	#	return 'input', 'keyword (1)'
+	if 'whole cell extract' in merge_cols(row,["17)Sample_description"]):
+		return 'WCE', 'keyword (1)'
 	elif 'not specified' in merge_cols(row,["8)antibody"])  and 'input' in merge_cols(row,["13)cell_type","17)Sample_description", "1,1)Sample_title"]):
 		return 'input', 'keyword (1)'
 	#Assign 'input' to column 'clean_target' if one of the following keyword is found in specific lines
