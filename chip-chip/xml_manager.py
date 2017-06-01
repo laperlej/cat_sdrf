@@ -302,10 +302,10 @@ class XmlManager(object):
 		key_value = ''
 		cell_type = ['cell type', 'cell line']
 		#carefull that 'tag' is not specific but it is used as a tag
-		target = ['protein', 'epitope', 'target', 'flag', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein']
+		target = ['protein', 'epitope', 'target', 'flag', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein', 'Input', 'input']
 		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'dmso', 'stress', 'concentration', 'mnase', 'agent', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'cy3', 'cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna', 'mixed percentage', 'incubation', 'harvest', 'passage']
 		#removed : 'rna', 'dna'; really not specific
-		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'Input', 'input', 'chromatin']
+		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal DNA', 'chromatin']
 		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'parents', 'wild type', 'MAT-a', 'direct rna sequence from']
 		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation']
 		#removed "biotin" since it is important for chip-chip
@@ -370,15 +370,15 @@ class XmlManager(object):
 						self.descrip_list.append(section[list_index]['#text'])
 					else:
 						self.material_list.append(section[list_index]['#text'])
-				#Lots of info here; to many used tags for treatment
+				#Lots of info here; many used tags for treatment
 				elif any(condition in section[list_index]['@tag'].lower() for condition in conditions):
 					# Assign to the string key_value both the key and the value (like 'Mnase concentration= 10 mM')
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.treatment_list.append(key_value)
 				# Valid info, but for 'tag': 'MATa ade2-1 can1-100 HIS3 leu2-3,112 trp1-1 ura3-1 RAD5+ ISW1-FL3-KanMX snf2-delta::URA3'; 'tag' not specific
 				elif any(item in section[list_index]['@tag'] for item in target):
-					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
-					self.target_list.append(key_value)		
+					#key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
+					self.target_list.append(section[list_index]['#text'])		
 				elif any(item in section[list_index]['@tag'] for item in junk):
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					#if 'Affymetrix' in key_value:
