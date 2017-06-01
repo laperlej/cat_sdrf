@@ -646,7 +646,10 @@ class XmlManager(object):
 			#verifies that col18 is empty but not col19
 			if not row['18)raw_files'] and row['19)all_supp_files']:"""
 		
-		if not row['18)raw_files'] and row['19)all_supp_files']:
+		#if not row['18)raw_files'] and row['19)all_supp_files']:
+		if not row['19)all_supp_files']:
+			return 'nothing'
+		else:
 			print('working')
 			supp_data = row['19)all_supp_files'].replace(" | ", " ").split()
 			#creates a row for each item of the supp_files list minus 1 (since the first file was assigned to _ch1), should be a copy of the _ch2
@@ -669,9 +672,9 @@ class XmlManager(object):
 						#self.rows.append(new_channel)
 						print (new_channel['1)identifier'])
 						return new_channel
-		else:
-			print ('b')
-			return 'nothing'
+		#else:
+			#print ('b')
+			#return 'nothing'
 						
 	def fix_dup_gsm(self, uniq_titles):
 		""" Reunites lines that are identical for the information in the columns listed (uniq titles) and concatenate their informations if it is not the same"""
