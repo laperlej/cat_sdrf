@@ -129,7 +129,9 @@ class XmlManager(object):
 											elif 'Label' in key and 'Label-Protocol' not in key:
 												self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Label'])
 											elif 'Characteristics' in key:
-												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
+												#print (mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
+												#self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
+												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Characteristics'])
 											elif any(protocol in key for protocol in all_protocols):
 												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][key])
 											else:
@@ -147,7 +149,9 @@ class XmlManager(object):
 											elif 'Label' in key and 'Label-Protocol' not in key: 
 												self.label_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])
 											elif 'Characteristics' in key:
-												self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
+												#print (mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
+												#self.characteristics_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
+												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Characteristics'])
 											elif any(protocol in key for protocol in all_protocols):
 												self.general_sample(self.protocol_list, mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])
 											else:
