@@ -282,7 +282,7 @@ class XmlManager(object):
 								for section in row:
 									row[section] = row[section].replace(key,special_characters[key])
 							self.rows.append(row)
-							if self.duplicate_channels(row) is not 'nothing':
+							if self.duplicate_channels(row) is not 'nothing' and ch_position ==1:
 								print ('hourra!')
 								self.rows.append(self.duplicate_channels(row))
 							else:
