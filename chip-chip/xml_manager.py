@@ -302,7 +302,7 @@ class XmlManager(object):
 		key_value = ''
 		cell_type = ['cell type', 'cell line']
 		#carefull that 'tag' is not specific but it is used as a tag
-		target = ['protein', 'epitope', 'target', 'flag', 'FLAG', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein', 'Input', 'input', 'WCE']
+		target = ['protein', 'epitope', 'target', 'flag', 'FLAG', 'ChIP', 'h2b', 'histone', 'IP against', 'target of ip', 'tagged protein', 'Input', 'input', 'WCE', 'label']
 		conditions = ['treatment', 'condition', 'growth', 'time', 'timing', 'cycle', 'cell', 'temperature', 'fragmentation', 'synchronized', 'media', 'medium', 'buffer', 'culture', 'stage', 'status', 'carbon', 'glucose', 'selection', 'plasmid', 'vector', 'drug', 'dmso', 'stress', 'concentration', 'mnase', 'agent', 'mononucleosome', 'spike-in', 'enzyme', 'ploid', 'environnement', 'treated', 'ymc', 'digested with', 'digestion', 'addition', 'transformation', 'depleted factor', 'sucrose',  'sex', 'h2o2', 'hours at 37','triton', 'immunodepletion', 'knock', 'equivalents of ercc spike', 'transformed with','break induction', 'rna purification', 'fluorescence','transfection', 'facs-sorted population', 'construct', 'transposon','resistance', 'transcription', 'factor', 'fluor', 'cyanine dye', 'cy3', 'cy5', 'sirna', 'rna deletion', 'rnai deletion', 'crispri guiderna', 'mixed percentage', 'incubation', 'harvest', 'passage']
 		#removed : 'rna', 'dna'; really not specific
 		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal dna', 'nucleosomal DNA', 'chromatin']
