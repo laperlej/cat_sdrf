@@ -15,7 +15,7 @@ import json
 import itertools
 import xmltodict
 from collections import OrderedDict
-from config import FIELDNAMES
+#from config import FIELDNAMES
 
 class XmlManager(object):
 	def __init__(self, column_names, lambda_dict, sep=" | "):
@@ -61,7 +61,6 @@ class XmlManager(object):
 				for x in range(len(mon_dict['MINiML']['Sample'])):
 					#since some GSM don't even have supplementary files
 					if 'Supplementary-Data' not in mon_dict['MINiML']['Sample'][x]:
-						#Print ("a")
 						#row = self.field_names
 						row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('5)clean_target',''),('6)reliability', ''), ('7)assaytype', ''), ('8)antibody', ''), ('9)target', ''), ('10)treatment', ''),('11)Material_type', ''), ('12)clean_celltype',''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''),('Selection', ''), ('Other', '') ])
 						self.id_list = []
@@ -243,10 +242,11 @@ class XmlManager(object):
 								if ch_position == 0:
 									row['18)raw_files'] = self.supp_data[ch_position]
 								else:
-									#the suppl. files go in another column 
+									row['18)raw_files'] = self.supp_data[ch_position]
+									#the rest of the suppl. files go in another column 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
 									
-									for file in range(len(self.supp_data)):
+									"""for file in range(len(self.supp_data)):
 										if file == 0:
 											continue
 										else:
@@ -262,7 +262,7 @@ class XmlManager(object):
 												#assigns raw file to col18 according to ch_position
 												row['18)raw_files'] = self.supp_data[file]
 												self.rows.append(row)
-												#print ('b', row['1)identifier'])
+												#print ('b', row['1)identifier']) """
 									 
 							#elif len(self.supp_data) < 1:
 							else:
