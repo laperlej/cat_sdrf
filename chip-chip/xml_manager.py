@@ -349,7 +349,7 @@ class XmlManager(object):
 				elif 'sample type' in section[list_index]['@tag']:
 					self.descrip_list.append(section[list_index]['#text'])
 				#Used tag: 'genotype', '' ; lots of info; valid
-				elif any(item in section[list_index]['@tag'] for item in gene):
+				elif any(item in section[list_index]['@tag'].lower() for item in gene):
 					self.gene_list.append(section[list_index]['#text'])
 				#Lots of info; valid
 				elif any(item in section[list_index]['@tag'].lower() for item in strain):
@@ -418,7 +418,7 @@ class XmlManager(object):
 		#		elif section['@tag']:	
 		#			self.descrip_list.append(section['#text'])
 				# Lots of info; valid
-				elif any(item in section['@tag']for item in gene):
+				elif any(item in section['@tag'].lower() for item in gene):
 					self.gene_list.append(section['#text'])
 				#Info going here; valid
 				elif any(item in section['@tag'] for item in strain):
