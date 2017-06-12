@@ -257,7 +257,7 @@ class XmlManager(object):
 							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
 							row['18)raw_files'] = sep.join(self.supp_data)
 							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers (such as .bar files and such)
-							#row['19)all_supp_files'] = sep.join(self.supp_data)
+							row['19)all_supp_files'] = sep.join(self.supp_data)
 							#row['20)SRA_accessions'] not very useful for ChIP-chip
 							#replace the special characters (ɛ, δ, α, ∆)
 							for key in special_characters:
@@ -474,7 +474,7 @@ class XmlManager(object):
 
 	#this function gets the URL for the supplementary files
 	def supp_data_sample(self, section):
-		filetypes = ['GPR', 'PAIR', 'CEL']
+		filetypes = ['SRA Experiment', 'SAM', 'BAM']
 		if type(section) is list:
 			for list_index in range(len(section)):
 				if any(file in section[list_index]['@type'] for file in filetypes):
