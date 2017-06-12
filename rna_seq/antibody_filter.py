@@ -11,25 +11,52 @@ from collections import OrderedDict
 def merge_cols(row, input_cols):
 	return "|".join(row[input_col].lower() for input_col in input_cols if row[input_col] is not None)
 
-"""
+
 def raw_files_filter_rows(rows, output_col1, output_col2 ):
 	for row in rows:
 		row = raw_files_filter_row(row, output_col1, output_col2)
 	return rows
-#probably not necessary with chip-chip
+
 def raw_files_filter_row(row, output_col1, output_col2):
-	#Fills the 'raw_files column with .CEL, .pair, .GPR or .txt files
-	raw_file_dict = {'CEL':'(\S+\.CEL\.gz)', 'PAIR':'(\S+\.pair\.gz)', 'GPR':'(\S+\.gpr\.gz)', 'TXT':'(\S+\.txt\.gz)'}
-	new_value = ''
-	for raw_file in raw_file_dict:
-		#important to keep the column's upper case for the file's URL (not using 'merge_col' here)
-		searchtarget = row['19)all_supp_files']
-		match =  re.findall(raw_file_dict[raw_file], searchtarget)
-		for pattern in match:
-			new_value = " | ".join(match)
-		
+	""" Fills the 'raw_files' column with .sra or with .bam or .sam files"""
+	SRX_SRR_combination = sra_files(row, output_col1, output_col2)
+	if SRX_SRR_combination is not None:
+		return SRX_SRR_combination
+	else:
+		#return bam_sam_filter_row(row, output_col1)
+		pass
+
+def sra_files(row, output_col1, output_col2):
+	""" Makes the combination of SRX and SRR to compose the url for the .sra files; fills the col '20)SRA_accessions' with the SRX and SRR accessions for xml files"""
+	# With xml, need only to get the SRX accession
+	sep = "/"
+	url = "ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra"
+	URL_list = []
+	if url in row['19)all_supp_files']:
+		match0 = re.search('(ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByExp/sra/\S+)', row['19)all_supp_files'])
+		match1 = re.search('(SRX\d{6,7})', row['19)all_supp_files'])
+		if match0:
+			#This will fill the column with the URL for the raw file (but taken care of in xml_manager)
+			#row[output_col1] = match0.group(1)
+			#This will give the SRX accession in the row['20)SRA_accessions']
+			row[output_col2] = match1.group(1)
+		return row
+	else:
+		pass
+
+# Searches for specific file type and returns the complete file name if the file type is found; not very useful with xml files
+def bam_sam_filter_row(row, output_col1):
+	filetypes = {'BAM':'(\S+\.bam|\S+\.bam.wig)', 'SAM':'(\S+\.sam)', 'supplementary file':'(supplementary\sfile\s\S+\.sam)'}
+	new_value = ""
+	for filetype in filetypes:
+		searchtarget = merge_cols(row, ["Other", "22)Protocol", '19)all_supp_files'])
+		match =  re.search(filetypes[filetype], searchtarget)
+		if match:
+			new_value = match.group(1)
+			break
 	row[output_col1] = new_value
-	return row """
+	return row
+
 #iterates on each line of the dictionnary that is rows (metadatas from xml files) 
 def condition_rows(rows, species):
 	for row in rows:
