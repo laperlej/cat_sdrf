@@ -9,10 +9,10 @@ from antibody_filter import merge_cols
 
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
-	#Assays type to discard
+	#Assays type to discard, updated for rna-seq
 	discard_assays=["rip-seq","chip-seq", "chip-chip", "unwanted", "mnase", "dnase", 'wgs', "atac", "brdu",'bisulfite-seq']
-	#file types needed (updated for chip-chip)
-	file_types = ['.sra', 'txt']
+	#file types needed (updated for rna-seq)
+	file_types = ['.sra', '.fastq.gz', '.bam', '.sam', 'SRX']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
 		"saccer": "Saccharomyces cerevisiae",
@@ -21,9 +21,7 @@ def split_condition_aux(row, species):
 		}
 	
 	return (species_dict[species] in row["3)organism"] and 
-		   #[True for assay in assays if assay in row["4)assaytype"].lower()] and 
 		   any(file_type in row["18)raw_files"] for file_type in file_types) and
-			#not "non-genomic" in row["Material_type"] and
 	 	   	not [False for discard_assay in discard_assays if discard_assay in row["4)clean_assay"].lower()])
 
 #Depending on species requested (sys.argv[3]), calls split_condition with the right species
