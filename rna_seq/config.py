@@ -10,7 +10,7 @@ from antibody_filter import merge_cols
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard, updated for rna-seq
-	discard_assays=["rip-seq","chip-seq", "chip-chip", "unwanted", "mnase", "dnase", 'genomic dna', 'wgs', "atac", "brdu",'bisulfite-seq']
+	discard_assays=["rip-seq","chip", "unwanted", "mnase", "dnase", 'genomic dna', 'wgs', "atac", "brdu",'bisulfite-seq']
 	#file types needed (updated for rna-seq)
 	file_types = ['.sra', '.fastq.gz', '.bam', '.sam', 'SRX']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
@@ -84,8 +84,7 @@ ASSAY_DICO = OrderedDict([
 	("WGS", 'wgs'),
 	('FAIRE', 'faire'),
 	("MNase",'(mnase|mnase.treated|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
-	("ChIP-chip",'(chip|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin|genome\sbinding.occupancy\sprofiling\sby\sgenome\stiling\sarray)'),
-	("ChIP-Seq", "chip-seq"),
+	("ChIP-Seq", "(chip|chip-seq|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin)"),
 	("DNase-Seq",'dnase'),
 	("Bisulfite-Seq", "bisulfite"),
 	("Rip-Seq", 'rip-seq'),
