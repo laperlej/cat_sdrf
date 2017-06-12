@@ -36,6 +36,9 @@ def main():
 		xml_manager.read_xml(codecs.open(file_name, 'r', encoding='utf-8'))
 	xml_manager.fix_dup_gsm(['1)identifier'])
 
+	# Fills the col 20 with the SRX accession from the URL for sra files
+	xml_manager.rows = raw_files_filter_rows(xml_manager.rows, '18)raw_files', '20)SRA_accessions')
+	
 	# Filter section for antibody. Take in argument the dictionnary, the columns in which we search and the column to modify
 	#xml_manager.rows = filter_rows(xml_manager.rows, config.TARGET2, config.HISTONES_MARKS_DICO, ["7)assaytype","8)antibody", "9)target"], "5)clean_target")
 	
