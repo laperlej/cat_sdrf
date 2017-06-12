@@ -10,7 +10,7 @@ from antibody_filter import merge_cols
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
-	discard_assays=["rip-seq","chip-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
+	discard_assays=["rip-seq","chip-seq", "chip-chip", "unwanted", "mnase", "dnase", 'wgs', "atac", "brdu",'bisulfite-seq']
 	#file types needed (updated for chip-chip)
 	file_types = ['.CEL', 'cel.gz', 'CEL.gz', 'pair.gz', 'gpr.gz', 'txt.gz']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
@@ -89,10 +89,7 @@ ASSAY_DICO = OrderedDict([
 	('ATAC-Seq', 'atac-seq'),
 	('BrdU', 'brdu'),
 	("WGS", 'wgs'),
-	('ChIP-exo', 'chip-exo'),
-	("ChIP-eSPAN", "chip-espan"),
-	('FAIRE-Seq', 'faire.seq'),
-	('FAIRE-chip', 'faire'),
+	('FAIRE', 'faire'),
 	("MNase-chip",'(mnase.treated|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
 	("ChIP-chip",'(chip|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin|genome\sbinding.occupancy\sprofiling\sby\sgenome\stiling\sarray)'),
 	("ChIP-Seq", "chip-seq"),
