@@ -71,7 +71,7 @@ class XmlManager(object):
 						self.rows.append(row)
 						
 					else:	
-						#Here, make an iteration on each channel and the rest (on channel 1 but not 2 for exemple)
+						#Here, make an iteration on each channel and the rest (probably useless for rna-seq)
 						for ch_position in range(int(mon_dict['MINiML']['Sample'][x]['Channel-Count'])):
 							#row = self.field_names
 							row = OrderedDict ([('1)identifier', ''), ('1,1)Sample_title', ''), ('2)filename', ''),('3)organism', ''), ('4)clean_assay', ''), ('7)assaytype', ''), ('10)treatment', ''),('11)Material_type', ''), ('13)cell_type', ''), ('14)strain',''), ('15)genotype', ''), ('16)platform', ''), ('Manufacturer', ''), ('17)Sample_description', ''), ('18)raw_files', ''), ('19)all_supp_files', ''), ('20)SRA_accessions', ''), ('21)Experiment description', ''), ('22)Protocol', ''), ('23)Author(s)', ''), ('Releasing group', ''), ('24)Submission Date', ''), ('25)Release Date', ''), ('26)Pubmed ID', ''), ('label', ''), ('Selection', ''), ('Other', '') ])
@@ -97,11 +97,11 @@ class XmlManager(object):
 							#Iteration on one Sample dictionnary
 							for section in mon_dict['MINiML']['Sample'][x]:
 								all_protocols = ['Growth-Protocol', 'Extract-Protocol', 'Treatment-Protocol', 'Label-Protocol', 'Scan-Protocol', 'Hybridization-Protocol']
-								#Here add _ch1 or _ch2 depending on the channel position to differenciate between the 2 positions of 1 GSM
 								if section == '@iid':
-									self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
-									self.id_list.append(str(ch_position+1))
-									row['1)identifier'] = '_ch'.join(self.id_list)
+									#self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
+									#self.id_list.append(str(ch_position+1))
+									row['1)identifier'] = mon_dict['MINiML']['Sample'][x]['@iid']
+								# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
 								elif section == 'Type':
@@ -185,7 +185,6 @@ class XmlManager(object):
 								else:
 									self.other_stuff_sample(mon_dict['MINiML']['Sample'][x][section])
 
-							# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 							#Used tag: 'Series iid' in the GSE part of the file
 							row['2)filename'] = self.series_dict['GSE']
 							#Used tag: 'Organism' from 'Channel' section of sample part of file
