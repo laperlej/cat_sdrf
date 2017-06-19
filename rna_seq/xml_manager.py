@@ -381,8 +381,8 @@ class XmlManager(object):
 		elif type(section) is OrderedDict:
 			for key in section.keys():
 				#Some info; valid
-				#if 'antibody' in section['@tag']:
-				#	self.antibody_list.append(section['#text'])
+				if 'antibody' in section['@tag']:
+					self.treatment_list.append(section['#text'])
 				# Some info here; valid
 				elif 'sample type' in section['@tag']:
 					self.descrip_list.append(section['#text'])
