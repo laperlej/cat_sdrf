@@ -307,23 +307,28 @@ class XmlManager(object):
 					else:	
 						self.cell_list.append(section[list_index]['#text'])
 				# Used tag: 'protocol', but does not contain much info; catches 'protocol', 'growth protocol' ,'treatment protocol', 'culture protocol', 'harvest method' and also 'growt protocol';
-				elif 'protocol' in section[list_index]['@tag'].lower() or 'harvest method' in section[list_index]['@tag'].lower():	
-					self.treatment_list.append(section[list_index]['#text'])
-					print ('protocol here', section[list_index]['@tag'])
-					print (section[list_index]['#text'])
+				elif 'protocol' in section[list_index]['@tag'].lower():
+					if 'None' in section[list_index]['#text']:
+						pass
+					elif 'culture' in section[list_index]['@tag'].lower():
+						self.protocol_list.append(section[list_index]['#text'])
+					else:
+						self.treatment_list.append(section[list_index]['#text'])
+				elif 'harvest method' in section[list_index]['@tag'].lower():
+					self.protocol_list.append(section[list_index]['#text'])
 				#Used tag here catches 'Treatment', 'culture condition', 'growth condition' and 'growth protocol'; valid info
 				elif 'mg/l' in section[list_index]['#text'] or 'uM' in section[list_index]['#text']:
 					key_value = section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.treatment_list.append(section[list_index]['#text'])	
 				#Some info; valid; catches tag 'ip' with a more specific keyword
 				elif 'IP against' in section[list_index]['#text']:
-					self.target_list.append(section[list_index]['#text'])		
+					self.treatment_list.append(section[list_index]['#text'])		
 				# Used tag 'antibody' catches 'antibody', 'chip-antibody', 'chip antibody', 'chip antibody lot #', 'chip antibody cat. #', 'chip antibody vendor', 'chip antibody reference'
-				#elif 'antibody' in section[list_index]['#text'] or 'antibody' in section[list_index]['@tag']:
-				#	self.antibody_list.append(section[list_index]['#text'])
+				elif 'antibody' in section[list_index]['#text'] or 'antibody' in section[list_index]['@tag']:
+					self.treatment_list.append(section[list_index]['#text'])
 				#Some info; valid
-				#elif 'catalog' in section[list_index]['@tag']:
-				#	self.antibody_list.append(section[list_index]['#text'])	
+				elif 'catalog' in section[list_index]['@tag']:
+					self.treatment_list.append(section[list_index]['#text'])	
 				# Used tag: 'sample type'; Maybe should go in Material; some lines are descriptive
 				elif 'sample type' in section[list_index]['@tag']:
 					self.descrip_list.append(section[list_index]['#text'])
