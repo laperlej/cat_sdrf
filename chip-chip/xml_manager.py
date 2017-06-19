@@ -202,7 +202,7 @@ class XmlManager(object):
 							#Used tag: 'Library-Source', 'Molecule' in 'Channel' section
 							row['11)Material_type'] = sep.join(self.material_list)
 							# Used tags: 'cell type', 'cell line', 'tissue/cell line', 'tissue/cel type'
-							row ['13)cell_type'] = sep.join(self.cell_list)
+							row['13)cell_type'] = sep.join(self.cell_list)
 							#12)clean_celltype not very useful now
 							#Used tag: mostly 'strain', 'strain background', 'backgroung strain'
 							row['14)strain'] = sep.join(self.strain_list)
@@ -230,6 +230,9 @@ class XmlManager(object):
 							row['label']= sep.join(self.label_list)
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
+							#this adds a marking for the .CEL files, in an otherwise useless column
+							if '.cel' in self.supp_data.lower():
+								row['20)SRA_accessions'] = '1$'
 							#when there is only one supplementary file
 							if len(self.supp_data) == 1:
 								row['18)raw_files'] = sep.join(self.supp_data)
