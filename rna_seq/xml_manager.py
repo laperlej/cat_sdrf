@@ -284,10 +284,10 @@ class XmlManager(object):
 		#removed : 'rna', 'dna'; really not specific
 		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal dna', 'nucleosomal DNA', 'chromatin']
 		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'Yeast', 'parents', 'wild type', 'Wild Type', 'MAT-a', 'direct rna sequence from']
-		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation', 'deleted']
+		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation', 'deleted', 'expressing']
 		#removed "biotin" since it is important for chip-chip
-		unspecific = ['source', 'sort', 'strategy', 'experiment', 'isolate number', 'capture method']
-		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'index pair', 'grna libraries', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index',  'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
+		unspecific = ['source', 'sort', 'strategy', 'experiment', 'isolate number', 'capture method', 'lentivirally']
+		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'index pair', 'grna libraries', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
 		if type(section) is list:
 			#Iteration on the list, which is often composed of orderedDict ([('@tag', '...') , ('#text', '...')])
 			for list_index in range(len(section)):
@@ -484,6 +484,8 @@ class XmlManager(object):
 				self.assay_list.append(section)	
 			elif any(item in section.lower() for item in unspecific):
 				self.treatment_list.append(section)
+			elif 'leu' in section.lower() or 'his' in section.lower():
+				self.gene_list.append(section)
 			else:
 				# The leftover (there is some info) goes in the 'Other' section
 				self.other_list.append(section)
