@@ -123,8 +123,8 @@ class XmlManager(object):
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
 											elif 'Source' in key:
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
-												if 'glucose' in mon_dict['MINiML']['Sample'][x]['Channel']['Source']:
-													print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
+												#if 'glucose' in mon_dict['MINiML']['Sample'][x]['Channel']['Source']:
+												#	print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
 											elif 'Label' in key and 'Label-Protocol' not in key:
@@ -143,8 +143,8 @@ class XmlManager(object):
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Organism'])
 											elif 'Source' in key:
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
-												if 'glucose' in mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source']:
-													print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
+												#if 'glucose' in mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source']:
+												#	print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])	
 											elif 'Label' in key and 'Label-Protocol' not in key: 
@@ -257,7 +257,7 @@ class XmlManager(object):
 								else:	
 									row['18)raw_files'] = self.txt_files[ch_position]"""
 							
-							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
+							#Used tags: 'SRA experiment', '.bam', '.sam' in supplementary-data
 							row['18)raw_files'] = sep.join(self.supp_data)
 							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers (such as .bar files and such)
 							row['19)all_supp_files'] = sep.join(self.supp_data)
@@ -346,7 +346,7 @@ class XmlManager(object):
 					self.strain_list.append(section[list_index]['#text'])
 				# Used tag : 'library selection'; keyword 'assay' catches 'assayed molecue' and 'assay'
 				elif 'assay' in section[list_index]['@tag']:
-					if 'assayed molecule' in section[list_index]['@tag']:
+					if 'assayed molecu' in section[list_index]['@tag']:
 						self.material_list.append(section[list_index]['#text'])
 					else:
 						self.assay_list.append(section[list_index]['#text'])
@@ -404,12 +404,7 @@ class XmlManager(object):
 				elif any(item in section['@tag'].lower() for item in gene):
 					self.gene_list.append(section['#text'])
 				elif any(item in section['@tag'] for item in strain):
-					#Not sure if should go in genotype, strain or description
-					if 'Strain Background is ' in section['@tag']:
-						key_value = section['@tag'] + ': ' + section['#text']
-						self.strain_list.append(key_value)
-					else:
-						self.strain_list.append(section['#text'])
+					self.strain_list.append(section['#text'])
 				elif any(item in section['@tag'] for item in cell_type):
 					if 'tagged' in section['@tag'].lower():
 						self.gene_list.append(section['#text'])
@@ -430,17 +425,14 @@ class XmlManager(object):
 					key_value = section['@tag']+ '= ' + section['#text']
 					self.other_list.append(key_value)
 	
-		#'characteristics' without tag goes here (with chip-chip)
+		#'characteristics' without tag goes here (updated for rna-seq)
 		else:
-			#nothing here
 			if 'library strategy' in section:
 				self.protocol_list.append(section)
-			#Some info 
 			elif any(condition in section for condition in conditions):
 				self.treatment_list.append(section)
 			elif 'antibody' in section:
 				self.treatment_list.append(section)
-			#nothing here (?)
 			elif any(item in section for item in target):
 				# catch publication if it contains 'tag' or 'flag'
 				if 'et al.' in section:
