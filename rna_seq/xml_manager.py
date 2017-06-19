@@ -98,14 +98,12 @@ class XmlManager(object):
 							for section in mon_dict['MINiML']['Sample'][x]:
 								all_protocols = ['Growth-Protocol', 'Extract-Protocol', 'Treatment-Protocol', 'Label-Protocol', 'Scan-Protocol', 'Hybridization-Protocol']
 								if section == '@iid':
-									#self.id_list.append(mon_dict['MINiML']['Sample'][x]['@iid'])
-									#self.id_list.append(str(ch_position+1))
 									row['1)identifier'] = mon_dict['MINiML']['Sample'][x]['@iid']
 								# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
 									if 'glucose' in row['1,1)Sample_title']:
-										print (row['1,1)Sample_title'])
+										print ('title=', row['1,1)Sample_title'])
 								elif section == 'Type':
 									self.material_list.append(mon_dict['MINiML']['Sample'][x]['Type'])
 								elif section == 'Organism':
@@ -216,6 +214,8 @@ class XmlManager(object):
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
+							if 'glucose' in row['17)Sample_description']:
+								print ('descr = ', row['17)Sample_description'])
 							Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 							#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
 							row['21)Experiment description'] = Exp_descrip.replace('\n', '')
