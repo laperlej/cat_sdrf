@@ -286,7 +286,7 @@ class XmlManager(object):
 		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'Yeast', 'parents', 'wild type', 'Wild Type', 'MAT-a', 'direct rna sequence from']
 		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation', 'deleted', 'expressing']
 		#this list is for treatment, since it is very important in rna-seq
-		unspecific = ['od', 'tag', 'age', 'ip', 'source', 'sort', 'strategy', 'experiment', 'isolate number', 'capture method', 'lentivirally'. 'chd1-ume6 fusion', 'crosslink']
+		unspecific = ['od', 'tag', 'age', 'ip', 'source', 'sort', 'strategy', 'experiment', 'isolate number', 'capture method', 'lentivirally', 'chd1-ume6 fusion', 'crosslink']
 		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'index pair', 'grna libraries', 'barcode', 'sample identifier', 'tandem repeat', 'primer', 'index',  'sequencing chip',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
 		if type(section) is list:
 			#Iteration on the list, which is often composed of orderedDict ([('@tag', '...') , ('#text', '...')])
