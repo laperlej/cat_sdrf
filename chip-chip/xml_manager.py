@@ -231,7 +231,7 @@ class XmlManager(object):
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
 							#this adds a marking for the .CEL files, in an otherwise useless column
-							if '.cel' in self.supp_data.lower():
+							if '.cel' in self.supp_data or '.CEL' in self.supp_data:
 								row['20)SRA_accessions'] = '1$'
 							#when there is only one supplementary file
 							if len(self.supp_data) == 1:
