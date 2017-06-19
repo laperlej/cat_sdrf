@@ -340,12 +340,15 @@ class XmlManager(object):
 				elif any(item in section[list_index]['@tag'].lower() for item in strain):
 					self.strain_list.append(section[list_index]['#text'])
 				# Used tag : 'library selection'; keyword 'assay' catches 'assayed molecue' and 'assay'
-				elif 'assay' in section[list_index]['@tag'] or 'library selection' in section[list_index]['@tag']:
+				elif 'assay' in section[list_index]['@tag']:
 					if 'assayed molecule' in section[list_index]['@tag']:
-						print (section[list_index]['#text'])
+						self.material_list.append(section[list_index]['#text'])
 					else:
+						print ('assay', section[list_index]['#text'])
 						self.assay_list.append(section[list_index]['#text'])
-				# Used tag: 'library' catches 'library strategy' and 'library type'
+				elif 'library selection' in section[list_index]['@tag']:
+					print ('library selection=', section[list_index]['#text'] )
+				# Used tag: 'library' catches 'library strategy', 'library type'
 				elif 'library' in section[list_index]['@tag'].lower():
 					self.assay_list.append(section[list_index]['#text'])
 				#Lots of info; valid; many used tags: 'material type', 'molecule subtype', 'tissue', 'cell part', 'organelle', 'rna subtype', 'mrna type', 'stable expression of shrna'
