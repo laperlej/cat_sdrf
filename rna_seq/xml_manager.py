@@ -102,8 +102,8 @@ class XmlManager(object):
 								# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
-									if 'glucose' in row['1,1)Sample_title']:
-										print ('title=', row['1,1)Sample_title'])
+									#if 'glucose' in row['1,1)Sample_title']:
+									#	print ('title=', row['1,1)Sample_title'])
 								elif section == 'Type':
 									self.material_list.append(mon_dict['MINiML']['Sample'][x]['Type'])
 								elif section == 'Organism':
@@ -122,6 +122,7 @@ class XmlManager(object):
 											if 'Organism' in key:
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
 											elif 'Source' in key:
+												print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
@@ -140,6 +141,7 @@ class XmlManager(object):
 											if 'Organism' in key:
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Organism'])
 											elif 'Source' in key:
+												print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])	
@@ -214,8 +216,8 @@ class XmlManager(object):
 							#Used tag: 'Description'
 							row['17)Sample_description'] = sep.join(self.descrip_list)
 							row['17)Sample_description'] = row['17)Sample_description'].replace('\n', '')
-							if 'glucose' in row['17)Sample_description']:
-								print ('descr = ', row['17)Sample_description'])
+							#if 'glucose' in row['17)Sample_description']:
+							#	print ('descr = ', row['17)Sample_description'])
 							Exp_descrip = self.series_dict['Title'] + ' | ' + self.series_dict['Summary'] + ' | ' + self.series_dict['Overall-Design']
 							#Used tag: concatenation of 'Title', 'Summary' and 'Overall-Design' from the GSE part
 							row['21)Experiment description'] = Exp_descrip.replace('\n', '')
