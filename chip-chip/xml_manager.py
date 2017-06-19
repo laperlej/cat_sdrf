@@ -238,6 +238,8 @@ class XmlManager(object):
 								row['18)raw_files'] = self.supp_data[ch_position]
 							#for 3 suppl. files and more
 							elif len(self.supp_data) > 2:
+								#this adds a symbol/marking to an otherwise useless column (>3 .CEL files)
+								row['20)SRA_accessions'] = '$$$'
 								#the first suppl. file goes with _ch1
 								if ch_position == 0:
 									row['18)raw_files'] = self.supp_data[ch_position]
