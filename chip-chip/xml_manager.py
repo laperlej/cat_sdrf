@@ -250,6 +250,7 @@ class XmlManager(object):
 								#the first suppl. file goes with _ch1
 								if ch_position == 0:
 									row['18)raw_files'] = self.supp_data[ch_position]
+									row['19)all_supp_files'] = sep.join(self.supp_data)
 								else:
 									row['18)raw_files'] = self.supp_data[ch_position]
 									#the rest of the suppl. files go in another column 
