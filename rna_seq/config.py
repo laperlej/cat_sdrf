@@ -10,7 +10,7 @@ from antibody_filter import merge_cols
 #iterate on each ine and return True the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard, updated for rna-seq
-	discard_assays=["rip-seq","chip", "unwanted", "mnase", "dnase", 'genomic dna', 'wgs', "atac", "brdu",'bisulfite-seq']
+	discard_assays=["rip-seq","chip", "faire", "unwanted", "mnase", "dnase", 'genomic dna', 'wgs', "atac", "brdu",'bisulfite-seq']
 	#file types needed (updated for rna-seq)
 	file_types = ['.sra', '.fastq.gz', '.bam', '.sam', 'SRX']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
