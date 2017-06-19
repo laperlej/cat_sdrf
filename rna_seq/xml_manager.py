@@ -244,15 +244,13 @@ class XmlManager(object):
 									row['18)raw_files'] = self.supp_data[ch_position]
 									#the rest of the suppl. files go in another column 
 									row['19)all_supp_files'] = sep.join(self.supp_data)
-									
-					
-									 
 							#elif len(self.supp_data) < 1:
 							else:
 								if len(self.txt_files) < 2:
 									row['18)raw_files'] = sep.join(x for x in self.txt_files if x is not '')
 								else:	
 									row['18)raw_files'] = self.txt_files[ch_position]"""
+							
 							#Used tags: 'pair', 'gpr', 'txt', 'cel' in supplementary-data
 							row['18)raw_files'] = sep.join(self.supp_data)
 							#To get ALL the supplementary files, go in the supp_data_sample function and make a list with the leftovers (such as .bar files and such)
@@ -310,7 +308,8 @@ class XmlManager(object):
 						self.cell_list.append(section[list_index]['#text'])
 				# Used tag: 'protocol', but does not contain much info; catches 'protocol', 'growth protocol' ,'treatment protocol', 'culture protocol', 'harvest method' and also 'growt protocol';
 				elif 'protocol' in section[list_index]['@tag'].lower() or 'harvest method' in section[list_index]['@tag'].lower():	
-					self.protocol_list.append(section[list_index]['#text'])	
+					self.treatment_list.append(section[list_index]['#text'])
+					print ('protocol here')
 				#Used tag here catches 'Treatment', 'culture condition', 'growth condition' and 'growth protocol'; valid info
 				elif 'mg/l' in section[list_index]['#text'] or 'uM' in section[list_index]['#text']:
 					key_value = section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
@@ -319,11 +318,11 @@ class XmlManager(object):
 				elif 'IP against' in section[list_index]['#text']:
 					self.target_list.append(section[list_index]['#text'])		
 				# Used tag 'antibody' catches 'antibody', 'chip-antibody', 'chip antibody', 'chip antibody lot #', 'chip antibody cat. #', 'chip antibody vendor', 'chip antibody reference'
-				elif 'antibody' in section[list_index]['#text'] or 'antibody' in section[list_index]['@tag']:
-					self.antibody_list.append(section[list_index]['#text'])
+				#elif 'antibody' in section[list_index]['#text'] or 'antibody' in section[list_index]['@tag']:
+				#	self.antibody_list.append(section[list_index]['#text'])
 				#Some info; valid
-				elif 'catalog' in section[list_index]['@tag']:
-					self.antibody_list.append(section[list_index]['#text'])	
+				#elif 'catalog' in section[list_index]['@tag']:
+				#	self.antibody_list.append(section[list_index]['#text'])	
 				# Used tag: 'sample type'; Maybe should go in Material; some lines are descriptive
 				elif 'sample type' in section[list_index]['@tag']:
 					self.descrip_list.append(section[list_index]['#text'])
@@ -358,11 +357,9 @@ class XmlManager(object):
 				# Valid info, but for 'tag': 'MATa ade2-1 can1-100 HIS3 leu2-3,112 trp1-1 ura3-1 RAD5+ ISW1-FL3-KanMX snf2-delta::URA3'; 'tag' not specific
 				elif any(item in section[list_index]['@tag'] for item in target):
 					#key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
-					self.target_list.append(section[list_index]['#text'])		
+					self.treatment_list.append(section[list_index]['#text'])		
 				elif any(item in section[list_index]['@tag'] for item in junk):
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
-					#if 'Affymetrix' in key_value:
-						#print (key_value)
 					self.other_stuff_sample(key_value)
 				#Not specific tags, but valid info
 				elif 'od' in section[list_index]['@tag'] or 'age' in section[list_index]['@tag']:
@@ -372,9 +369,10 @@ class XmlManager(object):
 					self.material_list.append(section[list_index]['#text'])
 				elif 'tag' in section[list_index]['@tag'].lower():
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
-					self.target_list.append(key_value)
+					self.treatment_list.append(key_value)
 				elif 'ip' == section[list_index]['@tag'].lower():
-					self.target_list.append(section[list_index]['#text'])
+					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
+					self.treatment_list.append(key_value)
 				else:
 					# The leftover goes in the 'Other' section
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
@@ -383,8 +381,8 @@ class XmlManager(object):
 		elif type(section) is OrderedDict:
 			for key in section.keys():
 				#Some info; valid
-				if 'antibody' in section['@tag']:
-					self.antibody_list.append(section['#text'])
+				#if 'antibody' in section['@tag']:
+				#	self.antibody_list.append(section['#text'])
 				# Some info here; valid
 				elif 'sample type' in section['@tag']:
 					self.descrip_list.append(section['#text'])
@@ -393,9 +391,8 @@ class XmlManager(object):
 					self.treatment_list.append(key_value)
 				#Nothing here
 				elif any(item in section['@tag'] for item in target):
-					self.target_list.append(section['#text'])	
-		#		elif section['@tag']:	
-		#			self.descrip_list.append(section['#text'])
+					key_value = section['@tag']+ '= ' + section['#text']
+					self.treatment_list.append(key_value)
 				# Lots of info; valid
 				elif any(item in section['@tag'].lower() for item in gene):
 					self.gene_list.append(section['#text'])
@@ -430,9 +427,9 @@ class XmlManager(object):
 					self.treatment_list.append(key_value)
 				elif 'tag' in section['@tag']:
 					key_value =  section['@tag'] + '= ' +  section['#text']
-					self.target_list.append(key_value)
+					self.treatment_list.append(key_value)
 				elif 'ip' == section['@tag']:
-					self.target_list.append(section['#text'])
+					self.treatment_list.append(section['#text'])
 				else:
 					# The leftover goes in the 'Other' section
 					key_value = section['@tag']+ '= ' + section['#text']
@@ -447,14 +444,14 @@ class XmlManager(object):
 			elif any(condition in section for condition in conditions):
 				self.treatment_list.append(section)
 			elif 'antibody' in section:
-				self.antibody_list.append(section)
+				self.treatment_list.append(section)
 			#nothing here (?)
 			elif any(item in section for item in target):
 				# catch publication if it contains 'tag' or 'flag'
 				if 'et al.' in section:
 					self.other_list.append(section)
 				else:	
-					self.target_list.append(section)	
+					self.treatment_list.append(section)	
 			elif any(item in section for item in strain):
 				self.strain_list.append(section)
 			#noting here (?)
@@ -556,7 +553,7 @@ class XmlManager(object):
 					self.organization_search(section['Organization'])					
 		# Assign a complete name as the value to the key that is the contributor number (ex contrib1 : John Doe)
 		self.contributor_dict[number] = " ".join(names)
-	#This function finds the firts contributor's organization
+	#This function finds the first contributor's organization
 	def organization_search (self, section):
 		if type(section) is list:
 			org_name = []
