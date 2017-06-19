@@ -344,10 +344,10 @@ class XmlManager(object):
 					if 'assayed molecule' in section[list_index]['@tag']:
 						self.material_list.append(section[list_index]['#text'])
 					else:
-						print ('assay', section[list_index]['#text'])
 						self.assay_list.append(section[list_index]['#text'])
+				#not sure if info should be in 'assay' or 'material'
 				elif 'library selection' in section[list_index]['@tag']:
-					print ('library selection=', section[list_index]['#text'] )
+					self.material_list.append(section[list_index]['#text'])
 				# Used tag: 'library' catches 'library strategy', 'library type'
 				elif 'library' in section[list_index]['@tag'].lower():
 					self.assay_list.append(section[list_index]['#text'])
