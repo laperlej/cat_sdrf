@@ -104,7 +104,7 @@ class XmlManager(object):
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
 									#if 'glucose' in row['1,1)Sample_title']:
 									#	print ('title=', row['1,1)Sample_title'])
-								elif section == 'Type':
+								elif section == 'Type' and 'SRA' not in mon_dict['MINiML']['Sample'][x]['Type']:
 									self.material_list.append(mon_dict['MINiML']['Sample'][x]['Type'])
 								elif section == 'Organism':
 									self.organism_sample(self.org_list, mon_dict['MINiML']['Sample'][x]['Organism'])
