@@ -230,15 +230,19 @@ class XmlManager(object):
 							row['label']= sep.join(self.label_list)
 							#Used tag:
 							row['Other'] = sep.join(self.other_list)
-							#this adds a marking for the .CEL files, in an otherwise useless column
-							if '.cel' in self.supp_data or '.CEL' in self.supp_data:
-								row['20)SRA_accessions'] = '1$'
+							
 							#when there is only one supplementary file
 							if len(self.supp_data) == 1:
 								row['18)raw_files'] = sep.join(self.supp_data)
+								#this adds a marking for the .CEL files, in an otherwise useless column
+								if '.cel' in row['18)raw_files'] or '.CEL' in row['18)raw_files']:
+									row['20)SRA_accessions'] = '1$'
 							#if there are 2 suppl. files, the first one will go to _ch1 and the second to _ch2
 							elif len(self.supp_data) == 2:
 								row['18)raw_files'] = self.supp_data[ch_position]
+								#this adds a marking for the .CEL files, in an otherwise useless column
+								if '.cel' in row['18)raw_files'] or '.CEL' in row['18)raw_files']:
+									row['20)SRA_accessions'] = '1$'
 							#for 3 suppl. files and more
 							elif len(self.supp_data) > 2:
 								#this adds a symbol/marking to an otherwise useless column (>3 .CEL files)
