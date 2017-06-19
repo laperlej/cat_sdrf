@@ -285,9 +285,9 @@ class XmlManager(object):
 		material = ['molecule', 'tissue', 'organelle', 'cell part', 'mrna type', 'shrna', 'rna subtype', 'material', 'genomic dna', 'nucleosomal dna', 'nucleosomal DNA', 'chromatin']
 		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'Yeast', 'parents', 'wild type', 'Wild Type', 'MAT-a', 'direct rna sequence from']
 		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation', 'deleted', 'expressing']
-		#removed "biotin" since it is important for chip-chip
-		unspecific = ['source', 'sort', 'strategy', 'experiment', 'isolate number', 'capture method', 'lentivirally']
-		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'index pair', 'grna libraries', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
+		#this list is for treatment, since it is very important in rna-seq
+		unspecific = ['od', 'tag', 'age', 'ip', 'source', 'sort', 'strategy', 'experiment', 'isolate number', 'capture method', 'lentivirally'. 'chd1-ume6 fusion', 'crosslink']
+		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'index pair', 'grna libraries', 'barcode', 'sample identifier', 'tandem repeat', 'primer', 'index',  'sequencing chip',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
 		if type(section) is list:
 			#Iteration on the list, which is often composed of orderedDict ([('@tag', '...') , ('#text', '...')])
 			for list_index in range(len(section)):
@@ -336,7 +336,6 @@ class XmlManager(object):
 				#Used tag: 'genotype', '' ; lots of info; valid
 				elif any(item in section[list_index]['@tag'].lower() for item in gene):
 					self.gene_list.append(section[list_index]['#text'])
-				#Lots of info; valid
 				elif any(item in section[list_index]['@tag'].lower() for item in strain):
 					self.strain_list.append(section[list_index]['#text'])
 				# Used tag : 'library selection'; keyword 'assay' catches 'assayed molecue' and 'assay'
@@ -369,7 +368,6 @@ class XmlManager(object):
 					self.treatment_list.append(key_value)
 				# Valid info, but for 'tag': 'MATa ade2-1 can1-100 HIS3 leu2-3,112 trp1-1 ura3-1 RAD5+ ISW1-FL3-KanMX snf2-delta::URA3'; 'tag' not specific
 				elif any(item in section[list_index]['@tag'] for item in target):
-					#key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.treatment_list.append(section[list_index]['#text'])
 				elif any(item in section[list_index]['@tag'].lower() for item in unspecific):
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
@@ -377,18 +375,8 @@ class XmlManager(object):
 				elif any(item in section[list_index]['@tag'] for item in junk):
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.other_stuff_sample(key_value)
-				#Not specific tags, but valid info
-				elif 'od' in section[list_index]['@tag'] or 'age' in section[list_index]['@tag']:
-					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
-					self.treatment_list.append(key_value)
 				elif 'rna' in section[list_index]['@tag'].lower():
 					self.material_list.append(section[list_index]['#text'])
-				elif 'tag' in section[list_index]['@tag'].lower():
-					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
-					self.treatment_list.append(key_value)
-				elif 'ip' == section[list_index]['@tag'].lower():
-					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
-					self.treatment_list.append(key_value)
 				else:
 					# The leftover goes in the 'Other' section
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
@@ -396,10 +384,8 @@ class XmlManager(object):
 				
 		elif type(section) is OrderedDict:
 			for key in section.keys():
-				#Some info; valid
 				if 'antibody' in section['@tag']:
 					self.treatment_list.append(section['#text'])
-				# Some info here; valid
 				elif 'sample type' in section['@tag']:
 					self.descrip_list.append(section['#text'])
 				elif 'stage' in section['@tag']:
@@ -409,43 +395,27 @@ class XmlManager(object):
 				elif any(item in section['@tag'] for item in target):
 					key_value = section['@tag']+ '= ' + section['#text']
 					self.treatment_list.append(key_value)
-				# Lots of info; valid
 				elif any(item in section['@tag'].lower() for item in gene):
 					self.gene_list.append(section['#text'])
-				#Info going here; valid
 				elif any(item in section['@tag'] for item in strain):
 					#Not sure if should go in genotype, strain or description
 					if 'Strain Background is ' in section['@tag']:
 						key_value = section['@tag'] + ': ' + section['#text']
 						self.strain_list.append(key_value)
 					else:
-						#lots of info goes here
 						self.strain_list.append(section['#text'])
-				# Some info; valid
 				elif any(item in section['@tag'] for item in cell_type):
 					if 'tagged' in section['@tag'].lower():
 						self.gene_list.append(section['#text'])
 					else:
 						self.cell_list.append(section['#text'])
-				#lots of info; valid
 				elif any(condition in section['@tag'] for condition in conditions):
 					key_value = section['@tag']+ ': ' + section['#text']
 					self.treatment_list.append(key_value)
-				#Some info here
 				elif any(item in section['@tag'] for item in material):	
 					self.material_list.append(section['#text'])
-				# Some info goes here; valid
 				elif 'protocol' in section['@tag'] or 'harvest' in section['@tag']:	
-					self.protocol_list.append(section['#text'])	
-				#Not specific tags
-				elif 'od' in section['@tag'] or 'age' in section['@tag']:
-					key_value =  section['@tag'] + '= ' +  section['#text']
-					self.treatment_list.append(key_value)
-				elif 'tag' in section['@tag']:
-					key_value =  section['@tag'] + '= ' +  section['#text']
-					self.treatment_list.append(key_value)
-				elif 'ip' == section['@tag']:
-					self.treatment_list.append(section['#text'])
+					self.protocol_list.append(section['#text'])
 				elif any(item in section['@tag'].lower() for item in unspecific):
 					key_value = section['@tag']+ ': ' + section['#text']
 					self.treatment_list.append(key_value)
