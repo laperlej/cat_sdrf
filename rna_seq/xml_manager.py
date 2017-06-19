@@ -122,8 +122,9 @@ class XmlManager(object):
 											if 'Organism' in key:
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel']['Organism'])
 											elif 'Source' in key:
-												print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
+												if 'glucose' in mon_dict['MINiML']['Sample'][x]['Channel']['Source']:
+													print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel']['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel']['Molecule'])	
 											elif 'Label' in key and 'Label-Protocol' not in key:
@@ -141,8 +142,9 @@ class XmlManager(object):
 											if 'Organism' in key:
 												self.organism_sample(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Organism'])
 											elif 'Source' in key:
-												print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
 												self.descrip_list.append(mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
+												if 'glucose' in mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source']:
+													print ('source= ', mon_dict['MINiML']['Sample'][x]['Channel'][ch_position]['Source'])
 											elif 'Molecule' in key:
 												self.general_sample(self.material_list, mon_dict['MINiML']['Sample'][x]['Channel'][ch_position][key])	
 											elif 'Label' in key and 'Label-Protocol' not in key: 
