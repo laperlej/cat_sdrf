@@ -104,6 +104,8 @@ class XmlManager(object):
 								# Used tag for row['1,1)Sample_title'] : 'Title' in the sample part of file 
 								elif section == 'Title':
 									row['1,1)Sample_title'] = mon_dict['MINiML']['Sample'][x]['Title']
+									if 'glucose' in row['1,1)Sample_title']:
+										print (row['1,1)Sample_title'])
 								elif section == 'Type':
 									self.material_list.append(mon_dict['MINiML']['Sample'][x]['Type'])
 								elif section == 'Organism':
