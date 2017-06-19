@@ -286,7 +286,8 @@ class XmlManager(object):
 		strain = ['strain', 'Strain', 'background', 'variant', 'mutant', 'yeast', 'Yeast', 'parents', 'wild type', 'Wild Type', 'MAT-a', 'direct rna sequence from']
 		gene = ['genetic', 'genotype', 'allele', 'phenotype', 'gene deletion', 'rnai deletion', 'modification', 'bearing', 'genome', 'variation', 'deleted']
 		#removed "biotin" since it is important for chip-chip
-		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'experiment', 'isolate number', 'index pair', 'grna libraries',  'matched wild type sample', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index', 'strategy',  'sort', 'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
+		unspecific = ['source', 'sort', 'strategy', 'experiment', 'isolate number', 'capture method']
+		junk = ['hotspot',  'batch', 'repetition', 'replicate', 'repeat', 'index pair', 'grna libraries', 'barcode', 'sample identifier', 'tandem repeat', 'chd1-ume6 fusion', 'primer', 'index',  'capture', 'lentivirally',  'sequencing chip', 'crosslink',  'cmc use', 'ID', 'fragment size', 'application', 'paired-end',  'vendor', 'oligonucleotide', 'processed data', 'Sample', 'SAMPLE', 'replication', 'Affymetrix', 'sequenced with', 'matched wild type sample', 'average']
 		if type(section) is list:
 			#Iteration on the list, which is often composed of orderedDict ([('@tag', '...') , ('#text', '...')])
 			for list_index in range(len(section)):
@@ -340,7 +341,10 @@ class XmlManager(object):
 					self.strain_list.append(section[list_index]['#text'])
 				# Used tag : 'library selection'; keyword 'assay' catches 'assayed molecue' and 'assay'
 				elif 'assay' in section[list_index]['@tag'] or 'library selection' in section[list_index]['@tag']:
-					self.assay_list.append(section[list_index]['#text'])
+					if 'assayed molecule' in section[list_index]['@tag']:
+						print (section[list_index]['#text'])
+					else:
+						self.assay_list.append(section[list_index]['#text'])
 				# Used tag: 'library' catches 'library strategy' and 'library type'
 				elif 'library' in section[list_index]['@tag'].lower():
 					self.assay_list.append(section[list_index]['#text'])
@@ -363,7 +367,10 @@ class XmlManager(object):
 				# Valid info, but for 'tag': 'MATa ade2-1 can1-100 HIS3 leu2-3,112 trp1-1 ura3-1 RAD5+ ISW1-FL3-KanMX snf2-delta::URA3'; 'tag' not specific
 				elif any(item in section[list_index]['@tag'] for item in target):
 					#key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
-					self.treatment_list.append(section[list_index]['#text'])		
+					self.treatment_list.append(section[list_index]['#text'])
+				elif any(item in section[list_index]['@tag'].lower() for item in unspecific):
+					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
+					self.treatment_list.append(key_value) 
 				elif any(item in section[list_index]['@tag'] for item in junk):
 					key_value =  section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
 					self.other_stuff_sample(key_value)
@@ -436,6 +443,9 @@ class XmlManager(object):
 					self.treatment_list.append(key_value)
 				elif 'ip' == section['@tag']:
 					self.treatment_list.append(section['#text'])
+				elif any(item in section['@tag'].lower() for item in unspecific):
+					key_value = section['@tag']+ ': ' + section['#text']
+					self.treatment_list.append(key_value)
 				else:
 					# The leftover goes in the 'Other' section
 					key_value = section['@tag']+ '= ' + section['#text']
@@ -469,8 +479,9 @@ class XmlManager(object):
 			#nothing here (?)
 			elif 'BrdU' in section or 'brdu' in section:
 				self.assay_list.append(section)	
+			elif any(item in section.lower() for item in unspecific):
+				self.treatment_list.append(section)
 			else:
-				#print (section)
 				# The leftover (there is some info) goes in the 'Other' section
 				self.other_list.append(section)
 
