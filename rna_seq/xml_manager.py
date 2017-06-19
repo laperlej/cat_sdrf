@@ -309,7 +309,8 @@ class XmlManager(object):
 				# Used tag: 'protocol', but does not contain much info; catches 'protocol', 'growth protocol' ,'treatment protocol', 'culture protocol', 'harvest method' and also 'growt protocol';
 				elif 'protocol' in section[list_index]['@tag'].lower() or 'harvest method' in section[list_index]['@tag'].lower():	
 					self.treatment_list.append(section[list_index]['#text'])
-					print ('protocol here')
+					print ('protocol here', section[list_index]['@tag'])
+					print (section[list_index]['#text'])
 				#Used tag here catches 'Treatment', 'culture condition', 'growth condition' and 'growth protocol'; valid info
 				elif 'mg/l' in section[list_index]['#text'] or 'uM' in section[list_index]['#text']:
 					key_value = section[list_index]['@tag'] + '= ' +  section[list_index]['#text']
