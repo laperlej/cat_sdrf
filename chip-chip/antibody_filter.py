@@ -140,7 +140,7 @@ def assign_tag(row, tag_dico, histones_dico, gene_dico, gene_descrip_dico, chip_
 	# With ChIP-chip, seems that BrdU assays have ideed no target
 	#elif 'brdu' in row["4)clean_assay"].lower() and 'brdu' in row["8)antibody"].lower():
 	#	return "N/A", "assay type (1)"	
-	if 'whole cell extract' in merge_cols(row,["17)Sample_description"]):
+	if 'whole cell extract' in merge_cols(row,["17)Sample_description"]) or 'whole-cell extract' in merge_cols(row,["17)Sample_description"]):
 		return 'WCE', 'keyword (1)'
 	elif 'not specified' in merge_cols(row,["8)antibody"])  and 'input' in merge_cols(row,["13)cell_type","17)Sample_description", "1,1)Sample_title"]):
 		return 'input', 'keyword (1)'
