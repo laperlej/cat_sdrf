@@ -46,7 +46,7 @@ def condition_row(row, species):
 		"saccer": "Saccharomyces cerevisiae",
 		"pombe": "Schizosaccharomyces pombe",
 		"celegans":"Caenorhabditis elegans"}
-	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
+	discard_assays=["rip-seq", "unwanted", 'non-genomic', 'wgs', 'faire', 'rna-seq', 'chip-chip', 'chip-seq', 'brdu', 'mnase-chip', 'dnase', 'other']
 	
 	if species_dict[species] not in row['3)organism']:
 		row['Selection'] = 'Wrong org' 
