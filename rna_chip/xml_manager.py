@@ -193,10 +193,6 @@ class XmlManager(object):
 							#Used tag: 'Library-Strategy', 'Library-Selection', 'Type' in series section
 							self.assay_list.append(self.series_dict['Type'])
 							row['7)assaytype'] = sep.join(self.assay_list)
-							#Used tag: 'Antibody' and 'catalog' (not complete tags)
-							row['8)antibody'] = sep.join(self.antibody_list)
-							#Used tag: 'tag', 'ChIP', 'target of ip', 'labeled protein', 'epitope tag', 'flag tagged', 'version of h2b', 'immunoprecipitated protein', 'protein'
-							row['9)target'] = sep.join(self.target_list)
 							#Used tag: 'Growth-Protocol', 'Treatment-Protocol' and 'Extract-Protocol' (from 'Channel','Characteristics' section) and 'Data-Processing' 
 							row['10)treatment'] = sep.join(self.treatment_list)
 							#Used tag: 'Library-Source', 'Molecule' in 'Channel' section
