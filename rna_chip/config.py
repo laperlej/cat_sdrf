@@ -7,11 +7,11 @@ from collections import OrderedDict
 import saccer, pombe, celegans
 from antibody_filter import merge_cols
 
-#iterate on each ine and return True the conditions are met.
+#iterate on each line and return True if the conditions are met.
 def split_condition_aux(row, species):
 	#Assays type to discard
-	discard_assays=["rip-seq","rna-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
-	#file types needed (updated for chip-chip)
+	discard_assays=["rip-seq", "unwanted", 'non-genomic', 'wgs', 'bisulfite-seq']
+	#file types needed (updated for rna-chip)
 	file_types = ['.CEL', 'cel.gz', 'CEL.gz', 'pair.gz', 'gpr.gz', 'txt.gz']
 	#dictionnary with short name (sys.argv[3]) and full name of the species 
 	species_dict={
@@ -85,7 +85,6 @@ FIELDNAMES=OrderedDict([
 	('Other', '')])
 #assay type dictionnary (WGS:Whole Genome Shotgun sequencing)
 ASSAY_DICO = OrderedDict([
-	('Non-genomic', '(non.genomic|transcriptomic|total\srna|nascent\srna|polya\srna)'),
 	('BrdU-ChIP', '(brdu\sip|brdu-ip)'),
 	('ATAC-Seq', 'atac-seq'),
 	('BrdU', 'brdu'),
@@ -95,12 +94,14 @@ ASSAY_DICO = OrderedDict([
 	('FAIRE-Seq', 'faire.seq'),
 	('FAIRE-chip', 'faire'),
 	("MNase-chip",'(mnase.treated|monococcal\snuclease|micrococcal\snuclease|chec\scleavage|chec\sexperiment|nucleosomal\sdna|micro-c)'),
-	("ChIP-chip",'(chip|chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin|genome\sbinding.occupancy\sprofiling\sby\sgenome\stiling\sarray)'),
+	("ChIP-chip",'(chromatin\simmunoprecipitation|immunoprecipitation\sof\snative\schromatin|genome\sbinding.occupancy\sprofiling\sby\sgenome\stiling\sarray)'),
 	("ChIP-Seq", "chip-seq"),
 	("DNase-Seq",'dnase'),
 	("Bisulfite-Seq", "bisulfite"),
 	("Rip-Seq", 'rip-seq'),
 	("RNA-Seq", 'rna-seq'),
+	("RNA","(transcriptomic|total\srna|nascent\srna|polya\srna)"),
+	('Non-genomic', '(non.genomic)'),
 	('Okazaki fragment', 'okazaki\sfragment'),
 	("other",'(other|genomic\sdna)'),
 	("unwanted", '.*')
